@@ -19,30 +19,68 @@ class State {
      * In the solved state, the 'corners' array contains the multiples of three in 
      * increasing order. (which correspond with white and yellow stikers).
      * 
-     * Check out the google sheets provided for the choices of pieces.
+     * Check out the state structure reference for more details on the internal
+     * representation of the cube's state.
     */
 
     u_int8_t corners[8];
 
     /*
-     * Bla Bla Bla for the edges as well.
+     * 'edges' is an array of 12 different integers, ranging from 0 to 23
+     * each of these values corresponds with a stiker in the rubik's cube's
+     * edges, and each position in the array corresponds to a position an edge 
+     * could be in.
+     * 
+     * Each edge has 2 stikers in it, which have consecutive values.
+     * 
+     * In the solved state, the 'edges' array contains the even numbers in 
+     * increasing order. (which correspond with white, yellow, green and blue stikers).
+     * 
+     * Check out the state structure reference for more details on the internal
+     * representation of the cube's state.
     */
 
     u_int8_t edges[12]; 
 
+    /*
+     * Default constructor. 
+     * Generates the solved state of the Rubik's cube.
+    */
     State();
 
+    /*
+     * Given an array of stikers, cycles the pieces containing them such that each
+     * stiker goes to the position of the next (and the final one goes to the first).
+    */
     void cycle_corners(u_int8_t stikers[], int size, bool clockwhise);
 
+    /*
+     * Given an array of stikers, it cycles the pieces containing them such that each
+     * stiker goes to the position of the next (and the final one goes to the beginning).
+    */
     void cycle_edges(u_int8_t stikers[], int size, bool clockwhise);
 
     public:
 
-    void turn_face(u_int8_t face_color_id, bool clockwhise);
+    /*
+     * Given a the id of a face's color, it turns the face with set color
+     * clockwhise if the boolean is true, and anticlockwhise if it's false.
+     */
+    void turn_face(u_int8_t face, bool clockwhise);
 
+    /*
+     * Checks whether it is the solved state.
+    */
     bool is_solved();
 
+    /*
+     * Checks whether it's a valid state (whether it can be solved with
+     * normal Rubik's cube moves).
+    */
     bool is_solvable();
 
+    /*
+     * Displays the current state of the rubik's cube as characters in the terminal.
+    */
     void display();
 };
