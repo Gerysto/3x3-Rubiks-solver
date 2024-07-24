@@ -46,6 +46,7 @@ void Cube::turn_face(u_int8_t face_color, bool clockwhise){
 
 void Cube::turn_side(u_int8_t side, bool clockwhise, bool double_move){
     state.turn_face(orientation[side], clockwhise);
+    if(double_move) state.turn_face(orientation[side],clockwhise);
 }
 
 
@@ -126,7 +127,7 @@ void Cube::move(string move){
 void Cube::move_sequence(string sequence){
     string my_move;
     for(int i = 0; i < sequence.length(); ++i) {
-        
+
         char c = sequence[i];
         if(c != ' ') my_move.push_back(c);
 
