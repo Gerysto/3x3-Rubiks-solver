@@ -1,4 +1,5 @@
 #include <iostream>
+#include <vector>
 #include "cube_constants.hh"
 
 /* 
@@ -23,7 +24,7 @@ class State {
      * representation of the cube's state.
     */
 
-    u_int8_t corners[8];
+    u_int8_t* corners;
 
     /*
      * 'edges' is an array of 12 different integers, ranging from 0 to 23
@@ -40,7 +41,7 @@ class State {
      * representation of the cube's state.
     */
 
-    u_int8_t edges[12]; 
+    u_int8_t* edges; 
 
     /*
      * Default constructor. 

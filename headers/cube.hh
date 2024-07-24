@@ -1,4 +1,5 @@
 #include <iostream>
+#include <vector>
 #include "state.hh"
 
 using namespace std;
@@ -31,7 +32,7 @@ using namespace std;
 
 class Cube {
     
-    public:
+    private:
     
     /*
      * The state of a rubik's cube is defined by the position of each of it's pieces with respect to the center
@@ -64,8 +65,15 @@ class Cube {
      * The default orientation is white top, green front. Which is represented
      * by the array being in increasing order.
      */
-    u_int8_t orientation[6];
+    vector<u_int8_t> orientation;
 
+
+    /*
+     * Changes the orientation of the cube by cycling the face's positions with respect to the user.
+    */
+    void cycle_faces(vector<u_int8_t> faces, bool clockwhise, bool double_move);
+
+    public:
     /*
      * Default constructor.
      * Creates a solved cube with the white top, green front orientation.
@@ -75,7 +83,7 @@ class Cube {
     /*
      * Creates a cube given it's state and initial orientation.
     */
-    Cube(State state, u_int8_t orientation);
+    Cube(State state, vector<u_int8_t> orientation);
 
     /*
      * Turns a face, given the id of it's center color.
@@ -91,7 +99,7 @@ class Cube {
 
       Check the 'Side IDs' table above.
     */
-    void turn_side(u_int8_t side, bool clockwhise);
+    void turn_side(u_int8_t side, bool clockwhise, bool double_move);
 
     /*
      * Given a move in the standard rubik's cube notation, 
