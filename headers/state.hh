@@ -1,5 +1,5 @@
 #include <iostream>
-#include <cube_constants.hh>
+#include "cube_constants.hh"
 
 /* 
  * The state that a rubik's cube is in, is defined to be the position
