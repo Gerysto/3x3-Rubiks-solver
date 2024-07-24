@@ -1,4 +1,7 @@
 #include <iostream>
+#include <vector>
+
+using namespace std;
 
 const vector<u_int8_t> solved_corners = {0, 3, 6, 8, 12, 15, 18, 21};
 const vector<u_int8_t> solved_edges =  {0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22};

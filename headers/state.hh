@@ -2,12 +2,14 @@
 #include <vector>
 #include "cube_constants.hh"
 
+using namespace std;
+
 /* 
  * The state that a rubik's cube is in, is defined to be the position
  * and orientation of each of it's corner and edge pieces.
 */
 class State {
-    public:
+    private:
 
     /*
      * 'corners' is an array of 8 different integers, ranging from 0 to 23
@@ -24,7 +26,7 @@ class State {
      * representation of the cube's state.
     */
 
-    u_int8_t* corners;
+    vector<u_int8_t> corners;
 
     /*
      * 'edges' is an array of 12 different integers, ranging from 0 to 23
@@ -41,13 +43,7 @@ class State {
      * representation of the cube's state.
     */
 
-    u_int8_t* edges; 
-
-    /*
-     * Default constructor. 
-     * Generates the solved state of the Rubik's cube.
-    */
-    State();
+    vector<u_int8_t> edges; 
 
     /*
      * Given an array of stikers, cycles the pieces containing them such that each
@@ -62,6 +58,12 @@ class State {
     void cycle_edges(u_int8_t stikers[], int size, bool clockwhise);
 
     public:
+
+    /*
+     * Default constructor. 
+     * Generates the solved state of the Rubik's cube.
+    */
+    State();
 
     /*
      * Given a the id of a face's color, it turns the face with set color
