@@ -49,13 +49,13 @@ class State {
      * Given an array of stikers, cycles the pieces containing them such that each
      * stiker goes to the position of the next (and the final one goes to the first).
     */
-    void cycle_corners(u_int8_t stikers[], int size, bool clockwhise);
+    void cycle_corners(vector<u_int8_t> stikers, bool clockwhise);
 
     /*
      * Given an array of stikers, it cycles the pieces containing them such that each
      * stiker goes to the position of the next (and the final one goes to the beginning).
     */
-    void cycle_edges(u_int8_t stikers[], int size, bool clockwhise);
+    void cycle_edges(vector<u_int8_t> stikers, bool clockwhise);
 
     public:
 
