@@ -25,7 +25,6 @@ class State {
      * Check out the state structure reference for more details on the internal
      * representation of the cube's state.
     */
-
     vector<u_int8_t> corners;
 
     /*
@@ -42,8 +41,19 @@ class State {
      * Check out the state structure reference for more details on the internal
      * representation of the cube's state.
     */
-
     vector<u_int8_t> edges; 
+
+
+    u_int8_t get_corner_stiker(u_int8_t position);
+
+
+    void place_corner_stiker(u_int8_t stiker, u_int8_t position);
+
+    
+    u_int8_t get_edge_stiker(u_int8_t position);
+
+
+    void place_edge_stiker(u_int8_t stiker, u_int8_t position);
 
     /*
      * Given an array of stikers, cycles the pieces containing them such that each
@@ -81,6 +91,11 @@ class State {
      * normal Rubik's cube moves).
     */
     bool is_solvable();
+
+    /*
+     * Displays the current state of the rubik's cube as characters in the terminal.
+    */
+    void log_state();
 
     /*
      * Displays the current state of the rubik's cube as characters in the terminal.

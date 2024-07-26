@@ -1,9 +1,16 @@
 #include <iostream>
-#include "cube.cc"
+#include "headers/cube.hh"
 using namespace std;
 
 int main() {
-    Cube c = Cube();
-    c.turn_side(0, true, false);
-    c.print_state();
+    for(int i = 0; i < 6; ++i) {
+        string wait;
+        cin >> wait;
+        Cube c = Cube();
+        cout << "\n\n\n";
+        cout << "PERFORMING MOVE " << i << "\n\n";
+        c.turn_side(i,true,false);
+        c.print_state();
+    }
+    
 }

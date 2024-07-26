@@ -1,61 +1,67 @@
 #include "headers/state.hh"
 
     State::State(){
-        corners = solved_corners;
-        edges = solved_edges;
+        this->corners = solved_corners;
+        this->edges = solved_edges;
+    }
+
+    u_int8_t State::get_corner_stiker(u_int8_t position) {
+        u_int8_t top_stiker = corners[position/3];
+        return top_stiker - top_stiker%3 + (top_stiker + position)%3;
+    }
+
+    void State::place_corner_stiker(u_int8_t stiker, u_int8_t position) {
+        u_int8_t remainder_mod_3 = ((stiker - position)%3 + 3)%3;
+        corners[position/3] = stiker - stiker%3 + remainder_mod_3;
+    }
+
+    u_int8_t State::get_edge_stiker(u_int8_t position) {
+        u_int8_t top_stiker = edges[position/2];
+        return top_stiker - top_stiker%2 + (top_stiker + position)%2;
+    }
+
+    void State::place_edge_stiker(u_int8_t stiker, u_int8_t position) {
+        u_int8_t remainder_mod_2 = ((stiker - position)%2 + 2)%2;
+        edges[position/2] = stiker - stiker%2 + remainder_mod_2;
     }
 
     void State::cycle_corners(vector<u_int8_t> stikers, bool clockwhise){
         int len = stikers.size();
-
         if(clockwhise) {
-
+            u_int8_t aux = get_corner_stiker(stikers[len-1]);
             for(int i = len-1; i > 0; --i) {
-                u_int8_t A, B, C, D;
-                A = corners[stikers[i-1]/3];
-                B = stikers[i-1];
-                C = stikers[i];
-                D = A - A%3 + ((A%3 + B%3 - C%3)%3 + 3)%3;
-                corners[C/3] = D;
+                u_int8_t s = get_corner_stiker(stikers[i-1]);
+                place_corner_stiker(s, stikers[i]);
             }
-
+            place_corner_stiker(aux, stikers[0]);
         } else {
 
+            u_int8_t aux = get_corner_stiker(stikers[0]);
             for(int i = 0; i < len-1; ++i) {
-                u_int8_t A, B, C, D;
-                A = corners[stikers[i+1]/3];
-                B = stikers[i+1];
-                C = stikers[i];
-                D = A - A%3 + ((A%3 + B%3 - C%3)%3 + 3)%3;
-                corners[C/3] = D;
+                u_int8_t s = get_corner_stiker(stikers[i+1]);
+                place_corner_stiker(s, stikers[i]);
             }
+            place_corner_stiker(aux, stikers[len-1]);
         }
     }
 
     void State::cycle_edges(vector<u_int8_t> stikers, bool clockwhise){
         int len = stikers.size();
-
         if(clockwhise) {
-
+            u_int8_t aux = get_edge_stiker(stikers[len-1]);
             for(int i = len-1; i > 0; --i) {
-                u_int8_t A, B, C, D;
-                A = corners[stikers[i-1]/2];
-                B = stikers[i-1];
-                C = stikers[i];
-                D = A - A%2 + ((A%2 + B%2 - C%2)%2 + 2)%2;
-                corners[C/2] = D;
+                u_int8_t s = get_edge_stiker(stikers[i-1]);
+                place_edge_stiker(s, stikers[i]);
             }
-
+            place_edge_stiker(aux, stikers[0]);
         } else {
 
+            u_int8_t aux = get_edge_stiker(stikers[0]);
             for(int i = 0; i < len-1; ++i) {
-                u_int8_t A, B, C, D;
-                A = corners[stikers[i+1]/2];
-                B = stikers[i+1];
-                C = stikers[i];
-                D = A - A%2 + ((A%2 + B%2 - C%2)%2 + 2)%2;
-                corners[C/2] = D;
+                u_int8_t s = get_edge_stiker(stikers[i+1]);
+                place_edge_stiker(s, stikers[i]);
             }
+            place_edge_stiker(aux, stikers[len-1]);
         }
     }
 
@@ -99,14 +105,51 @@
 
     bool State::is_solvable(){
         // TODO!
+        return true;
     }
 
-    void State::display(){
-        cout << "Corners: " << endl;
+    void State::log_state(){
+        cout << "Corners: ";
         for(int i = 0; i < corners.size(); ++i) {
-            cout << corners[i] << " ";
+            cout << int(corners[i]) << " ";
         }
+        cout << endl << "Edges: ";
         for(int i = 0; i < edges.size(); ++i) {
-            cout << edges[i] << " ";
+            cout << int(edges[i]) << " ";
+        }
+        cout << endl;
+    }
+
+    void State::display() {
+        int num = 0;
+        int count = 0;
+        int color;
+        bool paint = false;
+
+        for(int i = 0; i < stiker_positions.length(); ++i) {
+            char c = stiker_positions[i];
+            if (c >= '0' and c <= '9') {
+                num = 10*num + c - '0';
+                ++count;
+                paint = true;
+            }
+            else {
+                if(num >= 90) {
+                    color = num - 90;
+                }
+                else if (num >= 50) {
+                    u_int8_t stiker = get_edge_stiker(num-50);
+                    color = edge_stiker_colors[stiker];
+                }
+                else {
+                    u_int8_t stiker = get_corner_stiker(num);
+                    color = corner_stiker_colors[stiker];
+                }
+                if(count == 18) count = 0;
+                num = 0;
+                if (paint) cout << id_to_color[color] << id_to_color[color];
+                cout << c;
+                paint = false;
+            }
         }
     }
