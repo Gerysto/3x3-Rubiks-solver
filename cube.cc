@@ -137,3 +137,8 @@ void Cube::move_sequence(string sequence){
         }
     }
 }
+
+
+void Cube::print_state() {
+    state.display();
+}

@@ -114,4 +114,7 @@ class Cube {
      * it performs the sequence set sequence on the cube.
      */
     void move_sequence(string sequence);
+
+
+    void print_state();
 };
