@@ -75,6 +75,11 @@ class State {
     */
     State();
 
+
+    vector<u_int8_t> get_corners();
+
+
+    vector<u_int8_t> get_edges();
     /*
      * Given a the id of a face's color, it turns the face with set color
      * clockwhise if the boolean is true, and anticlockwhise if it's false.
@@ -101,4 +106,6 @@ class State {
      * Displays the current state of the rubik's cube as characters in the terminal.
     */
     void display();
+
+    friend class Solver;
 };

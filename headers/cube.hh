@@ -85,6 +85,12 @@ class Cube {
     */
     Cube(State state, vector<u_int8_t> orientation);
 
+
+    vector<u_int8_t> get_corners();
+
+
+    vector<u_int8_t> get_edges();
+
     /*
      * Turns a face, given the id of it's center color.
      * (e.g. allows you to turn the white face)
@@ -117,4 +123,6 @@ class Cube {
 
 
     void print_state();
+
+    friend class Solver;
 };

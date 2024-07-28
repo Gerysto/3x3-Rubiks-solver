@@ -12,6 +12,16 @@ Cube::Cube(State state, vector<u_int8_t> orientation){
 }
 
 
+vector<u_int8_t> Cube::get_corners() {
+    return state.get_corners();
+}
+
+
+vector<u_int8_t> Cube::get_edges() {
+    return state.get_edges();
+}
+
+
 void Cube::cycle_faces(vector<u_int8_t> faces, bool clockwhise, bool double_move) {
     u_int8_t aux;
     int len = faces.size();
@@ -125,17 +135,18 @@ void Cube::move(string move){
 
 
 void Cube::move_sequence(string sequence){
-    string my_move;
+    string my_move = "";
     for(int i = 0; i < sequence.length(); ++i) {
-
         char c = sequence[i];
         if(c != ' ') my_move.push_back(c);
 
         else {
+            cout << my_move << endl;
             if(my_move != "") this->move(my_move);
             my_move = "";
         }
     }
+    this->move(my_move);
 }
 
 

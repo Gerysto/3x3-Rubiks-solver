@@ -5,6 +5,14 @@
         this->edges = solved_edges;
     }
 
+    vector<u_int8_t> State::get_corners() {
+        return corners;
+    }
+    
+    vector<u_int8_t> State::get_edges() {
+        return edges;
+    }
+
     u_int8_t State::get_corner_stiker(u_int8_t position) {
         u_int8_t top_stiker = corners[position/3];
         return top_stiker - top_stiker%3 + (top_stiker + position)%3;
