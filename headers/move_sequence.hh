@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include "orientation.hh"
 using namespace std;
 
 class MoveSequence {
@@ -9,36 +10,43 @@ class MoveSequence {
      * A sequence of moves is a vector of integers which codifiy the faces to turn using the following
      * chart:
      * 
-     * - 0 -> white face turn
-     * - 2 -> red face turn
-     * - 4 -> green face turn
-     * - 6 -> yellow face turn
-     * - 8 -> orange face turn
-     * - 10 -> blue face turn
-     * - 12 -> white-yellow slice move (clockwhise as seen from white)
-     * - 14 -> red-orange   slice move (clockwhise as seen from red)
-     * - 16 -> green-blue   slice move (clockwhise as seen from green)
+     *  1 -> white face turn
+     *  2 -> red face turn
+     *  3 -> green face turn
+     *  4 -> yellow face turn
+     *  5 -> orange face turn
+     *  6 -> blue face turn
+     *  7 -> yellow-white slice move (clockwhise as seen from yellow)
+     *  8 -> orange-red   slice move (clockwhise as seen from orange)
+     *  9 -> green-blue   slice move (clockwhise as seen from green)
      * 
-     * Even = clockwhise
-     * Odd  = counter-clockwhise
+     * positive = clockwhise
+     * negative = counter-clockwhise
      * 
      * (Notice that double moves as encoded as 2 different moves).
     */
-    vector<u_int8_t> move_sequence;
+    vector<int8_t> move_sequence;
+
+    MoveSequence translate_single_move(Orientation& orientation, const string& move) const;
+
+    public: 
 
     MoveSequence();
 
-    MoveSequence(vector<u_int8_t> orientation, string move_sequence);
+    MoveSequence(Orientation orientation, const string& move_sequence);
 
     /*
      * Returns the inverse of the this sequence.
     */
-    MoveSequence inverse();
+    MoveSequence inverse() const;
 
-    /*
+    string to_notation(Orientation orientation);
 
-    */
-    string get_notation(vector<u_int8_t> orientation);
+    void add_move(int8_t move);
 
+    MoveSequence append(const MoveSequence& seq) const;
 
-}
+    MoveSequence commutate(const MoveSequence& seq) const;
+
+    MoveSequence conjugate(const MoveSequence& setup_moves) const;
+};
