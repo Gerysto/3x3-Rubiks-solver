@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include "cube_constants.hh"
 using namespace std;
 
 class Orientation {
@@ -56,4 +57,4 @@ class Orientation {
     u_int8_t get_face(u_int8_t side) const;
 
     u_int8_t get_side(u_int8_t face) const;
-}
+};
