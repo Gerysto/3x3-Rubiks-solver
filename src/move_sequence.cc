@@ -6,7 +6,7 @@ MoveSequence::MoveSequence() {
 }
 
 
-MoveSequence::MoveSequence(Orientation orientation, const string& move_sequence) {
+MoveSequence::MoveSequence(Orientation& orientation, const string& move_sequence) {
     string my_move = "";
     for(int i = 0; i < move_sequence.length(); ++i) {
         char c = move_sequence[i];
@@ -109,7 +109,7 @@ MoveSequence MoveSequence::inverse() const {
 }
 
 
-string MoveSequence::to_notation(Orientation orientation) {
+string MoveSequence::to_notation(Orientation orientation) const {
     int len = move_sequence.size();
     string result = "";
     for(int i = 0; i < len; ++i) {
@@ -169,6 +169,15 @@ string MoveSequence::to_notation(Orientation orientation) {
 
 void MoveSequence::add_move(int8_t move) {
     move_sequence.push_back(move);
+}
+
+int8_t MoveSequence::get_move(int position) {
+    return move_sequence[position];
+}
+
+
+int MoveSequence::size() {
+    return move_sequence.size();
 }
 
 

@@ -33,16 +33,20 @@ class MoveSequence {
 
     MoveSequence();
 
-    MoveSequence(Orientation orientation, const string& move_sequence);
+    MoveSequence(Orientation& orientation, const string& move_sequence);
 
     /*
      * Returns the inverse of the this sequence.
     */
     MoveSequence inverse() const;
 
-    string to_notation(Orientation orientation);
+    string to_notation(Orientation orientation) const;
 
     void add_move(int8_t move);
+
+    int size();
+
+    int8_t get_move(int position);
 
     MoveSequence append(const MoveSequence& seq) const;
 

@@ -1,12 +1,17 @@
 #include "orientation.hh"
 
+Orientation::Orientation() {
+    face_to_side = default_orientation;
+    side_to_face = default_orientation;
+}
+
 void Orientation::cycle_sides(vector<u_int8_t> sides, bool clockwhise) {
     u_int8_t aux;
     int len = sides.size();
 
     if(clockwhise) {
-        first_face = side_to_face[sides[len-1]];
-        first_side = face_to_side[first_face];
+        int first_face = side_to_face[sides[len-1]];
+        int first_side = face_to_side[first_face];
 
         for(int i = len-1; i > 0; --i) {
             int origin = side_to_face[sides[i-1]];
@@ -19,8 +24,8 @@ void Orientation::cycle_sides(vector<u_int8_t> sides, bool clockwhise) {
         face_to_side[destination] = first_side;
 
     } else {
-        first_face = side_to_face[sides[0]];
-        first_side = face_to_side[first_face];
+        int first_face = side_to_face[sides[0]];
+        int first_side = face_to_side[first_face];
 
         for(int i = 0; i < len-1; ++i) {
             int origin = side_to_face[sides[i+1]];

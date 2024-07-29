@@ -1,6 +1,8 @@
 #include <iostream>
 #include <vector>
 #include "state.hh"
+#include "move_sequence.hh"
+#include "orientation.hh"
 
 using namespace std;
 
@@ -40,7 +42,8 @@ class Cube {
     */
     State state;
 
-    /* 'orientation' is an array which stores the position of each center
+    /* TODO: Fix this documentation.
+     * 'orientation' is an array which stores the position of each center
      * each center color is assigned a value from 0 to 5
      * each side of the cube corresponds with an index of the array.
      * 
@@ -65,13 +68,7 @@ class Cube {
      * The default orientation is white top, green front. Which is represented
      * by the array being in increasing order.
      */
-    vector<u_int8_t> orientation;
-
-
-    /*
-     * Changes the orientation of the cube by cycling the face's positions with respect to the user.
-    */
-    void cycle_faces(vector<u_int8_t> faces, bool clockwhise, bool double_move);
+    Orientation orientation;
 
     public:
     /*
@@ -83,7 +80,7 @@ class Cube {
     /*
      * Creates a cube given it's state and initial orientation.
     */
-    Cube(State state, vector<u_int8_t> orientation);
+    Cube(State state, Orientation orientation);
 
 
     vector<u_int8_t> get_corners();
@@ -113,16 +110,7 @@ class Cube {
      * 
      * (check the table of allowed moves from above)
     */
-    void move(string move);
-
-    /*
-     * Given a string containing a sequence of moves separated with spaces,
-     * it performs the sequence set sequence on the cube.
-     */
-    void move_sequence(string sequence);
-
+    void execute_sequence(string seq);
 
     void print_state();
-
-    friend class Solver;
 };

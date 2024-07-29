@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include "cube_constants.hh"
+#include "move_sequence.hh"
 
 using namespace std;
 
@@ -86,6 +87,8 @@ class State {
      */
     void turn_face(u_int8_t face, bool clockwhise);
 
+
+    void execute_sequence(MoveSequence seq);
     /*
      * Checks whether it is the solved state.
     */

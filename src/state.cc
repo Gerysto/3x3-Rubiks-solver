@@ -107,6 +107,35 @@
         cycle_edges(edge_cycle, clockwhise);
     }
 
+    void State::execute_sequence(MoveSequence seq) {
+    for(int i = 0; i < seq.size(); ++i) {
+        int8_t move = seq.get_move(i);
+        bool clockwhise = move < 0;
+        if(abs(move) <= 6) {
+            turn_face(abs(move)-1, clockwhise);
+        }
+        else {
+            switch(abs(move)) {
+                case 7:
+                    turn_face(3, clockwhise);
+                    turn_face(0, !clockwhise);
+                    break;
+                case 8:
+                    turn_face(4, clockwhise);
+                    turn_face(1, !clockwhise);
+                    break;
+                case 9:
+                    turn_face(5, !clockwhise);
+                    turn_face(2, clockwhise);
+                    break;
+                default:
+                    cerr << "Invalid move in 'execute sequence' method.";
+                    break;
+            };
+        }
+    }
+}
+
     bool State::is_solved(){
         return corners == solved_corners and edges == solved_edges;
     }

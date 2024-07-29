@@ -44,7 +44,7 @@ class Orientation {
     */
     vector<u_int8_t> face_to_side;
 
-    void cycle_sides(vector<u_int8_t> sides, bool clockwhise, bool double_move);
+    void cycle_sides(vector<u_int8_t> sides, bool clockwhise);
 
     public:
 

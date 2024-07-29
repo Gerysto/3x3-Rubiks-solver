@@ -25,6 +25,7 @@ class Solver {
     */
     vector<u_int8_t> get_layers_involving_corner(u_int8_t corner);
 
+    bool corner_subset_match(State state, vector<u_int8_t> subset);
     /*
      * Given a layer's ID, an edge, which isn't located in this layer and the position where in the layer
      * where the piece belongs, this method will find a sequence of moves which will insert the edge to its position.
@@ -46,5 +47,5 @@ class Solver {
     */
     vector<u_int8_t> get_layers_involving_edge(u_int8_t edge);
 
-
+    bool edge_subset_match(State state, vector<u_int8_t> subset);
 };
