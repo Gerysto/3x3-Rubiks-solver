@@ -47,26 +47,34 @@ class State {
     */
     vector<u_int8_t> edges; 
 
+    /*
+     * Returns the corner stiker located in a given position of the cube.  
+    */
+    u_int8_t get_corner_stiker(u_int8_t position) const;
 
-    u_int8_t get_corner_stiker(u_int8_t position);
+    /*
+     * Returns the edge stiker located in a given position of the cube.  
+    */
+    u_int8_t get_edge_stiker(u_int8_t position) const;
 
-
+    /*
+     * Places a given corner stiker in an other's position of the cube.
+    */
     void place_corner_stiker(u_int8_t stiker, u_int8_t position);
 
-    
-    u_int8_t get_edge_stiker(u_int8_t position);
-
-
+    /*
+     * Places a given edge stiker in an other's position of the cube.
+    */
     void place_edge_stiker(u_int8_t stiker, u_int8_t position);
 
     /*
-     * Given an array of stikers, cycles the pieces containing them such that each
+     * Given an array of corner stikers, cycles the pieces containing them such that each
      * stiker goes to the position of the next (and the final one goes to the first).
     */
     void cycle_corners(const vector<u_int8_t>& stikers, bool clockwhise);
 
     /*
-     * Given an array of stikers, it cycles the pieces containing them such that each
+     * Given an array of edge stikers, it cycles the pieces containing them such that each
      * stiker goes to the position of the next (and the final one goes to the beginning).
     */
     void cycle_edges(const vector<u_int8_t>& stikers, bool clockwhise);
@@ -79,39 +87,38 @@ class State {
     */
     State();
 
+    /*
+     * Checks whether it is the solved state.
+    */
+    bool is_solved() const;
 
-    vector<u_int8_t> get_corners();
+    /*
+     * Checks whether it's a valid state (whether it can be solved with
+     * normal Rubik's cube moves).
+    */
+    bool is_solvable() const;
 
+    /*
+     * Displays the current state of the rubik's cube as characters in the terminal.
+    */
+    void log_state() const;
 
-    vector<u_int8_t> get_edges();
+    /*
+     * Displays the current state of the rubik's cube by displaying it's un-folded net.
+    */
+    void display() const;
+
     /*
      * Given a the id of a face's color, it turns the face with set color
      * clockwhise if the boolean is true, and anticlockwhise if it's false.
      */
     void turn_face(u_int8_t face, bool clockwhise);
 
-
+    /*
+     * Given a MoveSequence, this method executes it on the cube.
+    */
     void execute_sequence(MoveSequence seq);
-    /*
-     * Checks whether it is the solved state.
-    */
-    bool is_solved();
 
-    /*
-     * Checks whether it's a valid state (whether it can be solved with
-     * normal Rubik's cube moves).
-    */
-    bool is_solvable();
-
-    /*
-     * Displays the current state of the rubik's cube as characters in the terminal.
-    */
-    void log_state();
-
-    /*
-     * Displays the current state of the rubik's cube as characters in the terminal.
-    */
-    void display();
 
     friend class Solver;
 };

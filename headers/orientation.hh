@@ -57,14 +57,38 @@ class Orientation {
 
     Orientation();
 
+    /*
+     * Performs an X rotation to the cube.
+    */
     void X_rotation(bool clockwhise, bool double_move);
+
+    /*
+     * Performs an Y rotation to the cube.
+    */
     void Y_rotation(bool clockwhise, bool double_move);
+
+    /*
+     * Performs an Z rotation to the cube.
+    */
     void Z_rotation(bool clockwhise, bool double_move);
 
+    /*
+     * Returns the face that's located in a given side of the cube.
+     * 
+     * e.g. it allows you to know what face is in the front side.
+    */
     u_int8_t get_face(u_int8_t side) const;
 
+    /*
+     * Returns the side of the cube where a given face is located.
+     * 
+     * e.g. it allows you to know where the white face is relative to the observer.
+    */
     u_int8_t get_side(u_int8_t face) const;
 
+    /*
+     * Displays the two vectors which define the cube's orientation.
+    */
     void display() const;
 };
 

@@ -45,31 +45,8 @@ class Cube {
     */
     State state;
 
-    /* TODO: Fix this documentation.
-     * 'orientation' is an array which stores the position of each center
-     * each center color is assigned a value from 0 to 5
-     * each side of the cube corresponds with an index of the array.
-     * 
-     * Color IDs:
-     * 
-     *      red = 0
-     *      blue = 1
-     *      red = 2
-     *      green = 3
-     *      orange = 4
-     *      yellow = 5
-     * 
-     * Side IDs:
-     *      
-     *      top = 0
-     *      back = 1
-     *      right = 2
-     *      front = 3
-     *      left = 4
-     *      bottom = 5
-     * 
-     * The default orientation is white top, green front. Which is represented
-     * by the array being in increasing order.
+    /*
+     * Orientation is an object which allows the cube to know which face color should be turned when doing a certain move.
      */
     Orientation orientation;
 
@@ -85,27 +62,10 @@ class Cube {
     */
     Cube(State state, Orientation orientation);
 
-
-    vector<u_int8_t> get_corners();
-
-
-    vector<u_int8_t> get_edges();
-
     /*
-     * Turns a face, given the id of it's center color.
-     * (e.g. allows you to turn the white face)
-     * 
-     * Check the 'Color IDs' table above.
+     * Executes a sequence of moves expressed as a 'MoveSequence' object.
     */
-    void turn_face(u_int8_t face_color, bool clockwhise);
-
-    /*
-     * Turns a side given the id of it's relative position.
-      (e.g. allows you to turn the front side)
-
-      Check the 'Side IDs' table above.
-    */
-    void turn_side(u_int8_t side, bool clockwhise, bool double_move);
+    void execute_sequence(MoveSequence move_sequence);
 
     /*
      * Given a move in the standard rubik's cube notation, 
@@ -113,9 +73,12 @@ class Cube {
      * 
      * (check the table of allowed moves from above)
     */
-    void execute_sequence(string seq);
+    void execute_sequence_in_notation(string seq);
 
-    void print_state();
+    /*
+     * Displays the state of the cube it's un-folded net. (Orientation doesn't affect it).
+    */
+    void print_state() const;
 };
 
 #endif

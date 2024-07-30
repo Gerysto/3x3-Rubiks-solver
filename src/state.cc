@@ -5,27 +5,19 @@
         this->edges = solved_edges;
     }
 
-    vector<u_int8_t> State::get_corners() {
-        return corners;
-    }
-    
-    vector<u_int8_t> State::get_edges() {
-        return edges;
-    }
-
-    u_int8_t State::get_corner_stiker(u_int8_t position) {
+    u_int8_t State::get_corner_stiker(u_int8_t position) const {
         u_int8_t top_stiker = corners[position/3];
         return top_stiker - top_stiker%3 + (top_stiker + position)%3;
+    }
+
+    u_int8_t State::get_edge_stiker(u_int8_t position) const {
+        u_int8_t top_stiker = edges[position/2];
+        return top_stiker - top_stiker%2 + (top_stiker + position)%2;
     }
 
     void State::place_corner_stiker(u_int8_t stiker, u_int8_t position) {
         u_int8_t remainder_mod_3 = ((stiker - position)%3 + 3)%3;
         corners[position/3] = stiker - stiker%3 + remainder_mod_3;
-    }
-
-    u_int8_t State::get_edge_stiker(u_int8_t position) {
-        u_int8_t top_stiker = edges[position/2];
-        return top_stiker - top_stiker%2 + (top_stiker + position)%2;
     }
 
     void State::place_edge_stiker(u_int8_t stiker, u_int8_t position) {
@@ -150,16 +142,16 @@
     }
 }
 
-    bool State::is_solved(){
+    bool State::is_solved() const {
         return corners == solved_corners and edges == solved_edges;
     }
 
-    bool State::is_solvable(){
+    bool State::is_solvable() const{
         // TODO!
         return true;
     }
 
-    void State::log_state(){
+    void State::log_state() const {
         cout << "Corners: ";
         for(int i = 0; i < corners.size(); ++i) {
             cout << int(corners[i]) << " ";
@@ -171,7 +163,7 @@
         cout << endl;
     }
 
-    void State::display() {
+    void State::display() const {
         int num = 0;
         int count = 0;
         int color;

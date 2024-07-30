@@ -188,12 +188,13 @@ void MoveSequence::add_move(int8_t move) {
     move_sequence.push_back(move);
 }
 
-int8_t MoveSequence::get_move(int position) {
+
+int8_t MoveSequence::get_move(int position) const {
     return move_sequence[position];
 }
 
 
-int MoveSequence::size() {
+int MoveSequence::size() const {
     return move_sequence.size();
 }
 
@@ -219,7 +220,8 @@ MoveSequence MoveSequence::conjugate(const MoveSequence& setup_moves) const {
     return setup_moves.append(*this).append(inv);
 }
 
-void MoveSequence::print() {
+
+void MoveSequence::print() const {
     cout << "sequence: [";
     int len = move_sequence.size();
     for (int i = 0; i < len; ++i) {
