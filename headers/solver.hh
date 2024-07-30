@@ -1,3 +1,6 @@
+#ifndef _SOLVER_
+#define _SOLVER_
+
 #include "cube.hh"
 
 class Solver {
@@ -49,3 +52,5 @@ class Solver {
 
     bool edge_subset_match(State state, vector<u_int8_t> subset);
 };
+
+#endif

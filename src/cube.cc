@@ -1,4 +1,4 @@
-#include "headers/cube.hh"
+#include "../headers/cube.hh"
 
 Cube::Cube(){
     this->state = State();
@@ -34,7 +34,10 @@ void Cube::turn_side(u_int8_t side, bool clockwhise, bool double_move){
 
 
 void Cube::execute_sequence(string seq) {
+    orientation.display();
     MoveSequence my_sequence(this->orientation, seq);
+    orientation.display();
+    my_sequence.print();
     state.execute_sequence(my_sequence);
 }
 

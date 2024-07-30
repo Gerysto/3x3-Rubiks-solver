@@ -1,6 +1,10 @@
+#ifndef _SEQUENCE_
+#define _SEQUENCE_
+
 #include <iostream>
 #include <vector>
 #include "orientation.hh"
+
 using namespace std;
 
 class MoveSequence {
@@ -53,4 +57,8 @@ class MoveSequence {
     MoveSequence commutate(const MoveSequence& seq) const;
 
     MoveSequence conjugate(const MoveSequence& setup_moves) const;
+
+    void print();
 };
+
+#endif

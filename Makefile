@@ -6,7 +6,7 @@ compile:
 	g++ -c src/orientation.cc
 	g++ -c src/main.cc
 	
-	g++ cube.o state.o main.o -o bin/program.exe
+	g++ cube.o state.o move_sequence.o orientation.o main.o -o bin/program.exe
 	rm -f *.o
 
 	./bin/program.exe

@@ -1,5 +1,9 @@
+#ifndef _CONSTS_
+#define _CONSTS_
+
 #include <iostream>
 #include <vector>
+
 
 using namespace std;
 
@@ -36,4 +40,4 @@ const std::string stiker_positions = "           | 00 50 03 |\n           | 56 9
 
 
 
-		
+#endif

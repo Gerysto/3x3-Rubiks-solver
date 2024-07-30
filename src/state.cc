@@ -1,4 +1,4 @@
-#include "headers/state.hh"
+#include "../headers/state.hh"
 
     State::State(){
         this->corners = solved_corners;
@@ -33,7 +33,7 @@
         edges[position/2] = stiker - stiker%2 + remainder_mod_2;
     }
 
-    void State::cycle_corners(vector<u_int8_t> stikers, bool clockwhise){
+    void State::cycle_corners(const vector<u_int8_t>& stikers, bool clockwhise){
         int len = stikers.size();
         if(clockwhise) {
             u_int8_t aux = get_corner_stiker(stikers[len-1]);
@@ -53,7 +53,7 @@
         }
     }
 
-    void State::cycle_edges(vector<u_int8_t> stikers, bool clockwhise){
+    void State::cycle_edges(const vector<u_int8_t>& stikers, bool clockwhise){
         int len = stikers.size();
         if(clockwhise) {
             u_int8_t aux = get_edge_stiker(stikers[len-1]);
@@ -108,23 +108,37 @@
     }
 
     void State::execute_sequence(MoveSequence seq) {
+
     for(int i = 0; i < seq.size(); ++i) {
         int8_t move = seq.get_move(i);
-        bool clockwhise = move < 0;
+        bool clockwhise = move > 0;
+
         if(abs(move) <= 6) {
             turn_face(abs(move)-1, clockwhise);
         }
         else {
             switch(abs(move)) {
                 case 7:
+                    turn_face(3, !clockwhise);
+                    turn_face(0, clockwhise);
+                    break;
+                case 8:
+                    turn_face(4, !clockwhise);
+                    turn_face(1, clockwhise);
+                    break;
+                case 9:
+                    turn_face(5, clockwhise);
+                    turn_face(2, !clockwhise);
+                    break;
+                case 10:
                     turn_face(3, clockwhise);
                     turn_face(0, !clockwhise);
                     break;
-                case 8:
+                case 11:
                     turn_face(4, clockwhise);
                     turn_face(1, !clockwhise);
                     break;
-                case 9:
+                case 12:
                     turn_face(5, !clockwhise);
                     turn_face(2, clockwhise);
                     break;
@@ -189,4 +203,5 @@
                 paint = false;
             }
         }
+        cout << endl;
     }

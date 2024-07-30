@@ -14,21 +14,22 @@ MoveSequence::MoveSequence(Orientation& orientation, const string& move_sequence
 
         else {
             cout << my_move << endl;
-            if(my_move != "") this->append(translate_single_move(orientation, my_move));
+            if(my_move != "") *this = this->append(translate_single_move(orientation, my_move));
             my_move = "";
         }
     }
-    this->append(translate_single_move(orientation, my_move));
+    cout << my_move << endl;
+    *this = this->append(translate_single_move(orientation, my_move));
 }
 
 
 MoveSequence MoveSequence::translate_single_move(Orientation& orientation, const string& move) const {
     MoveSequence result;
 
-    if (move.length() == 0) return;
+    if (move.length() == 0) return MoveSequence();
 
     int sign = 1;
-    bool clockwhise = true; 
+    bool clockwhise = true;
     bool double_move = false;
 
     if(move.length() == 2 and move[1] == '\'') {
@@ -39,60 +40,60 @@ MoveSequence MoveSequence::translate_single_move(Orientation& orientation, const
 
     // REGULAR MOVES:
     
-    if      (move[0] == 'U') result.add_move(1*sign);
-    else if (move[0] == 'R') result.add_move(2*sign);
-    else if (move[0] == 'F') result.add_move(3*sign);
-    else if (move[0] == 'D') result.add_move(4*sign);
-    else if (move[0] == 'L') result.add_move(5*sign);
-    else if (move[0] == 'B') result.add_move(6*sign);
+    if      (move[0] == 'U') result.add_move((orientation.get_face(0)+1)*sign);
+    else if (move[0] == 'R') result.add_move((orientation.get_face(1)+1)*sign);
+    else if (move[0] == 'F') result.add_move((orientation.get_face(2)+1)*sign);
+    else if (move[0] == 'D') result.add_move((orientation.get_face(3)+1)*sign);
+    else if (move[0] == 'L') result.add_move((orientation.get_face(4)+1)*sign);
+    else if (move[0] == 'B') result.add_move((orientation.get_face(5)+1)*sign);
 
     // CUBE ROTATIONS:
     
-    else if (move[0] == 'X') orientation.X_rotation(clockwhise);
-    else if (move[0] == 'Y') orientation.Y_rotation(clockwhise);
-    else if (move[0] == 'Z') orientation.Z_rotation(clockwhise);
+    else if (move[0] == 'X') orientation.X_rotation(clockwhise, double_move);
+    else if (move[0] == 'Y') orientation.Y_rotation(clockwhise, double_move);
+    else if (move[0] == 'Z') orientation.Z_rotation(clockwhise, double_move);
     
     // MIDDLE LAYER MOVES:
     
-    else if(move[0] == 'M') { 
-        result.add_move(8*sign);
-        orientation.X_rotation(!clockwhise);
+    else if(move[0] == 'M') { // in the R' direction
+        result.add_move((orientation.get_face(1)+7)*sign);
+        orientation.X_rotation(!clockwhise, double_move);
     }
-    else if(move[0] == 'E') {
-        result.add_move(7*sign);
-        orientation.Y_rotation(!clockwhise);
+    else if(move[0] == 'E') { // in the 'U direction
+        result.add_move((orientation.get_face(0)+7)*sign);
+        orientation.Y_rotation(!clockwhise, double_move);
     }
-    else if(move[0] == 'S') {
-        result.add_move(9*sign);
-        orientation.Z_rotation(clockwhise);
+    else if(move[0] == 'S') { // in the F direction
+        result.add_move((orientation.get_face(2)+7)*sign);
+        orientation.Z_rotation(clockwhise, double_move);
     }
 
     // LOWER CASE MOVES:
     
     else if (move[0] == 'u') { // u = D + Y
-        result.add_move(4*sign);
-        orientation.Y_rotation(clockwhise);
+        result.add_move((orientation.get_face(3)+1)*sign);
+        orientation.Y_rotation(clockwhise, double_move);
 
     }
     else if (move[0] == 'r') { // r = L + X
-        result.add_move(5*sign);
-        orientation.X_rotation(clockwhise);
+    result.add_move((orientation.get_face(4)+1)*sign);
+        orientation.X_rotation(clockwhise, double_move);
     }
     else if (move[0] == 'f') { // f = B + Z
-        result.add_move(6*sign);
-        orientation.Z_rotation(clockwhise);
+        result.add_move((orientation.get_face(5)+1)*sign);
+        orientation.Z_rotation(clockwhise, double_move);
     }
     else if (move[0] == 'd') { // d = U + Y'
-        result.add_move(1*sign);
-        orientation.Y_rotation(!clockwhise);
+        result.add_move((orientation.get_face(0)+1)*sign);
+        orientation.Y_rotation(!clockwhise, double_move);
     }
     else if (move[0] == 'l') { // l = R + X'
-        result.add_move(2*sign);
-        orientation.X_rotation(!clockwhise);
+        result.add_move((orientation.get_face(1)+1)*sign);
+        orientation.X_rotation(!clockwhise, double_move);
     }
     else if (move[0] == 'b') { // b = F + Z'
-        result.add_move(3*sign);
-        orientation.Z_rotation(!clockwhise);
+        result.add_move((orientation.get_face(2)+1)*sign);
+        orientation.Z_rotation(!clockwhise, double_move);
     }
 
     if(double_move) return result.append(result);
@@ -106,6 +107,7 @@ MoveSequence MoveSequence::inverse() const {
     for(int i = 0; i < len; ++i) {
         seq.move_sequence.push_back(-move_sequence[len-i-1]);
     }
+    return seq;
 }
 
 
@@ -144,15 +146,30 @@ string MoveSequence::to_notation(Orientation orientation) const {
             switch (orientation.get_side(abs(face_move) - 7)) {
             case 0:
                 c = 'E';
-                orientation.Y_rotation(!clockwhise);
+                orientation.Y_rotation(!clockwhise, false);
                 break;
             case 1:
-                orientation.X_rotation(!clockwhise);
                 c = 'M';
+                orientation.X_rotation(!clockwhise, false);
                 break;
             case 2:
-                orientation.Z_rotation(clockwhise);
                 c = 'S';
+                orientation.Z_rotation(clockwhise, false);
+                break;
+            case 3:
+                c = 'E';
+                clockwhise = !clockwhise;
+                orientation.Y_rotation(!clockwhise, false);
+                break;
+            case 4:
+                c = 'M';
+                clockwhise = !clockwhise;
+                orientation.X_rotation(!clockwhise, false);
+                break;
+            case 5:
+                c = 'S';
+                clockwhise = !clockwhise;
+                orientation.Z_rotation(clockwhise, false);
                 break;
             default:
                 cerr << "Invalid id in 'to_notation' function" << endl;
@@ -200,4 +217,14 @@ MoveSequence MoveSequence::commutate(const MoveSequence& seq) const {
 MoveSequence MoveSequence::conjugate(const MoveSequence& setup_moves) const {
     MoveSequence inv = setup_moves.inverse();
     return setup_moves.append(*this).append(inv);
+}
+
+void MoveSequence::print() {
+    cout << "sequence: [";
+    int len = move_sequence.size();
+    for (int i = 0; i < len; ++i) {
+        cout << int(move_sequence[i]);
+        if(i != len-1) cout << ", "; 
+    }
+    cout << "]" << endl;
 }

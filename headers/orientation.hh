@@ -1,6 +1,11 @@
+#ifndef _ORIENTATION_
+#define _ORIENTATION_
+
 #include <iostream>
 #include <vector>
 #include "cube_constants.hh"
+
+
 using namespace std;
 
 class Orientation {
@@ -44,17 +49,23 @@ class Orientation {
     */
     vector<u_int8_t> face_to_side;
 
-    void cycle_sides(vector<u_int8_t> sides, bool clockwhise);
+    void static cycle_elements(vector<u_int8_t>& vec, const vector<u_int8_t>& cycle, bool clockwhise);
+
+    void cycle_sides(const vector<u_int8_t>& sides, bool clockwhise);
 
     public:
 
-    void X_rotation(bool clockwhise);
+    Orientation();
 
-    void Y_rotation(bool clockwhise);
-    
-    void Z_rotation(bool clockwhise);
+    void X_rotation(bool clockwhise, bool double_move);
+    void Y_rotation(bool clockwhise, bool double_move);
+    void Z_rotation(bool clockwhise, bool double_move);
 
     u_int8_t get_face(u_int8_t side) const;
 
     u_int8_t get_side(u_int8_t face) const;
+
+    void display() const;
 };
+
+#endif

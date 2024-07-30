@@ -1,3 +1,6 @@
+#ifndef _CUBE_
+#define _CUBE_
+
 #include <iostream>
 #include <vector>
 #include "state.hh"
@@ -114,3 +117,5 @@ class Cube {
 
     void print_state();
 };
+
+#endif
