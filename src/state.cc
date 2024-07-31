@@ -147,8 +147,67 @@
     }
 
     bool State::is_solvable() const{
-        // TODO!
-        return true;
+        int sum_corners = 0;
+        for(int i = 0; i < corners.size(); ++i) {
+            sum_corners += corners[i];
+        }
+        if(sum_corners%3 != 0) return false; // Wrong corner orientation.
+        
+        int sum_edges = 0;
+        for(int i = 0; i < corners.size(); ++i) {
+            sum_edges += corners[i];
+        }
+        if(sum_edges%2 != 0) return false; // Wrong edge orientation.
+
+        int even_cycles_count;
+
+        vector<bool> visited_corners(8, false);
+        int first_corner = 0;
+        bool visited_all = false;
+
+        while(not visited_all) {
+
+            int cycle_size = 0;
+            u_int8_t corner = corners[first_corner]/3;
+            visited_corners[corner] = true;
+
+            while (corner != first_corner) {
+                corner = corners[corner]/3;
+                visited_corners[corner] = true;
+                ++cycle_size;
+            }
+
+            if(cycle_size%2 == 0) ++even_cycles_count;
+
+            while(visited_corners[first_corner]) {
+                ++first_corner;
+                if(first_corner >= 8) visited_all = true;
+            }
+        }
+
+        vector<bool> visited_edges(12, false);
+        int first_edge = 0;
+        visited_all = false;
+
+        while(not visited_all) {
+            int cycle_size = 0;
+            u_int8_t edge = edges[first_edge]/2;
+            visited_edges[edge] = true;
+
+            while (edge != first_edge) {
+                edge = edges[edge]/2;
+                visited_edges[edge] = true;
+                ++cycle_size;
+            }
+
+            if(cycle_size%2 == 0) ++even_cycles_count;
+
+            while(visited_edges[first_edge]) {
+                ++first_edge;
+                if(first_edge >= 8) visited_all = true;
+            }
+        }
+        return even_cycles_count%2 == 0;
     }
 
     void State::log_state() const {

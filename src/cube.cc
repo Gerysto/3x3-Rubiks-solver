@@ -1,4 +1,5 @@
 #include "../headers/cube.hh"
+#include "cube.hh"
 
 Cube::Cube(){
     this->state = State();
@@ -21,6 +22,10 @@ void Cube::execute_sequence_in_notation(string seq) {
     orientation.display();
     my_sequence.print();
     state.execute_sequence(my_sequence);
+}
+
+bool Cube::is_solvable() {
+    return state.is_solvable();
 }
 
 void Cube::print_state() const {

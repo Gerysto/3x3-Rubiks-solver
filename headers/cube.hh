@@ -75,6 +75,8 @@ class Cube {
     */
     void execute_sequence_in_notation(string seq);
 
+    bool is_solvable();
+
     /*
      * Displays the state of the cube it's un-folded net. (Orientation doesn't affect it).
     */
