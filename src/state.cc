@@ -147,36 +147,46 @@
     }
 
     bool State::is_solvable() const{
+        
+        // CORNER ORIENTATION CHECK!
         int sum_corners = 0;
         for(int i = 0; i < corners.size(); ++i) {
             sum_corners += corners[i];
         }
+        cout << "Corner sum: " << sum_corners << endl;
         if(sum_corners%3 != 0) return false; // Wrong corner orientation.
         
+
+        // EDGE ORIENTATION CHECK!
         int sum_edges = 0;
-        for(int i = 0; i < corners.size(); ++i) {
-            sum_edges += corners[i];
+        for(int i = 0; i < edges.size(); ++i) {
+            sum_edges += edges[i];
         }
+        cout << "Edge sum: " << sum_edges << endl;
         if(sum_edges%2 != 0) return false; // Wrong edge orientation.
 
-        int even_cycles_count;
+
+        // CORNER PERMUTATION CHECK!
+        int even_cycles_count = 0;
 
         vector<bool> visited_corners(8, false);
         int first_corner = 0;
         bool visited_all = false;
 
+        cout << "Corner cycles: " << endl;
         while(not visited_all) {
 
-            int cycle_size = 0;
+            int cycle_size = 1;
             u_int8_t corner = corners[first_corner]/3;
             visited_corners[corner] = true;
 
             while (corner != first_corner) {
+                cout << int(corner) << " ";
                 corner = corners[corner]/3;
                 visited_corners[corner] = true;
                 ++cycle_size;
             }
-
+            cout << corner << endl;
             if(cycle_size%2 == 0) ++even_cycles_count;
 
             while(visited_corners[first_corner]) {
@@ -185,26 +195,29 @@
             }
         }
 
+        // EDGE PERMUTATION CHECK
         vector<bool> visited_edges(12, false);
         int first_edge = 0;
         visited_all = false;
 
+        cout << "Edge cycles: " << endl;
         while(not visited_all) {
-            int cycle_size = 0;
+            int cycle_size = 1;
             u_int8_t edge = edges[first_edge]/2;
             visited_edges[edge] = true;
 
             while (edge != first_edge) {
+                cout << int(edge) << " ";
                 edge = edges[edge]/2;
                 visited_edges[edge] = true;
                 ++cycle_size;
             }
-
+            cout << edge << endl;
             if(cycle_size%2 == 0) ++even_cycles_count;
 
             while(visited_edges[first_edge]) {
                 ++first_edge;
-                if(first_edge >= 8) visited_all = true;
+                if(first_edge >= 12) visited_all = true;
             }
         }
         return even_cycles_count%2 == 0;

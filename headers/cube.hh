@@ -75,6 +75,8 @@ class Cube {
     */
     void execute_sequence_in_notation(string seq);
 
+    void random_scramble(int length);
+
     bool is_solvable();
 
     /*

@@ -1,10 +1,13 @@
 #include <iostream>
 #include "../headers/cube.hh"
+#include "../headers/move_sequence.hh"
 using namespace std;
 
 int main() {
-    Cube c = Cube();
-    c.execute_sequence_in_notation("r U R' U' r' F R F'");
-    cout << c.is_solvable();
-    c.print_state();
+    for(int i = 0; i < 100; ++i) {
+        Cube c = Cube();
+        c.random_scramble(40);
+        if(c.is_solvable()) cout << "THE CUBE IS SOLVABLE!" << endl;
+        else cout << "THE CUBE IS UNSOLVABLE" << endl;  
+    }
 }

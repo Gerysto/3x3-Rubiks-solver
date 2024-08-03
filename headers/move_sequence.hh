@@ -55,6 +55,11 @@ class MoveSequence {
     MoveSequence(Orientation& orientation, const string& move_sequence);
 
     /*
+     * Generates a random sequence of moves with the length given.
+    */
+    void generate_random(int length);
+
+    /*
      * Adds a new move to the end of the sequence.
     */
     void add_move(int8_t move);

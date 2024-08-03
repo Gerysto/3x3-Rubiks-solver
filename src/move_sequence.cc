@@ -18,8 +18,16 @@ MoveSequence::MoveSequence(Orientation& orientation, const string& move_sequence
             my_move = "";
         }
     }
-    cout << my_move << endl;
+    cout << my_move << " ";
     *this = this->append(translate_single_move(orientation, my_move));
+}
+
+
+void MoveSequence::generate_random(int length) {
+    move_sequence = vector<int8_t>(length);
+    for(int i = 0; i < length; ++i) {
+        move_sequence[i] = (rand()%12 + 1)*(2*(rand()%2) - 1);
+    }
 }
 
 
