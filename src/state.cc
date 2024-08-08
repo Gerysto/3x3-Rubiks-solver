@@ -111,24 +111,24 @@
         else {
             switch(abs(move)) {
                 case 7:
-                    turn_face(3, !clockwhise);
-                    turn_face(0, clockwhise);
+                    turn_face(3, clockwhise);
+                    turn_face(0, !clockwhise);
                     break;
                 case 8:
-                    turn_face(4, !clockwhise);
-                    turn_face(1, clockwhise);
+                    turn_face(4, clockwhise);
+                    turn_face(1, !clockwhise);
                     break;
                 case 9:
                     turn_face(5, clockwhise);
                     turn_face(2, !clockwhise);
                     break;
                 case 10:
-                    turn_face(3, clockwhise);
-                    turn_face(0, !clockwhise);
+                    turn_face(3, !clockwhise);
+                    turn_face(0, clockwhise);
                     break;
                 case 11:
-                    turn_face(4, clockwhise);
-                    turn_face(1, !clockwhise);
+                    turn_face(4, !clockwhise);
+                    turn_face(1, clockwhise);
                     break;
                 case 12:
                     turn_face(5, !clockwhise);

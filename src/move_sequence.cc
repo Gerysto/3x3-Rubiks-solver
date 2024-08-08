@@ -13,12 +13,10 @@ MoveSequence::MoveSequence(Orientation& orientation, const string& move_sequence
         if(c != ' ') my_move.push_back(c);
 
         else {
-            cout << my_move << endl;
             if(my_move != "") *this = this->append(translate_single_move(orientation, my_move));
             my_move = "";
         }
     }
-    cout << my_move << " ";
     *this = this->append(translate_single_move(orientation, my_move));
 }
 
@@ -63,12 +61,12 @@ MoveSequence MoveSequence::translate_single_move(Orientation& orientation, const
     
     // MIDDLE LAYER MOVES:
     
-    else if(move[0] == 'M') { // in the R' direction
-        result.add_move((orientation.get_face(1)+7)*sign);
+    else if(move[0] == 'M') { // in the L direction
+        result.add_move((orientation.get_face(4)+7)*sign);
         orientation.X_rotation(!clockwhise, double_move);
     }
-    else if(move[0] == 'E') { // in the 'U direction
-        result.add_move((orientation.get_face(0)+7)*sign);
+    else if(move[0] == 'E') { // in the D direction
+        result.add_move((orientation.get_face(3)+7)*sign);
         orientation.Y_rotation(!clockwhise, double_move);
     }
     else if(move[0] == 'S') { // in the F direction
@@ -126,7 +124,7 @@ string MoveSequence::to_notation(Orientation orientation) const {
         char c;
         int8_t face_move = move_sequence[i];
         bool clockwhise = face_move > 0;
-        if(abs(face_move) < 6) {
+        if(abs(face_move) <= 6) {
             switch (orientation.get_side(abs(face_move) - 1)) {
             case 0:
                 c = 'U';
@@ -154,11 +152,13 @@ string MoveSequence::to_notation(Orientation orientation) const {
             switch (orientation.get_side(abs(face_move) - 7)) {
             case 0:
                 c = 'E';
-                orientation.Y_rotation(!clockwhise, false);
+                orientation.Y_rotation(clockwhise, false);
+                clockwhise = !clockwhise;
                 break;
             case 1:
                 c = 'M';
-                orientation.X_rotation(!clockwhise, false);
+                orientation.X_rotation(clockwhise, false);
+                clockwhise = !clockwhise;
                 break;
             case 2:
                 c = 'S';
@@ -166,24 +166,25 @@ string MoveSequence::to_notation(Orientation orientation) const {
                 break;
             case 3:
                 c = 'E';
-                clockwhise = !clockwhise;
                 orientation.Y_rotation(!clockwhise, false);
                 break;
             case 4:
                 c = 'M';
-                clockwhise = !clockwhise;
                 orientation.X_rotation(!clockwhise, false);
                 break;
             case 5:
                 c = 'S';
+                orientation.Z_rotation(!clockwhise, false);
                 clockwhise = !clockwhise;
-                orientation.Z_rotation(clockwhise, false);
                 break;
             default:
                 cerr << "Invalid id in 'to_notation' function" << endl;
                 break;
             };
         }
+        cout << c << " " << endl;
+        orientation.display();
+
         result.push_back(c);
         if(!clockwhise) result.push_back('\'');
         if(i != len-1) result.push_back(' ');

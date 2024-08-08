@@ -20,12 +20,12 @@ class MoveSequence {
      *  4  -> yellow face turn
      *  5  -> orange face turn
      *  6  -> blue face turn
-     *  7  -> yellow-white slice move (clockwhise as seen from yellow)
-     *  8  -> orange-red   slice move (clockwhise as seen from orange)
+     *  7  -> white-yellow slice move (clockwhise as seen from white)
+     *  8  -> red-orange   slice move (clockwhise as seen from red)
      *  9  -> green-blue   slice move (clockwhise as seen from green)
-     *  10 -> yellow-white slice move (clockwhise as seen from white)
-     *  11 -> orange-red   slice move (clockwhise as seen from red)
-     *  12 -> green-blue   slice move (clockwhise as seen from blue)
+     *  10 -> yellow-white slice move (clockwhise as seen from yellow)
+     *  11 -> orange-red   slice move (clockwhise as seen from orange)
+     *  12 -> blue-green   slice move (clockwhise as seen from blue)
      * 
      * positive = clockwhise
      * negative = counter-clockwhise

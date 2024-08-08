@@ -28,7 +28,10 @@ void Orientation::cycle_elements(vector<u_int8_t>& vec, const vector<u_int8_t>& 
 
 void Orientation::cycle_sides(const vector<u_int8_t>& cycle, bool clockwhise) {
     cycle_elements(side_to_face, cycle, clockwhise);
-    cycle_elements(face_to_side, cycle, !clockwhise);
+    for(int i = 0; i < 6; ++i) {
+        int x = side_to_face[i];
+        face_to_side[x] = i;
+    }
 }
 
 void Orientation::X_rotation(bool clockwhise, bool double_move) {
