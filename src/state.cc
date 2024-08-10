@@ -269,3 +269,19 @@
         }
         cout << endl;
     }
+
+    bool State::operator== (const State& s) const {
+        return s.corners == this->corners and s.edges == this->edges;
+    }
+
+    bool State::operator< (const State& s) const {
+        for(int i = 0; i < corners.size(); ++i) {
+            if(corners[i] < s.corners[i]) return true;
+            else if (corners[i] > s.corners[i]) return false;
+        }
+        for(int i = 0; i < edges.size(); ++i) {
+            if(edges[i] < s.edges[i]) return true;
+            else if (edges[i] > s.edges[i]) return false;
+        }
+        return false;
+    }

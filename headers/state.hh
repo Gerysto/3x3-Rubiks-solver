@@ -119,6 +119,9 @@ class State {
     */
     void execute_sequence(MoveSequence seq);
 
+    bool operator== (const State& s) const;
+
+    bool operator< (const State& s) const;
 
     friend class Solver;
 };

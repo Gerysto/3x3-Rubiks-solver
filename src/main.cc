@@ -5,6 +5,7 @@ using namespace std;
 
 int main() {
     Cube c = Cube();
-    c.execute_sequence_in_notation("X R U R' U' R' F R2 U' R' U' R U R' F'");
+    MoveSequence m = c.test_solver();
+    c.execute_sequence(m);
     c.print_state();
 }

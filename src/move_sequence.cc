@@ -182,9 +182,6 @@ string MoveSequence::to_notation(Orientation orientation) const {
                 break;
             };
         }
-        cout << c << " " << endl;
-        orientation.display();
-
         result.push_back(c);
         if(!clockwhise) result.push_back('\'');
         if(i != len-1) result.push_back(' ');

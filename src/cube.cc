@@ -32,11 +32,15 @@ void Cube::random_scramble(int length) {
     state.execute_sequence(rand);
 }
 
-
 bool Cube::is_solvable() {
     return state.is_solvable();
 }
 
 void Cube::print_state() const {
     state.display();
+}
+
+MoveSequence Cube::test_solver() {
+    Solver my_solver = Solver(this->state);
+    return my_solver.test();
 }

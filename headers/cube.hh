@@ -6,6 +6,7 @@
 #include "state.hh"
 #include "move_sequence.hh"
 #include "orientation.hh"
+#include "solver.hh"
 
 using namespace std;
 
@@ -83,6 +84,8 @@ class Cube {
      * Displays the state of the cube it's un-folded net. (Orientation doesn't affect it).
     */
     void print_state() const;
+
+    MoveSequence test_solver();
 };
 
 #endif

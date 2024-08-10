@@ -28,6 +28,10 @@ const vector<u_int8_t> G_face_edge_cycle = {5, 12, 21, 14};
 const vector<u_int8_t> O_face_edge_cycle = {7, 15, 23, 9};
 const vector<u_int8_t> Y_face_edge_cycle = {22, 20, 18, 16};
 
+const vector<u_int8_t> WY_slice_edge_cycle = {8, 11, 12, 15};
+const vector<u_int8_t> RO_slice_edge_cycle = {4, 1, 16, 20};
+const vector<u_int8_t> GB_slice_edge_cycle = {7, 2, 19, 22};
+
 const vector<u_int8_t> X_rotation_centre_cycle = {0, 5, 3, 2};
 const vector<u_int8_t> Y_rotation_centre_cycle = {1, 2, 4, 5};
 const vector<u_int8_t> Z_rotation_centre_cycle = {0, 1, 3, 4};
