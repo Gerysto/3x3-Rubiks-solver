@@ -4,7 +4,6 @@
 #include <iostream>
 #include <vector>
 
-
 using namespace std;
 
 const vector<u_int8_t> solved_corners = {0, 3, 6, 9, 12, 15, 18, 21};
@@ -35,6 +34,33 @@ const vector<u_int8_t> GB_slice_edge_cycle = {7, 2, 19, 22};
 const vector<u_int8_t> X_rotation_centre_cycle = {0, 5, 3, 2};
 const vector<u_int8_t> Y_rotation_centre_cycle = {1, 2, 4, 5};
 const vector<u_int8_t> Z_rotation_centre_cycle = {0, 1, 3, 4};
+
+const vector<vector<u_int8_t>> layers_involving_corner = {
+    {1, 5, 6}, // moves which involve the WBO corner
+    {1, 2, 6}, // moves which involve the WRB corner
+    {1, 2, 3}, // moves which involve the WGR corner
+    {1, 5, 3}, // moves which involve the WOG corner
+    {4, 5, 6}, // moves which involve the YOB corner
+    {4, 2, 6}, // moves which involve the YBR corner
+    {4, 2, 3}, // moves which involve the YRG corner
+    {4, 5, 3}, // moves which involve the YGO corner
+};
+
+const vector<vector<u_int8_t>> layers_involving_edge = {
+    {1, 6, 8}, // moves which involve the WB edge 
+    {1, 2, 9}, // moves which involve the WR edge
+    {1, 3, 8}, // moves which involve the WG edge
+    {1, 5, 9}, // moves which involve the WO edge
+    {5, 6, 7}, // moves which involve the BO edge
+    {2, 6, 7}, // moves which involve the BR edge
+    {2, 3, 7}, // moves which involve the GR edge
+    {5, 3, 7}, // moves which involve the GO edge
+    {4, 6, 8}, // moves which involve the YB edge
+    {4, 2, 9}, // moves which involve the YR edge
+    {4, 3, 8}, // moves which involve the YG edge
+    {4, 5, 9}, // moves which involve the YO edge
+    
+};
 
 const vector<char> id_to_color = {'W', 'R', 'G', 'Y', 'O', 'B'};
 

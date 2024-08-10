@@ -4,8 +4,10 @@
 using namespace std;
 
 int main() {
-    Cube c = Cube();
-    MoveSequence m = c.test_solver(1);
-    c.execute_sequence(m);
+    for(int i = 0; i < 16; ++i) {
+        Cube c = Cube();
+        MoveSequence m = c.test_solver(i);
+        c.execute_sequence(m);
+    }
     
 }

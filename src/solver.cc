@@ -5,7 +5,7 @@
     }
     //MoveSequence Solver::solve() {}
 
-    struct Move {
+    struct Node {
         int prev;       // index of the previous state
         int8_t move;    // move that was performed to get to this state
     };
@@ -16,7 +16,7 @@
         // BFS: 
         queue<State> Q = queue<State>();
         set<State> visited = set<State>();
-        vector<Move> moves;
+        vector<Node> moves;
 
         Q.push(this->state);
         visited.insert(this->state);
@@ -68,11 +68,10 @@
             }
             ++parent_node;
         }
-
         cout << "Number of explored nodes: " << i << endl;
 
         // Retrace the path that takes to solution:
-        Move node = moves.back();
+        Node node = moves.back();
         MoveSequence result;
         while(node.prev != -1) {
             result.add_move(-node.move);
@@ -87,7 +86,7 @@
         // BFS: 
         queue<State> Q = queue<State>();
         set<State> visited = set<State>();
-        vector<Move> moves;
+        vector<Node> moves;
 
         Q.push(this->state);
         visited.insert(this->state);
@@ -143,7 +142,7 @@
         cout << "Number of explored nodes: " << i << endl;
 
         // Retrace the path that takes to solution:
-        Move node = moves.back();
+        Node node = moves.back();
         MoveSequence result;
         while(node.prev != -1) {
             result.add_move(-node.move);
@@ -259,5 +258,6 @@
 
     MoveSequence Solver::test(int i) {
         cout << "piece id: " << i << ", ";
-        return insert_edge(4, 2, 20);
+        return insert_edge(4, i, 20);
+
     }
