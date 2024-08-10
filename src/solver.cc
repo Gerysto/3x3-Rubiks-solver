@@ -12,19 +12,19 @@
 
 
     MoveSequence Solver::insert_corner(u_int8_t layer, u_int8_t piece, u_int8_t position) {
-        
+
         // BFS: 
         queue<State> Q = queue<State>();
-        set<State> visited;
+        set<State> visited = set<State>();
         vector<Move> moves;
 
         Q.push(this->state);
         visited.insert(this->state);
-        moves[0] = {-1, 0};
+        moves.push_back({-1, 0});
 
         State goal = this->state;
         goal.place_corner_stiker(piece, position);
-        
+
         int i = 0;
         int parent_node = 0;
         bool finished = false;
@@ -33,11 +33,20 @@
             State s = Q.front();
             Q.pop();
 
-            vector<int8_t> next_moves = {-6, -5, -4, -3, -2, -1, 1, 2, 3, 4, 5, 6};
+            vector<int8_t> next_moves = {6, 5, 4, 3, 2, 1, -1, -2, -3, -4, -5, -6};
 
             int j = 0;
 
             while(not finished and j < next_moves.size()) {
+                // Check whether it makes sense to do this move:
+                bool inverse_prev = int(next_moves[j]) == -int(moves[parent_node].move);
+                bool moves_ref_layer = abs(next_moves[j]) == layer;
+                
+                if(inverse_prev or moves_ref_layer) {
+                    ++j;
+                    continue;
+                }
+
                 MoveSequence new_move;
                 new_move.add_move(next_moves[j]);
 
@@ -46,6 +55,7 @@
 
                 bool achieved_goal = full_layer_match(goal, new_state, layer);
                 bool already_visited = visited.find(new_state) != visited.end();
+                
                 if(achieved_goal) finished = true;
                 
                 if (!already_visited) {
@@ -58,7 +68,9 @@
             }
             ++parent_node;
         }
-        
+
+        cout << "Number of explored nodes: " << i << endl;
+
         // Retrace the path that takes to solution:
         Move node = moves.back();
         MoveSequence result;
@@ -66,12 +78,80 @@
             result.add_move(-node.move);
             node = moves[node.prev];
         }
-        result.add_move(-node.move);
 
         return result.inverse();
     }
 
-    //MoveSequence Solver::insert_edge(u_int8_t layer, u_int8_t piece, u_int8_t position) {}
+    MoveSequence Solver::insert_edge(u_int8_t layer, u_int8_t piece, u_int8_t position) {
+
+        // BFS: 
+        queue<State> Q = queue<State>();
+        set<State> visited = set<State>();
+        vector<Move> moves;
+
+        Q.push(this->state);
+        visited.insert(this->state);
+        moves.push_back({-1, 0});
+
+        State goal = this->state;
+        goal.place_edge_stiker(piece, position);
+
+        int i = 0;
+        int parent_node = 0;
+        bool finished = false;
+        
+        while(!Q.empty() and i < 1000000 and not finished) {
+            State s = Q.front();
+            Q.pop();
+
+            vector<int8_t> next_moves = {9, 8, 7, 6, 5, 4, 3, 2, 1, -1, -2, -3, -4, -5, -6, -7, -8, -9};
+
+            int j = 0;
+
+            while(not finished and j < next_moves.size()) {
+                // Check whether it makes sense to do this move:
+                bool inverse_prev = int(next_moves[j]) == -int(moves[parent_node].move);
+                bool moves_ref_layer = abs(next_moves[j]) == layer;
+                
+                if(inverse_prev or moves_ref_layer) {
+                    ++j;
+                    continue;
+                }
+
+                MoveSequence new_move;
+                new_move.add_move(next_moves[j]);
+
+                State new_state = s;
+                new_state.execute_sequence(new_move);
+
+                bool achieved_goal = full_layer_match(goal, new_state, layer);
+                bool already_visited = visited.find(new_state) != visited.end();
+                
+                if(achieved_goal) finished = true;
+                
+                if (!already_visited) {
+                    Q.push(new_state);
+                    visited.insert(new_state);
+                    moves.push_back({parent_node,next_moves[j]});
+                    ++i;
+                }
+                ++j;
+            }
+            ++parent_node;
+        }
+
+        cout << "Number of explored nodes: " << i << endl;
+
+        // Retrace the path that takes to solution:
+        Move node = moves.back();
+        MoveSequence result;
+        while(node.prev != -1) {
+            result.add_move(-node.move);
+            node = moves[node.prev];
+        }
+
+        return result.inverse();
+    }
 
     //MoveSequence Solver::move_corner_within_layer(u_int8_t layer, u_int8_t piece, u_int8_t position) {}
 
@@ -101,7 +181,7 @@
 
     bool Solver::edge_subset_match(State state1, State state2, const vector<u_int8_t>& subset) {
         for(int i = 0; i < subset.size(); ++i) {
-            int position = subset[i]/3;
+            int position = subset[i]/2;
             if(state1.edges[position] != state2.edges[position]) return false;
         }
         return true;
@@ -177,6 +257,7 @@
         };
     }
 
-    MoveSequence Solver::test() {
-        return insert_corner(4, 8, 18);
+    MoveSequence Solver::test(int i) {
+        cout << "piece id: " << i << ", ";
+        return insert_edge(4, 2, 20);
     }

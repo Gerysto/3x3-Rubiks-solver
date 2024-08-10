@@ -5,7 +5,7 @@ using namespace std;
 
 int main() {
     Cube c = Cube();
-    MoveSequence m = c.test_solver();
+    MoveSequence m = c.test_solver(1);
     c.execute_sequence(m);
-    c.print_state();
+    
 }

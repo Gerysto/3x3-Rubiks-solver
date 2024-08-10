@@ -86,7 +86,7 @@ class Solver {
 
     MoveSequence solve();
 
-    MoveSequence test();
+    MoveSequence test(int i);
 };
 
 #endif

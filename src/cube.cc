@@ -40,7 +40,7 @@ void Cube::print_state() const {
     state.display();
 }
 
-MoveSequence Cube::test_solver() {
+MoveSequence Cube::test_solver(int i) {
     Solver my_solver = Solver(this->state);
-    return my_solver.test();
+    return my_solver.test(i);
 }

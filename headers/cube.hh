@@ -85,7 +85,7 @@ class Cube {
     */
     void print_state() const;
 
-    MoveSequence test_solver();
+    MoveSequence test_solver(int i);
 };
 
 #endif
