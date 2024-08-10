@@ -15,6 +15,32 @@
         return top_stiker - top_stiker%2 + (top_stiker + position)%2;
     }
 
+    u_int8_t State::find_corner_stiker(u_int8_t stiker) const {
+        for(int i = 0; i < 8; ++i) {
+            if(corners[i]/3 == stiker/3) {
+                int A = corners[i]%3;
+                int B = stiker%3;
+                int r = ((A-B)%3 + 3)%3;
+                return 3*i + r;
+            }
+        }
+        cout << "find_corner_stiker doesn't work!!!!";
+        return 0;
+    }
+
+    u_int8_t State::find_edge_stiker(u_int8_t stiker) const {
+        for(int i = 0; i < 12; ++i) {
+            if(edges[i]/2 == stiker/2) {
+                int A = edges[i]%2;
+                int B = stiker%2;
+                int r = ((A-B)%2 + 2)%2;
+                return 2*i + r;
+            }
+        }
+        cout << "find_edge_stiker doesn't work!!!!";
+        return 0;
+    }
+
     void State::place_corner_stiker(u_int8_t stiker, u_int8_t position) {
         u_int8_t remainder_mod_3 = ((stiker - position)%3 + 3)%3;
         corners[position/3] = stiker - stiker%3 + remainder_mod_3;

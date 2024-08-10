@@ -39,11 +39,11 @@ const vector<vector<u_int8_t>> layers_involving_corner = {
     {1, 5, 6}, // moves which involve the WBO corner
     {1, 2, 6}, // moves which involve the WRB corner
     {1, 2, 3}, // moves which involve the WGR corner
-    {1, 5, 3}, // moves which involve the WOG corner
+    {1, 3, 5}, // moves which involve the WOG corner
     {4, 5, 6}, // moves which involve the YOB corner
     {4, 2, 6}, // moves which involve the YBR corner
     {4, 2, 3}, // moves which involve the YRG corner
-    {4, 5, 3}, // moves which involve the YGO corner
+    {4, 3, 5}, // moves which involve the YGO corner
 };
 
 const vector<vector<u_int8_t>> layers_involving_edge = {
@@ -54,10 +54,10 @@ const vector<vector<u_int8_t>> layers_involving_edge = {
     {5, 6, 7}, // moves which involve the BO edge
     {2, 6, 7}, // moves which involve the BR edge
     {2, 3, 7}, // moves which involve the GR edge
-    {5, 3, 7}, // moves which involve the GO edge
+    {3, 5, 7}, // moves which involve the GO edge
     {4, 6, 8}, // moves which involve the YB edge
-    {4, 2, 9}, // moves which involve the YR edge
-    {4, 3, 8}, // moves which involve the YG edge
+    {2, 4, 9}, // moves which involve the YR edge
+    {3, 4, 8}, // moves which involve the YG edge
     {4, 5, 9}, // moves which involve the YO edge
     
 };

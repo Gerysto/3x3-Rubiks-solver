@@ -58,6 +58,16 @@ class State {
     u_int8_t get_edge_stiker(u_int8_t position) const;
 
     /*
+     * Returns the position where the corner stiker given lies.
+    */
+    u_int8_t find_corner_stiker(u_int8_t stiker) const;
+
+    /*
+     * Returns the position where the edge stiker given lies.
+    */
+    u_int8_t find_edge_stiker(u_int8_t stiker) const;
+
+    /*
      * Places a given corner stiker in an other's position of the cube.
     */
     void place_corner_stiker(u_int8_t stiker, u_int8_t position);

@@ -4,6 +4,7 @@
 #include <set>
 #include "state.hh"
 
+
 class Solver {
     
     private:

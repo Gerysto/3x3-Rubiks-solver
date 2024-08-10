@@ -25,6 +25,15 @@
         State goal = this->state;
         goal.place_corner_stiker(piece, position);
 
+        // Declare the two are the pieces which have to be tracked at all time
+        // piece_1 is the piece that has to be inserted
+        // piece_2 is the piece initially located where piece_1 belongs
+        u_int8_t piece_1, piece_2;
+        piece_1 = state.get_corner_stiker(piece);
+        piece_2 = state.get_corner_stiker(position);
+
+        
+
         int i = 0;
         int parent_node = 0;
         bool finished = false;
@@ -33,10 +42,37 @@
             State s = Q.front();
             Q.pop();
 
-            vector<int8_t> next_moves = {6, 5, 4, 3, 2, 1, -1, -2, -3, -4, -5, -6};
+            // Examine which moves should be available:
+            vector<u_int8_t> moves_1 = layers_involving_corner[s.find_corner_stiker(piece_1)/3];
+            vector<u_int8_t> moves_2 = layers_involving_corner[s.find_corner_stiker(piece_2)/3];
+            
+            vector<int8_t> next_moves;
 
+            // fuse moves1 and moves2;
+            int k1 = 0;
+            int k2 = 0;
+            while(k1 < moves_1.size() and k2 < moves_2.size()) {
+                if((moves_1[k1] < moves_2[k2] or k2 >= moves_2.size()) and k1 < moves_1.size()) {
+                    next_moves.push_back( moves_1[k1]);
+                    next_moves.push_back(-moves_1[k1]);
+                    ++k1;
+                }
+                else if ((moves_1[k1] > moves_2[k2] or k1 >= moves_1.size()) and k2 < moves_2.size()) {
+                    next_moves.push_back( moves_2[k2]);
+                    next_moves.push_back(-moves_2[k2]);
+                    ++k2;
+                }
+                else {
+                    next_moves.push_back( moves_1[k1]);
+                    next_moves.push_back(-moves_1[k1]);
+                    ++k1;
+                    ++k2;
+                }
+            }
+            
+
+            // Explore the available edges of the graph:
             int j = 0;
-
             while(not finished and j < next_moves.size()) {
                 // Check whether it makes sense to do this move:
                 bool inverse_prev = int(next_moves[j]) == -int(moves[parent_node].move);
@@ -68,6 +104,7 @@
             }
             ++parent_node;
         }
+        
         cout << "Number of explored nodes: " << i << endl;
 
         // Retrace the path that takes to solution:
@@ -95,6 +132,13 @@
         State goal = this->state;
         goal.place_edge_stiker(piece, position);
 
+        // Declare the two are the pieces which have to be tracked at all time
+        // piece_1 is the piece that has to be inserted
+        // piece_2 is the piece initially located where piece_1 belongs
+        u_int8_t piece_1, piece_2;
+        piece_1 = state.get_edge_stiker(piece);
+        piece_2 = state.get_edge_stiker(position);
+
         int i = 0;
         int parent_node = 0;
         bool finished = false;
@@ -103,10 +147,35 @@
             State s = Q.front();
             Q.pop();
 
-            vector<int8_t> next_moves = {9, 8, 7, 6, 5, 4, 3, 2, 1, -1, -2, -3, -4, -5, -6, -7, -8, -9};
+            // Examine which moves should be available:
+            vector<u_int8_t> moves_1 = layers_involving_edge[s.find_edge_stiker(piece_1)/2];
+            vector<u_int8_t> moves_2 = layers_involving_edge[s.find_edge_stiker(piece_2)/2];
+            
+            vector<int8_t> next_moves;
+
+            // fuse moves1 and moves2;
+            int k1 = 0;
+            int k2 = 0;
+            while(k1 < moves_1.size() and k2 < moves_2.size()) {
+                if((moves_1[k1] < moves_2[k2] or k2 >= moves_2.size()) and k1 < moves_1.size()) {
+                    next_moves.push_back( moves_1[k1]);
+                    next_moves.push_back(-moves_1[k1]);
+                    ++k1;
+                }
+                else if ((moves_1[k1] > moves_2[k2] or k1 >= moves_1.size()) and k2 < moves_2.size()) {
+                    next_moves.push_back( moves_2[k2]);
+                    next_moves.push_back(-moves_2[k2]);
+                    ++k2;
+                }
+                else {
+                    next_moves.push_back( moves_1[k1]);
+                    next_moves.push_back(-moves_1[k1]);
+                    ++k1;
+                    ++k2;
+                }
+            }
 
             int j = 0;
-
             while(not finished and j < next_moves.size()) {
                 // Check whether it makes sense to do this move:
                 bool inverse_prev = int(next_moves[j]) == -int(moves[parent_node].move);
