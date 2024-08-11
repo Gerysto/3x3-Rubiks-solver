@@ -10,6 +10,30 @@
         int8_t move;    // move that was performed to get to this state
     };
 
+    vector<int8_t> merge_and_add_negatives(vector<u_int8_t> vec1, vector<u_int8_t> vec2) {
+        vector<int8_t> result;
+        int k1 = 0;
+        int k2 = 0;
+        while(k1 < vec1.size() and k2 < vec2.size()) {
+            if((vec1[k1] < vec2[k2] or k2 >= vec2.size()) and k1 < vec1.size()) {
+                result.push_back( vec1[k1]);
+                result.push_back(-vec1[k1]);
+                ++k1;
+            }
+            else if ((vec1[k1] > vec2[k2] or k1 >= vec1.size()) and k2 < vec2.size()) {
+                result.push_back( vec2[k2]);
+                result.push_back(-vec2[k2]);
+                ++k2;
+            }
+            else {
+                result.push_back( vec1[k1]);
+                result.push_back(-vec1[k1]);
+                ++k1;
+                ++k2;
+            }
+        }
+        return result;
+    }
 
     MoveSequence Solver::insert_corner(u_int8_t layer, u_int8_t piece, u_int8_t position) {
 
@@ -46,30 +70,7 @@
             vector<u_int8_t> moves_1 = layers_involving_corner[s.find_corner_stiker(piece_1)/3];
             vector<u_int8_t> moves_2 = layers_involving_corner[s.find_corner_stiker(piece_2)/3];
             
-            vector<int8_t> next_moves;
-
-            // fuse moves1 and moves2;
-            int k1 = 0;
-            int k2 = 0;
-            while(k1 < moves_1.size() and k2 < moves_2.size()) {
-                if((moves_1[k1] < moves_2[k2] or k2 >= moves_2.size()) and k1 < moves_1.size()) {
-                    next_moves.push_back( moves_1[k1]);
-                    next_moves.push_back(-moves_1[k1]);
-                    ++k1;
-                }
-                else if ((moves_1[k1] > moves_2[k2] or k1 >= moves_1.size()) and k2 < moves_2.size()) {
-                    next_moves.push_back( moves_2[k2]);
-                    next_moves.push_back(-moves_2[k2]);
-                    ++k2;
-                }
-                else {
-                    next_moves.push_back( moves_1[k1]);
-                    next_moves.push_back(-moves_1[k1]);
-                    ++k1;
-                    ++k2;
-                }
-            }
-            
+            vector<int8_t> next_moves = merge_and_add_negatives(moves_1, moves_2);
 
             // Explore the available edges of the graph:
             int j = 0;
@@ -83,21 +84,23 @@
                     continue;
                 }
 
+                // Perform the move:
                 MoveSequence new_move;
                 new_move.add_move(next_moves[j]);
 
                 State new_state = s;
                 new_state.execute_sequence(new_move);
 
+                // Check if we've finished
                 bool achieved_goal = full_layer_match(goal, new_state, layer);
-                bool already_visited = visited.find(new_state) != visited.end();
-                
                 if(achieved_goal) finished = true;
                 
+                // Check if it's a new node 
+                bool already_visited = visited.find(new_state) != visited.end();
                 if (!already_visited) {
                     Q.push(new_state);
                     visited.insert(new_state);
-                    moves.push_back({parent_node,next_moves[j]});
+                    moves.push_back({parent_node, next_moves[j]});
                     ++i;
                 }
                 ++j;
@@ -151,29 +154,7 @@
             vector<u_int8_t> moves_1 = layers_involving_edge[s.find_edge_stiker(piece_1)/2];
             vector<u_int8_t> moves_2 = layers_involving_edge[s.find_edge_stiker(piece_2)/2];
             
-            vector<int8_t> next_moves;
-
-            // fuse moves1 and moves2;
-            int k1 = 0;
-            int k2 = 0;
-            while(k1 < moves_1.size() and k2 < moves_2.size()) {
-                if((moves_1[k1] < moves_2[k2] or k2 >= moves_2.size()) and k1 < moves_1.size()) {
-                    next_moves.push_back( moves_1[k1]);
-                    next_moves.push_back(-moves_1[k1]);
-                    ++k1;
-                }
-                else if ((moves_1[k1] > moves_2[k2] or k1 >= moves_1.size()) and k2 < moves_2.size()) {
-                    next_moves.push_back( moves_2[k2]);
-                    next_moves.push_back(-moves_2[k2]);
-                    ++k2;
-                }
-                else {
-                    next_moves.push_back( moves_1[k1]);
-                    next_moves.push_back(-moves_1[k1]);
-                    ++k1;
-                    ++k2;
-                }
-            }
+            vector<int8_t> next_moves = merge_and_add_negatives(moves_1, moves_2);
 
             int j = 0;
             while(not finished and j < next_moves.size()) {
@@ -327,6 +308,6 @@
 
     MoveSequence Solver::test(int i) {
         cout << "piece id: " << i << ", ";
-        return insert_edge(4, i, 20);
+        return insert_edge(7, i, 9);
 
     }
