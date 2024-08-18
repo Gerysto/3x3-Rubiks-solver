@@ -20,7 +20,7 @@
             if(corners[i]/3 == stiker/3) {
                 int A = corners[i]%3;
                 int B = stiker%3;
-                int r = ((A-B)%3 + 3)%3;
+                int r = ((B-A)%3 + 3)%3;
                 return 3*i + r;
             }
         }
@@ -33,7 +33,7 @@
             if(edges[i]/2 == stiker/2) {
                 int A = edges[i]%2;
                 int B = stiker%2;
-                int r = ((A-B)%2 + 2)%2;
+                int r = ((B-A)%2 + 2)%2;
                 return 2*i + r;
             }
         }

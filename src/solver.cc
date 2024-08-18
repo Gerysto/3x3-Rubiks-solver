@@ -35,6 +35,42 @@
         return result;
     }
 
+    MoveSequence Solver::find_corner_3_cycle(u_int8_t stiker_1, u_int8_t stiker_2, u_int8_t stiker_3) {
+        int8_t LOR;
+        MoveSequence setup = corner_setup_moves(stiker_3, stiker_2, stiker_1, LOR);
+        MoveSequence seqA = insert_corner(abs(LOR), stiker_1, stiker_2);
+        MoveSequence seqB;
+        seqB.add_move(LOR);
+        MoveSequence commutator = seqA.commutate(seqB);
+        MoveSequence conjugate = commutator.conjugate(setup);
+        return conjugate;
+    }
+
+    MoveSequence Solver::find_edge_3_cycle(u_int8_t stiker_1, u_int8_t stiker_2, u_int8_t stiker_3){
+        int8_t LOR;
+        MoveSequence setup = edge_setup_moves(stiker_3, stiker_2, stiker_1, LOR);
+        MoveSequence seqA = insert_edge(abs(LOR), stiker_1, stiker_2);
+        MoveSequence seqB;
+        seqB.add_move(LOR);
+        MoveSequence commutator = seqA.commutate(seqB);
+        MoveSequence conjugate = commutator.conjugate(setup);
+        
+        /*
+        cout << "SETUP MOVES: ";
+        setup.print();
+
+        cout << "SEQ A: ";
+        seqA.print();
+
+        cout << "SEQ B: ";
+        seqB.print();
+
+        cout << "FULL CYCLE: ";
+        conjugate.print();*/
+
+        return conjugate;
+    }
+
     MoveSequence Solver::insert_corner(u_int8_t layer, u_int8_t piece, u_int8_t position) {
 
         // BFS: 
@@ -55,8 +91,6 @@
         u_int8_t piece_1, piece_2;
         piece_1 = state.get_corner_stiker(piece);
         piece_2 = state.get_corner_stiker(position);
-
-        
 
         int i = 0;
         int parent_node = 0;
@@ -108,7 +142,7 @@
             ++parent_node;
         }
         
-        cout << "Number of explored nodes: " << i << endl;
+        //cout << "Number of explored nodes: " << i << endl;
 
         // Retrace the path that takes to solution:
         Node node = moves.back();
@@ -189,7 +223,7 @@
             ++parent_node;
         }
 
-        cout << "Number of explored nodes: " << i << endl;
+        //cout << "Number of explored nodes: " << i << endl;
 
         // Retrace the path that takes to solution:
         Node node = moves.back();
@@ -202,13 +236,259 @@
         return result.inverse();
     }
 
-    //MoveSequence Solver::move_corner_within_layer(u_int8_t layer, u_int8_t piece, u_int8_t position) {}
+    // piece_0 becomes 1 move away from piece_1 and 
+    MoveSequence Solver::corner_setup_moves(u_int8_t& piece_0_pos, u_int8_t& piece_1_pos, u_int8_t& piece_2_pos, int8_t& LOR_move) {
 
-    //MoveSequence Solver::move_edge_within_layer(u_int8_t layer, u_int8_t piece, u_int8_t position) {}
+        u_int8_t piece_0 = state.get_corner_stiker(piece_0_pos);
+        u_int8_t piece_1 = state.get_corner_stiker(piece_1_pos);
+        u_int8_t piece_2 = state.get_corner_stiker(piece_2_pos);
 
-    //vector<u_int8_t> Solver::get_layers_involving_corner(u_int8_t corner) {}
+        // BFS: 
+        queue<State> Q = queue<State>();
+        set<State> visited = set<State>();
+        vector<Node> moves;
 
-    //vector<u_int8_t> Solver::get_layers_involving_edge(u_int8_t edge) {}
+        Q.push(this->state);
+        visited.insert(this->state);
+        moves.push_back({-1, 0});
+
+        int i = 0;
+        int parent_node = 0;
+        bool finished = false;
+        
+        bool one_move_away = is_corner_one_move_away(this->state, piece_0, piece_1, LOR_move);
+        if(one_move_away) {
+                bool move_contains_third_corner = true;
+                //cout << "PIECE 2: " << int(piece_2) << endl;
+                vector<u_int8_t> moves_containing_third = layers_involving_corner[piece_2_pos/3];
+                //cout << "Moves involving third: ";
+                for(int i = 0; i < moves_containing_third.size(); ++i) {
+                    //cout << int(moves_containing_third[i]) << ", ";
+                    if (moves_containing_third[i] == abs(LOR_move)) {
+                        move_contains_third_corner = false;
+                        break;
+                    }
+                }
+                
+                finished = move_contains_third_corner;
+        }
+
+        while(!Q.empty() and i < 1000000 and not finished) {
+            State s = Q.front();
+            Q.pop();
+            
+            vector<int8_t> next_moves = {6, 5, 4, 3, 2, 1, -1, -2, -3, -4, -5, -6};
+
+            // Explore the available edges of the graph:
+            int j = 0;
+            while(not finished and j < next_moves.size()) {
+                // Check whether it makes sense to do this move:
+                bool inverse_prev = int(next_moves[j]) == -int(moves[parent_node].move);
+                
+                if(inverse_prev) {
+                    ++j;
+                    continue;
+                }
+
+                // Perform the move:
+                MoveSequence new_move;
+                new_move.add_move(next_moves[j]);
+
+                State new_state = s;
+                new_state.execute_sequence(new_move);
+
+                // Check if we've finished
+                bool one_move_away = is_corner_one_move_away(new_state, piece_0, piece_1, LOR_move);
+                
+                if(one_move_away) {
+                    //cout << endl;
+                    bool move_contains_third_corner = true;
+                    vector<u_int8_t> moves_containing_third = layers_involving_corner[new_state.find_corner_stiker(piece_2)/3];
+
+                    for(int i = 0; i < moves_containing_third.size(); ++i) {
+                        if (moves_containing_third[i] == abs(LOR_move)) move_contains_third_corner = false;
+                    }
+
+                    finished = move_contains_third_corner;
+                }
+
+                if(finished) {
+                    piece_0_pos = new_state.find_corner_stiker(piece_0);
+                    piece_1_pos = new_state.find_corner_stiker(piece_1);
+                    piece_2_pos = new_state.find_corner_stiker(piece_2);
+                }
+
+                // Check if it's a new node 
+                bool already_visited = visited.find(new_state) != visited.end();
+                if (!already_visited) {
+                    Q.push(new_state);
+                    visited.insert(new_state);
+                    moves.push_back({parent_node, next_moves[j]});
+                    ++i;
+                }
+                ++j;
+            }
+            ++parent_node;
+        }
+        
+        //cout << "Number of explored nodes: " << i << endl;
+
+        // Retrace the path that takes to solution:
+        Node node = moves.back();
+        MoveSequence result;
+        while(node.prev != -1) {
+            result.add_move(-node.move);
+            node = moves[node.prev];
+        }
+        
+        return result.inverse();
+    }
+
+    MoveSequence Solver::edge_setup_moves(u_int8_t& piece_0_pos, u_int8_t& piece_1_pos, u_int8_t& piece_2_pos, int8_t& LOR_move) {
+
+        u_int8_t piece_0 = state.get_edge_stiker(piece_0_pos);
+        u_int8_t piece_1 = state.get_edge_stiker(piece_1_pos);
+        u_int8_t piece_2 = state.get_edge_stiker(piece_2_pos);
+
+        // BFS: 
+        queue<State> Q = queue<State>();
+        set<State> visited = set<State>();
+        vector<Node> moves;
+
+        Q.push(this->state);
+        visited.insert(this->state);
+        moves.push_back({-1, 0});
+
+        int i = 0;
+        int parent_node = 0;
+        bool finished = false;
+        
+        bool one_move_away = is_edge_one_move_away(this->state, piece_0, piece_1, LOR_move);
+        if(one_move_away) {
+                bool move_contains_third_edge = true;
+                //cout << "PIECE 2: " << int(piece_2) << endl;
+                vector<u_int8_t> moves_containing_third = layers_involving_edge[piece_2_pos/2];
+                //cout << "Moves involving third: ";
+                for(int i = 0; i < moves_containing_third.size(); ++i) {
+                    //cout << int(moves_containing_third[i]) << ", ";
+                    if (moves_containing_third[i] == abs(LOR_move)) {
+                        move_contains_third_edge = false;
+                        break;
+                    }
+                }
+                
+                finished = move_contains_third_edge;
+        }
+
+        while(!Q.empty() and i < 1000000 and not finished) {
+            State s = Q.front();
+            Q.pop();
+            
+            vector<int8_t> next_moves = {9, 8, 7, 6, 5, 4, 3, 2, 1, -1, -2, -3, -4, -5, -6, -7, -8, -9};
+
+            // Explore the available edges of the graph:
+            int j = 0;
+            while(not finished and j < next_moves.size()) {
+                // Check whether it makes sense to do this move:
+                bool inverse_prev = int(next_moves[j]) == -int(moves[parent_node].move);
+                
+                if(inverse_prev) {
+                    ++j;
+                    continue;
+                }
+
+                // Perform the move:
+                MoveSequence new_move;
+                new_move.add_move(next_moves[j]);
+
+                State new_state = s;
+                new_state.execute_sequence(new_move);
+
+                // Check if we've finished
+                bool one_move_away = is_edge_one_move_away(new_state, piece_0, piece_1, LOR_move);
+                
+                if(one_move_away) {
+                    //cout << endl;
+                    bool move_contains_third_edge = true;
+                    vector<u_int8_t> moves_containing_third = layers_involving_edge[new_state.find_edge_stiker(piece_2)/2];
+
+                    for(int i = 0; i < moves_containing_third.size(); ++i) {
+                        if (moves_containing_third[i] == abs(LOR_move)) move_contains_third_edge = false;
+                    }
+
+                    finished = move_contains_third_edge;
+                }
+
+                if(finished) {
+                    piece_0_pos = new_state.find_edge_stiker(piece_0);
+                    piece_1_pos = new_state.find_edge_stiker(piece_1);
+                    piece_2_pos = new_state.find_edge_stiker(piece_2);
+                }
+
+                // Check if it's a new node 
+                bool already_visited = visited.find(new_state) != visited.end();
+                if (!already_visited) {
+                    Q.push(new_state);
+                    visited.insert(new_state);
+                    moves.push_back({parent_node, next_moves[j]});
+                    ++i;
+                }
+                ++j;
+            }
+            ++parent_node;
+        }
+        
+        //cout << "Number of explored nodes: " << i << endl;
+
+        // Retrace the path that takes to solution:
+        Node node = moves.back();
+        MoveSequence result;
+        while(node.prev != -1) {
+            result.add_move(-node.move);
+            node = moves[node.prev];
+        }
+        
+        return result.inverse();
+    }
+
+    bool Solver::is_corner_one_move_away(const State& s, u_int8_t piece, u_int8_t target, int8_t& move) {
+        
+        u_int8_t target_pos = s.find_corner_stiker(target);
+        vector<int8_t> possible_moves = {6, 5, 4, 3, 2, 1, -1, -2, -3, -4, -5, -6};
+        
+        for(int i = 0; i < possible_moves.size(); ++i) {
+            State new_s = s;
+            MoveSequence m;
+            m.add_move(possible_moves[i]);
+            new_s.execute_sequence(m);
+            if (new_s.get_corner_stiker(target_pos) == piece) {
+                move = possible_moves[i];
+                return true;
+            }
+        }
+        
+        return false;
+    }
+
+    bool Solver::is_edge_one_move_away(const State& s, u_int8_t piece, u_int8_t target, int8_t& move) {
+        // CURRENT PROBLEM: the program thinks of slice moves as 'turning 2 sides at once' but here, it should be more like 'cycling 4 edges'.
+        u_int8_t target_pos = s.find_edge_stiker(target);
+        //vector<int8_t> possible_moves = {9, 8, 7, 6, 5, 4, 3, 2, 1, -1, -2, -3, -4, -5, -6, -7, -8, -9}; DOESN't WORK PROPERLY
+        vector<int8_t> possible_moves = {6, 5, 4, 3, 2, 1, -1, -2, -3, -4, -5, -6};
+
+        for(int i = 0; i < possible_moves.size(); ++i) {
+            State new_s = s;
+            MoveSequence m;
+            new_s.cycle_edges(get_edges_in_layer(abs(possible_moves[i])), possible_moves[i] > 0);
+
+            if (new_s.get_edge_stiker(target_pos) == piece) {
+                move = possible_moves[i];
+                return true;
+            }
+        }
+        
+        return false;
+    }
 
     bool Solver::full_layer_match(State state1, State state2, u_int8_t layer) {
         vector<u_int8_t> corners = get_corners_in_layer(layer);
@@ -306,8 +586,7 @@
         };
     }
 
-    MoveSequence Solver::test(int i) {
-        cout << "piece id: " << i << ", ";
-        return insert_edge(7, i, 9);
-
+    MoveSequence Solver::test(int i, int j, int k) {
+        
+        return find_edge_3_cycle(i, j, k);
     }

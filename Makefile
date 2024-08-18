@@ -11,6 +11,6 @@ compile:
 
 	rm -f *.o
 
-	./bin/program.exe
+	./bin/program.exe > output_edges.txt
 
 	
