@@ -17,7 +17,6 @@ void Cube::execute_sequence(MoveSequence move_sequence) {
 }
 
 void Cube::execute_sequence_in_notation(string seq) {
-    orientation.display();
     Orientation copy = orientation;
     MoveSequence my_sequence = MoveSequence(copy, seq);
     cout << my_sequence.to_notation(orientation) << endl;
@@ -30,6 +29,7 @@ void Cube::random_scramble(int length) {
     MoveSequence rand = MoveSequence();
     rand.generate_random(length);
     cout << rand.to_notation(orientation) << endl;
+
     state.execute_sequence(rand);
 }
 
@@ -47,12 +47,12 @@ bool cmp(MoveSequence m1, MoveSequence m2) {
 
 MoveSequence Cube::test_solver(int i) {
     Solver my_solver = Solver(this->state);
-    int len_sum = 0;
-    int n = 0;
 
-    //return my_solver.test(0, 2, 4);
     
-    // Generate all the possible cycles of 3 objects:
+
+    return my_solver.test(0, 2, 4);
+    
+    /*// Generate all the possible cycles of 3 objects:
     vector<vector<int>> all_cycles = vector<vector<int>>(0,vector<int>(3));
     for (int i = 0; i < 24; ++i) {
         for (int j = i; j < 24; ++j) {
@@ -75,11 +75,11 @@ MoveSequence Cube::test_solver(int i) {
             my_solver.test(c[0], c[1], c[2]),
             my_solver.test(c[1], c[2], c[0]),
             my_solver.test(c[2], c[0], c[1]),
-            /*
-            my_solver.test(c[0], c[2], c[1]),
-            my_solver.test(c[1], c[0], c[2]),
-            my_solver.test(c[2], c[1], c[0]),
-            */
+            
+            // my_solver.test(c[0], c[2], c[1]),
+            // my_solver.test(c[1], c[0], c[2]),
+            // my_solver.test(c[2], c[1], c[0]),
+            
         };
         
         MoveSequence shortest = *min_element(seqs.begin(), seqs.end(), cmp);
@@ -89,5 +89,5 @@ MoveSequence Cube::test_solver(int i) {
         len_sum += shortest.size();
     }
     std::cout << "Average move count: " << double(len_sum)/all_cycles.size();
-    return MoveSequence();
+    return MoveSequence();*/
 }

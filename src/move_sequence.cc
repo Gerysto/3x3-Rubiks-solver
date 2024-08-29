@@ -24,7 +24,7 @@ MoveSequence::MoveSequence(Orientation& orientation, const string& move_sequence
 void MoveSequence::generate_random(int length) {
     move_sequence = vector<int8_t>(length);
     for(int i = 0; i < length; ++i) {
-        move_sequence[i] = (rand()%12 + 1)*(2*(rand()%2) - 1);
+        move_sequence[i] = (rand()%6 + 1)*(2*(rand()%2) - 1);
     }
 }
 

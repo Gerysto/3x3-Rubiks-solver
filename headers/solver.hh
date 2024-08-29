@@ -72,6 +72,10 @@ class Solver {
      */
     static vector<u_int8_t> get_edges_in_layer(u_int8_t layer);
 
+    MoveSequence solve_corners();
+
+    MoveSequence solve_edges();
+
     
     public:
 
