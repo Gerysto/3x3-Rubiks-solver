@@ -131,8 +131,6 @@ class State {
     bool operator== (const State& s) const;
 
     bool operator< (const State& s) const;
-
-    friend class Solver;
 };
 
 #endif
