@@ -1,2 +1,6 @@
 *.txt
 .vscode
+*.o
+*.exe
+bin
+old
