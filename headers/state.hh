@@ -13,7 +13,7 @@ using namespace std;
  * and orientation of each of it's corner and edge pieces.
 */
 class State {
-    private:
+    public:
 
     /*
      * 'corners' is an array of 8 different integers, ranging from 0 to 23
@@ -79,8 +79,6 @@ class State {
      * stiker goes to the position of the next (and the final one goes to the beginning).
     */
     void cycle_edges(const vector<u_int8_t>& stikers, bool clockwhise);
-
-    public:
 
     /*
      * Default constructor. 

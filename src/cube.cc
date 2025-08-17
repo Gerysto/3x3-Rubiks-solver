@@ -50,14 +50,14 @@ MoveSequence Cube::test_solver(int i) {
 
     
 
-    return my_solver.test(0, 2, 4);
+    //return my_solver.test(0, 2, 4);
     
-    /*// Generate all the possible cycles of 3 objects:
+    // Generate all the possible cycles of 3 objects:
     vector<vector<int>> all_cycles = vector<vector<int>>(0,vector<int>(3));
     for (int i = 0; i < 24; ++i) {
         for (int j = i; j < 24; ++j) {
             for (int k = j; k < 24; ++k) {
-                if(i/2 == j/2 or i/2 == k/2 or j/2 == k/2) {
+                if(i/3 == j/3 or i/3 == k/3 or j/3 == k/3) {
                     continue;
                 }
                 vector<int> cycle = {i, j, k};
@@ -86,8 +86,6 @@ MoveSequence Cube::test_solver(int i) {
         cout << c[0] << "-" << c[1] << "-" << c[2] << " Cycle: ";
 
         cout << shortest.to_notation(orientation) << endl;
-        len_sum += shortest.size();
     }
-    std::cout << "Average move count: " << double(len_sum)/all_cycles.size();
-    return MoveSequence();*/
+    return MoveSequence();
 }

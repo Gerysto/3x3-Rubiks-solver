@@ -45,23 +45,75 @@
             }
             ++i;
         }
+        
         MoveSequence result;
         u_int8_t buffer = 0;
+
+        vector<vector<u_int8_t>> two_cycles(0, vector<u_int8_t>(0));
+        vector<vector<u_int8_t>> flips(0, vector<u_int8_t>(0));
+
         for (int i = 0; i < cycles.size(); ++i) {
             int len = cycles[i].size();
-            if (len <= 3) continue;
+
+            int end = 0;
             buffer = cycles[i][0];
-            MoveSequence m;
-            for(int j = 0; j < len-3; j += 2) {
-                u_int8_t p1 = cycles[i][j+1];
-                u_int8_t p2 = cycles[i][j+2];
-                cout << "cycling pieces: " << int(buffer) << " " << int(p1) << " " << int(p2) << endl;
-                m = find_corner_3_cycle(buffer, p1, p2);
-                result = result.append(m);
+            if (len > 3) {
+                // SOLVE 3-cycle
+                MoveSequence m;
+                for(int j = 0; j < len-3; j += 2) {
+                    u_int8_t p1 = cycles[i][j+1];
+                    u_int8_t p2 = cycles[i][j+2];
+                    cout << "cycling pieces: " << int(buffer) << " " << int(p1) << " " << int(p2) << endl;
+                    m = find_corner_3_cycle(buffer, p1, p2);
+                    result = result.append(m);
+                    end += 2;
+                }
+            }
+
+            int pieces_left = len - end;
+
+            if(pieces_left == 3) {
+                // Add 2-cycle to the list
+                two_cycles.push_back({buffer, cycles[i][end+1]});
+            }
+            else if (pieces_left == 2) {
+                // Add flipped piece to list
+                flips.push_back({buffer, cycles[i][end+1]});
             }
         }
+
+        cout << "WORKING # 1!!" << endl;
+        
+        // Solve pairs of 2-cycles 
+        for(int j = 0; j < int(two_cycles.size()) - 1; j+=2) {
+            u_int8_t p1 = two_cycles[ j ][0];
+            u_int8_t p2 = two_cycles[ j ][1];
+            u_int8_t p3 = two_cycles[j+1][0];
+            u_int8_t p4 = two_cycles[j+1][1];
+            MoveSequence m1 = find_corner_3_cycle(p1, p2, p3);
+            MoveSequence m2 = find_corner_3_cycle(p3, p2, p4);
+            result = result.append(m1);
+            result = result.append(m2);
+        }
+
+        cout << "WORKING # 2!!" << endl;
+        // Solve pairs of flipped pieces 
+        for(int j = 0; j < int(flips.size())-1; j+=2) {
+            u_int8_t p1 = flips[ j ][0];
+            u_int8_t p2 = flips[ j ][1];
+            u_int8_t p3 = flips[j+1][0];
+            u_int8_t p4 = flips[j+1][1];
+            MoveSequence m = find_corner_3_cycle(p1, p2, p3);
+            cout << "Flipped pieces: " << int(p1) << " and " << int(p3) << endl;
+            cout << "algorithm: ";
+            m.print();
+            result = result.append(m);
+            if (state.get_corner_stiker(p3) != p3) --j;
+        }
+
         result.print();
         return result;
+
     }
 
     MoveSequence Solver::solve_edges() {
@@ -95,6 +147,9 @@
             }
             ++i;
         }
+
+        // Solve 3 cycles:
+
         MoveSequence result;
         u_int8_t buffer = 0;
         for (int i = 0; i < cycles.size(); ++i) {
@@ -112,6 +167,11 @@
         }
         result.print();
         return result;
+
+        // Solve flipped pieces:
+
+
+
     }
 
     vector<int8_t> merge_and_add_negatives(vector<u_int8_t> vec1, vector<u_int8_t> vec2) {
@@ -139,11 +199,42 @@
         return result;
     }
 
+    MoveSequence Solver::find_2_corner_flip(u_int8_t s1_p1, u_int8_t s2_p1, u_int8_t s1_p2) {
+        int8_t LOR;
+        u_int8_t aux = 24;
+        MoveSequence setup = corner_setup_moves(s1_p2, s1_p1, aux, LOR);
+        MoveSequence seqA = insert_corner(abs(LOR), s1_p1, s2_p1);
+        MoveSequence seqB;
+        setup.print();
+        seqB.add_move(LOR);
+        MoveSequence commutator = seqA.commutate(seqB);
+        MoveSequence conjugate = commutator.conjugate(setup);
+        return conjugate;
+    }
+
+    MoveSequence Solver::find_2_edge_flip(u_int8_t s1_p1, u_int8_t s2_p1, u_int8_t s1_p2) {
+        int8_t LOR;
+        u_int8_t aux = 24;
+        u_int8_t s2 = state.get_edge_stiker(s2_p1);
+        MoveSequence setup = edge_setup_moves(s1_p2, s1_p1, aux, LOR);
+        cout << "Function call: " << int(s1_p1) << ", " << int(state.find_edge_stiker(s2)) << endl;
+        MoveSequence seqA = insert_edge(abs(LOR), s1_p1, state.find_edge_stiker(s2));
+        MoveSequence seqB;
+        setup.print();
+        cout << "LOR: " << int(LOR) << endl;
+        seqB.add_move(LOR);
+        MoveSequence commutator = seqA.commutate(seqB);
+        MoveSequence conjugate = commutator.conjugate(setup);
+        return seqA;
+        //return conjugate;
+    }
+
     MoveSequence Solver::find_corner_3_cycle(u_int8_t stiker_1, u_int8_t stiker_2, u_int8_t stiker_3) {
         int8_t LOR;
         MoveSequence setup = corner_setup_moves(stiker_3, stiker_2, stiker_1, LOR);
         MoveSequence seqA = insert_corner(abs(LOR), stiker_1, stiker_2);
         MoveSequence seqB;
+        setup.print();
         seqB.add_move(LOR);
         MoveSequence commutator = seqA.commutate(seqB);
         MoveSequence conjugate = commutator.conjugate(setup);
@@ -333,7 +424,7 @@
         u_int8_t piece_0 = state.get_corner_stiker(piece_0_pos);
         u_int8_t piece_1 = state.get_corner_stiker(piece_1_pos);
         u_int8_t piece_2;
-        if(piece_2_pos != -1) {
+        if(piece_2_pos != 24) {
             piece_2 = state.get_corner_stiker(piece_2_pos);
         }
 
@@ -454,7 +545,10 @@
 
         u_int8_t piece_0 = state.get_edge_stiker(piece_0_pos);
         u_int8_t piece_1 = state.get_edge_stiker(piece_1_pos);
-        u_int8_t piece_2 = state.get_edge_stiker(piece_2_pos);
+        u_int8_t piece_2;
+        if(piece_2_pos != 24) {
+            piece_2 = state.get_edge_stiker(piece_2_pos);
+        } 
 
         // BFS: 
         queue<State> Q = queue<State>();
@@ -473,8 +567,11 @@
         if(one_move_away) {
                 bool move_contains_third_edge = true;
                 //cout << "PIECE 2: " << int(piece_2) << endl;
-                vector<u_int8_t> moves_containing_third = layers_involving_edge[piece_2_pos/2];
+                vector<u_int8_t> moves_containing_third;
                 //cout << "Moves involving third: ";
+                if(piece_2_pos != 24) {
+                     layers_involving_edge[piece_2_pos/2];
+                }
                 for(int i = 0; i < moves_containing_third.size(); ++i) {
                     //cout << int(moves_containing_third[i]) << ", ";
                     if (moves_containing_third[i] == abs(LOR_move)) {
@@ -515,20 +612,24 @@
                 
                 if(one_move_away) {
                     //cout << endl;
-                    bool move_contains_third_edge = true;
-                    vector<u_int8_t> moves_containing_third = layers_involving_edge[new_state.find_edge_stiker(piece_2)/2];
+                    bool move_contains_third_edge = false;
+                    if(piece_2_pos != 24) {
+                        vector<u_int8_t> moves_containing_third = layers_involving_edge[new_state.find_edge_stiker(piece_2)/2];
 
-                    for(int i = 0; i < moves_containing_third.size(); ++i) {
-                        if (moves_containing_third[i] == abs(LOR_move)) move_contains_third_edge = false;
+                        for(int i = 0; i < moves_containing_third.size(); ++i) {
+                            if (moves_containing_third[i] == abs(LOR_move)) move_contains_third_edge = true;
+                        }
                     }
-
-                    finished = move_contains_third_edge;
+                    finished = !move_contains_third_edge;
                 }
 
                 if(finished) {
                     piece_0_pos = new_state.find_edge_stiker(piece_0);
                     piece_1_pos = new_state.find_edge_stiker(piece_1);
-                    piece_2_pos = new_state.find_edge_stiker(piece_2);
+
+                    if(piece_2_pos != 24) {
+                        piece_2_pos = new_state.find_edge_stiker(piece_2);
+                    }
                 }
 
                 // Check if it's a new node 
@@ -693,6 +794,6 @@
     }
 
     MoveSequence Solver::test(int i, int j, int k) {
-        return solve_edges();
-        //return find_corner_3_cycle(0, 23, 10);
+        //return solve_corners().append(solve_edges());
+        return find_corner_3_cycle(i, j, k);
     }

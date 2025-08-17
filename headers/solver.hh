@@ -15,7 +15,10 @@ class Solver {
     */
     void get_pieces_in_layer(u_int8_t layer, vector<u_int8_t>& corners, vector<u_int8_t>& edges);
 
-    
+    MoveSequence find_2_corner_flip(u_int8_t s1_p1, u_int8_t s2_p1, u_int8_t s1_p2);
+
+    MoveSequence find_2_edge_flip(u_int8_t s1_p1, u_int8_t s2_p1, u_int8_t s1_p2);
+
     MoveSequence find_corner_3_cycle(u_int8_t stiker_1, u_int8_t stiker_2, u_int8_t stiker_3);
     
     
