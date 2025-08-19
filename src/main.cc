@@ -21,7 +21,7 @@ int check_for_duplicates(State s) {
     }
     return 0;
 }
-
+/*
 int main() {
     Orientation default_orientation = Orientation();
     MoveSequence seq(default_orientation, string("F2 B R2 U' L2 U2 B' L' F2 U' B2 U L2 U R2 F2 L2 U' L2 F "));
@@ -71,3 +71,103 @@ int main() {
     cout << "\n";
     s.display();
 }
+*/
+
+    vector<int> decode_permutations(int corners, int edges) {
+        int c0 = corners%24;
+        int c1 = corners/24;
+        int e0 = edges%24;
+        int e1 = (edges/24)%24;
+        int e2 = edges/(24*24);
+        return {c1,c0,e2,e1,e0};
+    }
+    
+
+    vector<int> get_parities(int corners, int edges) {
+        int c0 = even_4_element_permutations[corners%24];
+        int c1 = even_4_element_permutations[corners/24];
+        int e0 = even_4_element_permutations[edges%24];
+        int e1 = even_4_element_permutations[(edges/24)%24];
+        int e2 = even_4_element_permutations[edges/(24*24)];
+        return {c1,c0,e2,e1,e0};
+    }
+
+    int main() {
+        State st;
+        Orientation o;
+        Solver s(st);
+        s.fill_EO_lookup();
+        s.fill_DR_lookup();
+        s.fill_HtR_lookup();
+        s.fill_final_step_lookup();
+
+        //cerr << "FINISHED!!" << endl;
+        
+        int count = 0;
+        MoveSequence scramble, sol1, sol2, sol3, sol4;
+        scramble.generate_random(30);
+
+        st.execute_sequence(scramble);
+        s.solve_EO(st, sol1);
+
+        st.execute_sequence(sol1);
+        s.solve_DR(st, sol2);
+
+        st.execute_sequence(sol2);
+        s.solve_HtR(st, sol3);
+
+        st.execute_sequence(sol3);
+        s.solve_final_step(st, sol4);
+
+        cout << "Scramble: " << scramble.to_notation(Orientation()) << endl;
+        cout << "Part 1 Solution: " << sol1.to_notation(Orientation()) << endl;
+        cout << "Part 2 Solution: " << sol2.to_notation(Orientation()) << endl;
+        cout << "Part 3 Solution: " << sol3.to_notation(Orientation()) << endl;
+        cout << "Part 4 Solution: " << sol4.to_notation(Orientation()) << endl;
+
+        //cout << "Distance from solved: " << s.lookup_state_distance(st,1) << endl;
+
+        count = 0;
+        bool print = false;
+        for (int i = 0; i < s.final_solve_lookup.size(); ++i) {
+            for (int j = 0; j < s.final_solve_lookup[0].size(); ++j) {
+                
+                vector<int> v = get_parities(i,j);
+                bool A = (v[2]+v[3]+v[4])%2 == 1;
+                bool B = (v[0]+v[1])%2 == 1;
+                bool C = binarySearch(problematic_numbers,i);
+                if (!A and !B and !C) {
+                    cout << i << ", " << j << "(" << v[0] << ", " << v[1] << ")";
+                    cout << "(" << v[2] << ", " << v[3] << ", " << v[4] << ")";
+                    if (int(s.final_solve_lookup[i][j]) < 0) {
+                        cout << "<---";
+                        ++count;
+                    }
+                    cout << endl;
+                }
+            }
+        }
+
+        // count = 0;
+        // bool print = false;
+        // for (int i = 0; i < s.final_solve_lookup.size(); ++i) {
+        //     for (int j = 0; j < s.final_solve_lookup[0].size(); ++j) {
+        //         
+        //         vector<int> v = get_parities(i,j);
+        //         bool A = (v[2]+v[3]+v[4])%2 == 1;
+        //         bool B = (v[0]+v[1])%2 == 1;
+        //         bool C = binarySearch(problematic_numbers,i);
+        //         if (!A and !B and !C) {
+        //             cout << i << ", " << j << "(" << v[0] << ", " << v[1] << ")";
+        //             cout << "(" << v[2] << ", " << v[3] << ", " << v[4] << ")";
+        //             if (int(s.final_solve_lookup[i][j]) < 0) {
+        //                 cout << "<---";
+        //                 ++count;
+        //             }
+        //             cout << endl;
+        //         }
+        //     }
+        // }
+
+        cerr << "Recompte de -1s: " << count << endl;
+    }
