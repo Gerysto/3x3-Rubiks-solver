@@ -79,6 +79,7 @@ int main() {
         int e0 = edges%24;
         int e1 = (edges/24)%24;
         int e2 = edges/(24*24);
+        
         return {c1,c0,e2,e1,e0};
     }
     
@@ -96,12 +97,24 @@ int main() {
         State st;
         Orientation o;
         Solver s(st);
+        MoveSequence m(o, "R2 U2 F2 B2"); 
+        st.execute_sequence(m);
+        st.display();
+        
+        pair<int,int> p = s.get_final_coordinate(st);
+        State decoded = s.decode_final_coordinate(p.first, p.second);
+        decoded.display();
+
+        exit(1);
+
+
         s.fill_EO_lookup();
         s.fill_DR_lookup();
         s.fill_HtR_lookup();
         s.fill_final_step_lookup();
 
         //cerr << "FINISHED!!" << endl;
+
         
         int count = 0;
         MoveSequence scramble, sol1, sol2, sol3, sol4;

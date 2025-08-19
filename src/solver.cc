@@ -109,6 +109,8 @@
         return {COPC, MSEPC};
     }
 
+
+    
     int get_subset_permutation_rank(const vector<u_int8_t>& v, const vector<int>& subset) {
         int rank = 0;
         for (int i = 0; i < subset.size(); ++i) {
@@ -149,6 +151,42 @@
     }
 
 
+    State Solver::decode_final_coordinate(int corners, int edges) {
+        vector<int> c0 = permutations[corners%24];
+        vector<int> c1 = permutations[corners/24];
+        vector<int> e0 = permutations[edges%24];
+        vector<int> e1 = permutations[(edges/24)%24];
+        vector<int> e2 = permutations[edges/(24*24)];
+
+
+        vector<int> WBO = {0,6,15,21}; // WBO_corner_orbit_stikers
+        vector<int> WBR = {3,9,12,18}; // WBR_corner_orbit_stikers
+        vector<int> M =  {0,4,16,20}; // M_slice_stikers
+        vector<int> S =  {2,6,18,22}; // S_slice_stikers
+        vector<int> E = {8,10,12,14}; // E_slice_stikers
+
+        vector<vector<int>> corner_perms = {c1,c0};
+        vector<vector<int>> edge_perms = {e2,e1,e0};
+
+        vector<vector<int>> corner_orbits = {WBO, WBR};
+        vector<vector<int>> edge_orbits = {S,E,M};
+
+        State s;
+
+        for (int i = 0; i < corner_perms.size(); ++i) {
+            for(int j = 0; j < corner_perms[i].size(); ++j){
+                s.corners[corner_orbits[i][j]/3] = corner_orbits[i][corner_perms[i][j]]; 
+            }
+        }
+        
+        for (int i = 0; i < edge_perms.size(); ++i) {
+            vector<u_int8_t> cycle(4);
+            for(int j = 0; j < edge_perms[i].size(); ++j){
+                s.edges[edge_orbits[i][j]/2] = edge_orbits[i][edge_perms[i][j]]; 
+            }
+        }
+        return s;
+    }
     // Returns the distance that a state is from the provided step's solved state. 
     int Solver::lookup_state_distance(const State& s, int step) {
         int n;
@@ -231,6 +269,38 @@
         }
     }
 
+
+    void Solver::fill_halfturn_groups_table(const State& initial_state, const vector<string>& allowed_moves, int group_index) {
+        int step = 3;
+        Orientation O;
+        queue<State> current_states;
+        queue<int> distances;
+        
+        set_state_distance(initial_state,step,group_index);
+        current_states.push(initial_state);
+        distances.push(0);
+        int i = 0;
+        while (not current_states.empty()) {
+            ++i;
+            State s = current_states.front();
+            int d = distances.front();
+            current_states.pop();
+            distances.pop();
+
+            for(string move : allowed_moves) {
+                MoveSequence m = MoveSequence(O, move);
+                State new_s = s;
+                new_s.execute_sequence(m);
+                if (lookup_state_distance(new_s,step) == -1) {
+                    set_state_distance(new_s, step, group_index);
+                    current_states.push(new_s);
+                    distances.push(d+1);
+                }
+            }
+        }
+
+    }
+        
     // Fills in the 'edge_orientation_lookup' table
     void Solver::fill_EO_lookup() {
         edge_orientation_lookup = vector<int8_t>(2048,-1);
@@ -257,7 +327,18 @@
     void Solver::fill_final_step_lookup() {
         final_solve_lookup = vector<vector<int8_t>>(576,vector<int8_t>(13824, -1));
         vector<string> allowed_moves = {"R2", "L2", "U2", "D2", "F2", "B2"};
-        BFS_lookup_fill(allowed_moves, 3);
+        //BFS_lookup_fill(allowed_moves, 3);
+
+        // temporary code for testing:
+        int group_index = 0;
+        for (int i = 0; i < final_solve_lookup.size(); ++i) {
+            for (int j = 0; j< final_solve_lookup[0].size(); ++j) {
+                if (final_solve_lookup[i][j] == -1) {
+                    
+                    //fill_halfturn_groups_table();
+                }
+            }
+        }
     }
 
     void print_state_code(Solver& s, const State& st, int step) {

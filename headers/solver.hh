@@ -18,7 +18,9 @@ class Solver {
     vector<vector<int8_t>> final_solve_lookup;
 
 
+    State decode_final_coordinate(int corners, int edges);
 
+    
     // Returns the cube's Edge Orientation Coordinate
     int get_EO_coordinate(const State& s);
     
@@ -45,6 +47,8 @@ class Solver {
     void set_state_distance(const State& s, int step, int d);
 
     void BFS_lookup_fill(const vector<string>& allowed_moves, int step);
+
+    void fill_halfturn_groups_table(const State &s, const vector<string> &allowed_moves, int grup_index);
 
     // Fills in the 'edge_orientation_lookup' table
     void fill_EO_lookup();
