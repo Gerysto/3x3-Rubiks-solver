@@ -2,6 +2,7 @@
 #define _SOLVER_
 #include <queue>
 #include <set>
+#include <map>
 #include "state.hh"
 #include "mathlib.hh"
 
@@ -20,7 +21,8 @@ class Solver {
 
     State decode_final_coordinate(int corners, int edges);
 
-    
+    bool isSolvableWithHalfTurns(const State& s);
+
     // Returns the cube's Edge Orientation Coordinate
     int get_EO_coordinate(const State& s);
     

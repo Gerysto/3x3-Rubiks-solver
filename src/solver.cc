@@ -69,6 +69,30 @@
         return (c == 0 or c == 2 or c == 5 or c == 7);
     }
 
+
+    int get_subset_permutation_rank(const vector<u_int8_t>& v, const vector<int>& subset) {
+        int rank = 0;
+        for (int i = 0; i < subset.size(); ++i) {
+            int countSmaller = 0;
+            
+            for (int j = i + 1; j < subset.size(); j++) {
+                if (v[subset[j]] < v[subset[i]]) countSmaller++;
+            }
+            rank += countSmaller * factorial(subset.size() - i - 1);
+        }
+        return rank;
+    }
+
+
+    bool get_corner_permutation_parity(const State& s) {
+        vector<u_int8_t> permutation(8);
+        for (int i = 0; i < s.corners.size(); ++i) {
+            permutation[i] = s.corners[i]/3;
+        }
+        vector<int> subset = {0,1,2,3,4,5,6,7};
+        int rank = get_subset_permutation_rank(permutation, subset);
+        return ((rank+1)/2)%2;
+    }
     // Returns the Half-turn reduction coordinate
     //    - first --> Corner permutation 
     //    - second -> Edge permutation
@@ -105,24 +129,11 @@
             }
             j++;
         }
-        
+
+        //int c_parity = get_corner_permutation_parity(s);
         return {COPC, MSEPC};
     }
 
-
-    
-    int get_subset_permutation_rank(const vector<u_int8_t>& v, const vector<int>& subset) {
-        int rank = 0;
-        for (int i = 0; i < subset.size(); ++i) {
-            int countSmaller = 0;
-            
-            for (int j = i + 1; j < subset.size(); j++) {
-                if (v[subset[j]] < v[subset[i]]) countSmaller++;
-            }
-            rank += countSmaller * factorial(subset.size() - i - 1);
-        }
-        return rank;
-    }
 
     // Returns the half-turn coordinate
     //    - first --> Corner permutation
@@ -327,18 +338,21 @@
     void Solver::fill_final_step_lookup() {
         final_solve_lookup = vector<vector<int8_t>>(576,vector<int8_t>(13824, -1));
         vector<string> allowed_moves = {"R2", "L2", "U2", "D2", "F2", "B2"};
-        //BFS_lookup_fill(allowed_moves, 3);
-
+        BFS_lookup_fill(allowed_moves, 3);
+        /*
         // temporary code for testing:
         int group_index = 0;
         for (int i = 0; i < final_solve_lookup.size(); ++i) {
             for (int j = 0; j< final_solve_lookup[0].size(); ++j) {
                 if (final_solve_lookup[i][j] == -1) {
-                    
-                    //fill_halfturn_groups_table();
+                    State s = decode_final_coordinate(i,j);
+                    fill_halfturn_groups_table(s, allowed_moves,group_index);
+                    ++group_index;
+                    cerr << "Finished group #" << group_index << endl;
                 }
             }
         }
+        cerr << "Group count: " << group_index;*/
     }
 
     void print_state_code(Solver& s, const State& st, int step) {
@@ -352,13 +366,11 @@
         Orientation O;
         int d0 = lookup_state_distance(s, step);
         if (d0 == 0) return;
-        cout << "d0 = " << d0 << "--> ";
         for (string m: allowed_moves) {
             State new_s = s;
             MoveSequence new_move = MoveSequence(O,m);
             new_s.execute_sequence(new_move);
             int d1 = lookup_state_distance(new_s,step);
-            cout << d1 << ", ";
             //print_state_code(*this, new_s, step);
             if (d1 < d0) {
                 sol = sol.append(new_move);
@@ -370,6 +382,12 @@
         cout << endl;
     }
 
+    bool Solver::isSolvableWithHalfTurns(const State& s) {
+        pair<int,int> coord = get_final_coordinate(s);
+        return final_solve_lookup[coord.first][coord.second] != -1;
+        //return false; 
+    }
+
     void Solver::solve_EO(const State& s, MoveSequence& sol) {
         vector<string> allowed_moves = {"R", "R'", "R2", "L", "L'", "L2", "U", "U'", "U2", "D", "D'", "D2", "F", "F'", "F2", "B", "B'", "B2"};
         solve_step(s,sol,allowed_moves,0);
@@ -379,10 +397,88 @@
         vector<string> allowed_moves = {"R", "R'", "R2", "L", "L'", "L2", "U", "U'", "U2", "D", "D'", "D2", "F2", "B2"};
         solve_step(s,sol,allowed_moves,1);
     }
-    
-    void Solver::solve_HtR(const State& s, MoveSequence& sol) {
+
+    struct PQNode{
+        State state;
+        int f; // Estimated cost
+
+        bool operator< (const PQNode other) const {
+            return f > other.f;
+        }
+    };
+
+    void Solver::solve_HtR(const State& start, MoveSequence& sol) {
+        Orientation o;
         vector<string> allowed_moves = {"R2", "L2", "U", "U'", "U2", "D", "D'", "D2", "F2", "B2"};
-        solve_step(s,sol,allowed_moves,2);
+        // A-star implementation:
+        priority_queue<PQNode> open_q;
+        pair<int,int> end = get_HtR_coordinate(State());
+
+        map<State,double> g;
+        set<State> closed;
+        map<State, MoveSequence> parent_move;
+        
+        open_q.push({start, lookup_state_distance(start, 3)});
+        g[start] = 0;
+        int attempt = 0;
+
+        State final_state;
+
+        while(!open_q.empty()) {
+            State curr_state = open_q.top().state;
+            pair<int,int> curr_state_coords = get_HtR_coordinate(curr_state);
+            open_q.pop();
+        
+        
+            if(closed.find(curr_state)!=closed.end()) continue;
+
+
+            if (curr_state_coords == end) {
+                attempt++;
+                cerr << "\nAttempt #" << attempt;
+                cerr << "   Distance: " << g[curr_state];
+                if (isSolvableWithHalfTurns(curr_state)) {
+                    cerr << "\nSolvable with half turns!!\n";
+                    closed.insert(curr_state);
+                    final_state = curr_state;
+                    break;
+                }
+                closed.insert(curr_state);
+                continue;
+            }
+            closed.insert(curr_state);
+        
+        
+            for (string m : allowed_moves) {
+                State s = curr_state;
+                s.execute_sequence(MoveSequence(o,m));
+                pair<int,int> s_coords = get_HtR_coordinate(s);
+                int new_g = g[curr_state]+1;
+                if (g.find(s)==g.end() or new_g < g[s]) {
+                    g[s] = new_g;
+                    parent_move[s] = MoveSequence(o,m);
+                    int f = new_g + halfturn_reduction_lookup[s_coords.first][s_coords.second];
+                    open_q.push(PQNode{s,f});
+                }
+            }
+        }
+        cerr << endl;
+        if (parent_move.find(final_state)==parent_move.end() and get_HtR_coordinate(start) != end) return;
+        cerr << "WHAT THA HELL" << endl;
+
+        pair<int,int> start_coords = get_HtR_coordinate(start);
+
+        int count = 0;
+        while (get_HtR_coordinate(final_state) != start_coords){
+            cerr << count;
+            ++count;
+            sol = sol.append(parent_move[final_state].inverse());
+            final_state.execute_sequence(parent_move[final_state].inverse());
+        }
+        cerr << "\nSolution has: " << sol.size() << " moves :D\n";
+        sol = sol.inverse();
+
+        return;
     }
     
     void Solver::solve_final_step(const State& s, MoveSequence& sol) {
