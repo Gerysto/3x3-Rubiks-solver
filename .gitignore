@@ -2,5 +2,5 @@
 .vscode
 *.o
 *.exe
-bin
-old
+bin/
+old/
