@@ -46,25 +46,43 @@ function initialize(gl) {
     console.log(gl.canvas.width, gl.canvas.height);
     // Get attribute locations:
     let vertexLoc = gl.getAttribLocation(g.program, "vertex");
+    let colorLoc = gl.getAttribLocation(g.program, "color");
+
     console.log("Vertex loc = " + vertexLoc);
+    console.log("Color loc = " + colorLoc);
+
+    
+    // set up the VAO 
+    let vao = gl.createVertexArray();
+    gl.bindVertexArray(vao);
+
 
     // Create and fill-in the buffers
-    let vertexBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
-
     let vertices = [
         0,0,0,
         1,0,0,
         1,1,0
     ];
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
-    
-    // set up the VAO 
-    let vao = gl.createVertexArray();
-    gl.bindVertexArray(vao);
-    gl.enableVertexAttribArray(vertexLoc);
 
-    // Specify how to read the data:
+    let colors = [
+        1,0,0,
+        0,1,0,
+        0,0,1
+    ];
+
+    // Vertex buffer: 
+    let vertexBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+    gl.enableVertexAttribArray(vertexLoc);
     gl.vertexAttribPointer(vertexLoc, 3, gl.FLOAT, false, 0, 0);
+    
+    // Color buffer:
+    let colorBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.STATIC_DRAW);
+    gl.enableVertexAttribArray(colorLoc);
+    gl.vertexAttribPointer(colorLoc, 3, gl.FLOAT, false, 0, 0);
+    
     gl.drawArrays(gl.TRIANGLES, 0, 3);
 }
