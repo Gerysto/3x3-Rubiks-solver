@@ -211,5 +211,66 @@ class Model {
             ++i;
         }
     }
+
+    async loadMaterials(mtl_url) {
+        // Fetch .mtl file
+        const response = await fetch(mtl_url);
+        if (!response.ok) {
+            throw new Error('Failed to fetch from url: ' + mtl_url);
+        }
+        const contents = await response.text();
+        const lines = contents.split("\n");
+
+        let curr_mtl = "";
+        let Ka = [];
+        let Kd = [];
+        let Ks = [];
+        let Ns;
+
+        for (let i = 0; i < lines.length; ++i) {
+            const line = lines[i];
+            const arr = line.split(" ");
+            if (arr[0] == "newmtl"){
+                if (curr_mtl != "") {
+                    let mat = new Material(Ka, Kd, Ks, Ns);
+                    this.materials.set(curr_mtl, mat);
+                }
+                curr_mtl = arr[1];
+            }
+            else if (arr[0] == "Ka"){
+                Ka = [];
+                Ka.push(parseFloat(arr[1]));
+                Ka.push(parseFloat(arr[2]));
+                Ka.push(parseFloat(arr[3]));
+            }
+            else if (arr[0] == "Kd"){
+                Kd = [];
+                Kd.push(parseFloat(arr[1]));
+                Kd.push(parseFloat(arr[2]));
+                Kd.push(parseFloat(arr[3]));
+
+            }
+            else if (arr[0] == "Ks"){
+                Ks = [];
+                Ks.push(parseFloat(arr[1]));
+                Ks.push(parseFloat(arr[2]));
+                Ks.push(parseFloat(arr[3]));
+
+            }
+            else if (arr[0] == "Ns"){
+                Ns = parseFloat(arr[1]);
+            }
+            else {
+                // Not yet supported!
+            }
+        }
+
+        if (curr_mtl != "") {
+            let mat = new Material(Ka, Kd, Ks, Ns);
+            this.materials.set(curr_mtl, mat);
+        }
+        console.log("Finished storing materials!");
+        console.log(this.materials);
+    }
 }
 
