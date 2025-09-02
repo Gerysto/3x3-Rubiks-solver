@@ -1,9 +1,9 @@
 g = {};
+const model_url = "Patrick.obj";
 
-let canvas;
 async function start() {
-    canvas = document.getElementById("c");
-    let gl = canvas.getContext("webgl2");
+    g.htmlcanvas = document.getElementById("c");
+    let gl = g.htmlcanvas.getContext("webgl2");
     if (!gl) {
         throw new Error("Failed to start WebGL!");
     }
@@ -50,13 +50,13 @@ async function loadShaders(gl) {
 
 async function initialize(gl) {
     
-    // Set viewport size:
     gl.clearColor(0.8, 0.8, 0.8, 1.0); // light gray background
     gl.enable(gl.DEPTH_TEST);
-
+    
+    // Set viewport size:
     resizeCanvasToDisplaySize(gl);
     gl.viewport(0,0,gl.canvas.width,gl.canvas.height);
-    console.log(gl.canvas.width, gl.canvas.height);
+    //console.log(gl.canvas.width, gl.canvas.height);
 
     // Get attribute locations:
     g.vertexLoc = gl.getAttribLocation(g.program,  "vertex");
@@ -70,18 +70,17 @@ async function initialize(gl) {
     g.PMLoc = gl.getUniformLocation(g.program, "PM");
     g.NMLoc = gl.getUniformLocation(g.program, "NM"); // normal matrix
 
-    console.log("Attribute vertexLoc = " +   g.vertexLoc);
-    console.log("Attribute normalLoc = " + g.normalLoc);
-    console.log("Attribute matambLoc = " +  g.matambLoc);
-    console.log("Attribute matdiffLoc = " + g.matdiffLoc);
-    console.log("Attribute matspecLoc = " + g.matspecLoc);
-    console.log("Attribute matshinLoc = " + g.matshinLoc);
+   //console.log("Attribute vertexLoc = " +   g.vertexLoc);
+   //console.log("Attribute normalLoc = " + g.normalLoc);
+   //console.log("Attribute matambLoc = " +  g.matambLoc);
+   //console.log("Attribute matdiffLoc = " + g.matdiffLoc);
+   //console.log("Attribute matspecLoc = " + g.matspecLoc);
+   //console.log("Attribute matshinLoc = " + g.matshinLoc);
 
 
     // set up the VAO and store model data in g
-    const url = "Patricio.obj";
     let model_data = {};
-    await createBuffersModel(gl, model_data, url);
+    await createBuffersModel(gl, model_data, model_url);
     storeBoundingBoxData(model_data);
 
     g.angleX = 0;
@@ -134,13 +133,12 @@ function MouseUpHandler() {
 }
 
 function MouseMoveHandler(event) {
-    new_X = event.clientX - canvas.offsetLeft;
-    new_Y = event.clientY - canvas.offsetTop;
+    new_X = event.clientX - g.htmlcanvas.offsetLeft;
+    new_Y = event.clientY - g.htmlcanvas.offsetTop;
 
     if (g.mouse_pressed) {
         g.angleY += -(new_X-g.mouseX);
         g.angleX +=  (new_Y-g.mouseY);
-        console.log("Mouse pressed!!");
     }
 
     g.mouseX = new_X;
