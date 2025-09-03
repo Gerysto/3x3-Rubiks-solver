@@ -38,7 +38,7 @@ using namespace std;
 
 class Cube {
     
-    private:
+    public:
     
     /*
      * The state of a rubik's cube is defined by the position of each of it's pieces with respect to the center
@@ -50,8 +50,7 @@ class Cube {
      * Orientation is an object which allows the cube to know which face color should be turned when doing a certain move.
      */
     Orientation orientation;
-
-    public:
+    
     /*
      * Default constructor.
      * Creates a solved cube with the white top, green front orientation.

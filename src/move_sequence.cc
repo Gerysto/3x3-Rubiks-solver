@@ -158,7 +158,7 @@ string MoveSequence::to_notation(Orientation orientation) const {
             case 1:
                 c = 'M';
                 orientation.X_rotation(clockwhise, false);
-                clockwhise = !clockwhise;
+                clockwhise = !clockwhise; 
                 break;
             case 2:
                 c = 'S';
