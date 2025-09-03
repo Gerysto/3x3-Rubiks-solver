@@ -1,13 +1,16 @@
 #include "../headers/solver.hh"
 
-
-    Solver::Solver(State state) {
-        this->state = state;
+    Solver::Solver() {
+        fill_EO_lookup();
+        cerr << "Finished Step 1 table" << endl;
+        fill_DR_lookup();
+        cerr << "Finished Step 2 table" << endl;
+        fill_HtR_lookup();
+        cerr << "Finished Step 3 table" << endl;
+        fill_final_step_lookup();
+        cerr << "Finished Step 4 table" << endl;
     }
-
-
-
-
+    
     // Returns the cube's Edge Orientation Coordinate
     int Solver::get_EO_coordinate(const State& s) {
         int k = 1;
@@ -55,6 +58,7 @@
         int ESEPC = 0;
         int middle_edge_count = 4;
         int N = s.edges.size();
+
         for (int i = 0; i < N; ++i) {
             if (is_edge_from_E_slice(s.edges[i])) {
                 if (N-i != middle_edge_count) ESEPC += choose(N-i-1, middle_edge_count);
@@ -279,38 +283,6 @@
             }
         }
     }
-
-
-    void Solver::fill_halfturn_groups_table(const State& initial_state, const vector<string>& allowed_moves, int group_index) {
-        int step = 3;
-        Orientation O;
-        queue<State> current_states;
-        queue<int> distances;
-        
-        set_state_distance(initial_state,step,group_index);
-        current_states.push(initial_state);
-        distances.push(0);
-        int i = 0;
-        while (not current_states.empty()) {
-            ++i;
-            State s = current_states.front();
-            int d = distances.front();
-            current_states.pop();
-            distances.pop();
-
-            for(string move : allowed_moves) {
-                MoveSequence m = MoveSequence(O, move);
-                State new_s = s;
-                new_s.execute_sequence(m);
-                if (lookup_state_distance(new_s,step) == -1) {
-                    set_state_distance(new_s, step, group_index);
-                    current_states.push(new_s);
-                    distances.push(d+1);
-                }
-            }
-        }
-
-    }
         
     // Fills in the 'edge_orientation_lookup' table
     void Solver::fill_EO_lookup() {
@@ -339,20 +311,6 @@
         final_solve_lookup = vector<vector<int8_t>>(576,vector<int8_t>(13824, -1));
         vector<string> allowed_moves = {"R2", "L2", "U2", "D2", "F2", "B2"};
         BFS_lookup_fill(allowed_moves, 3);
-        /*
-        // temporary code for testing:
-        int group_index = 0;
-        for (int i = 0; i < final_solve_lookup.size(); ++i) {
-            for (int j = 0; j< final_solve_lookup[0].size(); ++j) {
-                if (final_solve_lookup[i][j] == -1) {
-                    State s = decode_final_coordinate(i,j);
-                    fill_halfturn_groups_table(s, allowed_moves,group_index);
-                    ++group_index;
-                    cerr << "Finished group #" << group_index << endl;
-                }
-            }
-        }
-        cerr << "Group count: " << group_index;*/
     }
 
     void print_state_code(Solver& s, const State& st, int step) {
@@ -371,15 +329,12 @@
             MoveSequence new_move = MoveSequence(O,m);
             new_s.execute_sequence(new_move);
             int d1 = lookup_state_distance(new_s,step);
-            //print_state_code(*this, new_s, step);
             if (d1 < d0) {
                 sol = sol.append(new_move);
-                cout << endl;
                 solve_step(new_s, sol, allowed_moves, step);
                 return;
             }
         }
-        cout << endl;
     }
 
     bool Solver::isSolvableWithHalfTurns(const State& s) {
@@ -410,7 +365,8 @@
     void Solver::solve_HtR(const State& start, MoveSequence& sol) {
         Orientation o;
         vector<string> allowed_moves = {"R2", "L2", "U", "U'", "U2", "D", "D'", "D2", "F2", "B2"};
-        // A-star implementation:
+        
+        // A-star algorithm:
         priority_queue<PQNode> open_q;
         pair<int,int> end = get_HtR_coordinate(State());
 
@@ -420,7 +376,6 @@
         
         open_q.push({start, lookup_state_distance(start, 3)});
         g[start] = 0;
-        int attempt = 0;
 
         State final_state;
 
@@ -429,16 +384,11 @@
             pair<int,int> curr_state_coords = get_HtR_coordinate(curr_state);
             open_q.pop();
         
-        
             if(closed.find(curr_state)!=closed.end()) continue;
 
 
             if (curr_state_coords == end) {
-                attempt++;
-                cerr << "\nAttempt #" << attempt;
-                cerr << "   Distance: " << g[curr_state];
                 if (isSolvableWithHalfTurns(curr_state)) {
-                    cerr << "\nSolvable with half turns!!\n";
                     closed.insert(curr_state);
                     final_state = curr_state;
                     break;
@@ -447,7 +397,6 @@
                 continue;
             }
             closed.insert(curr_state);
-        
         
             for (string m : allowed_moves) {
                 State s = curr_state;
@@ -464,18 +413,13 @@
         }
         cerr << endl;
         if (parent_move.find(final_state)==parent_move.end() and get_HtR_coordinate(start) != end) return;
-        cerr << "WHAT THA HELL" << endl;
 
         pair<int,int> start_coords = get_HtR_coordinate(start);
 
-        int count = 0;
         while (get_HtR_coordinate(final_state) != start_coords){
-            cerr << count;
-            ++count;
             sol = sol.append(parent_move[final_state].inverse());
             final_state.execute_sequence(parent_move[final_state].inverse());
         }
-        cerr << "\nSolution has: " << sol.size() << " moves :D\n";
         sol = sol.inverse();
 
         return;
@@ -484,4 +428,30 @@
     void Solver::solve_final_step(const State& s, MoveSequence& sol) {
         vector<string> allowed_moves = {"R2", "L2", "U2", "D2", "F2", "B2"};
         solve_step(s,sol,allowed_moves,3);
+    }
+
+    MoveSequence Solver::find_full_solution(const State& s) {
+        State new_s = s;
+        MoveSequence sol1, sol2, sol3, sol4;
+        
+        // Orient edges
+        solve_EO(s, sol1);
+        new_s.execute_sequence(sol1);
+        
+        // Domino reduction
+        solve_DR(new_s, sol2);
+        new_s.execute_sequence(sol2);
+
+        // Half turn reduction
+        solve_HtR(new_s, sol3);
+        new_s.execute_sequence(sol3);
+
+        // Solve with only half turns
+        solve_final_step(new_s, sol4);
+        
+        MoveSequence result = sol1.append(sol2);
+        result = result.append(sol3);
+        result = result.append(sol4);
+
+        return result;
     }
