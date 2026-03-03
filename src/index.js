@@ -1,5 +1,4 @@
 g = {};
-const model_url = "objects/c0.obj";
 
 corner_models = [];
 edge_models = [];
@@ -40,8 +39,8 @@ function resizeCanvasToDisplaySize(gl) {
 
 async function loadShaders(gl) {
     // Setup the program (vertex + fragment shaders)
-    let vertShaderSource = await getShaderSource("shaders/shader.vert");
-    let fragShaderSource = await getShaderSource("shaders/shader.frag");
+    let vertShaderSource = await getShaderSource("assets/shaders/phong.vert");
+    let fragShaderSource = await getShaderSource("assets/shaders/phong.frag");
 
     let vertexShader = createShader(gl, gl.VERTEX_SHADER, vertShaderSource);
     let fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fragShaderSource);
@@ -80,10 +79,9 @@ async function initialize(gl) {
    //console.log("Attribute matdiffLoc = " + g.matdiffLoc);
    //console.log("Attribute matspecLoc = " + g.matspecLoc);
    //console.log("Attribute matshinLoc = " + g.matshinLoc);
-
     for (let i = 0; i < 8; ++i) {    
         let model_data = {};
-        let url = "objects/c" + i.toString() + ".obj";
+        let url = "assets/models/corners/c" + i.toString() + ".obj";
         await createBuffersModel(gl, model_data, url);
         storeBoundingBoxData(model_data);
         
@@ -94,7 +92,7 @@ async function initialize(gl) {
 
     for (let i = 0; i < 12; ++i) {    
         let model_data = {};
-        let url = "objects/e" + i.toString() + ".obj";
+        let url = "assets/models/edges/e" + i.toString() + ".obj";
         await createBuffersModel(gl, model_data, url);
         storeBoundingBoxData(model_data);
         modelTransform(gl, model_data, edge_TG[i]);
@@ -103,7 +101,7 @@ async function initialize(gl) {
 
     for (let i = 0; i < 6; ++i) {    
         let model_data = {};
-        let url = "objects/f" + i.toString() + ".obj";
+        let url = "assets/models/centers/f" + i.toString() + ".obj";
         await createBuffersModel(gl, model_data, url);
         storeBoundingBoxData(model_data);
         modelTransform(gl, model_data, center_TG[i]);

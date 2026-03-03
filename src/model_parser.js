@@ -87,7 +87,7 @@ class Model {
                     arr = line.split(" ");
                     if (arr[0] == "mtllib") {
                         let url_mtl = arr[1];
-                        await this.loadMaterials(url_mtl);
+                        await this.loadMaterials(url_mtl, obj_url);
                     }
                     else {
                         // Not yet supported : (
@@ -212,9 +212,12 @@ class Model {
         }
     }
 
-    async loadMaterials(mtl_url) {
+    async loadMaterials(mtl_url, obj_url) {
         // Fetch .mtl file
-        const response = await fetch("objects/" + mtl_url);
+        // <<-------------------------------------------------------------------------------------------------------------------- CHANGE THIS!!
+        const dir = obj_url.substring(0, obj_url.lastIndexOf("/")+1);
+        console.log(dir);
+        const response = await fetch(dir + mtl_url);
         if (!response.ok) {
             throw new Error('Failed to fetch from url: ' + mtl_url);
         }
