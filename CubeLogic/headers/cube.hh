@@ -75,8 +75,14 @@ class Cube {
     */
     void execute_sequence_in_notation(string seq);
 
+    /*
+     * Scrambles the cube using a randomly generated scramble of the given length.
+    */
     void random_scramble(int length);
 
+    /*
+     * Checks whether the cube's state is solvable or not. 
+     */
     bool is_solvable();
 
     /*

@@ -51,6 +51,17 @@ class Orientation {
 
     void static cycle_elements(vector<u_int8_t>& vec, const vector<u_int8_t>& cycle, bool clockwhise);
 
+    /**
+     * Cycles the "faces" located in each side of the cube specified in the "sides" vector.
+     * This method can effectively be used to perform cube rotations.
+     * 
+     * For instance: 
+     *      [Top    -> White]
+     *      [Bottom -> yellow]
+     *      [ -> White]
+     *      [Top -> White]
+     *      [Top -> White]
+     */
     void cycle_sides(const vector<u_int8_t>& sides, bool clockwhise);
 
     public:
