@@ -2,7 +2,6 @@
 #define _CUBE_
 
 #include <iostream>
-#include <emscripten/bind.h>
 #include <vector>
 #include "state.hh"
 #include "move_sequence.hh"
