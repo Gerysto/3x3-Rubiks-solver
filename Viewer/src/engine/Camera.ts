@@ -1,5 +1,17 @@
+import J3DIMatrix4 from "../../libs/J3DIMath-wrapper.js";
+
 export class Camera {
     
+    angleX: number;
+    angleY: number;
+    angleZ: number;
+
+    distance: number;
+
+    fov: number;
+    zNear: number;
+    zFar: number;
+
     constructor() {
         this.angleX = 0;
         this.angleY = 0;
@@ -21,7 +33,7 @@ export class Camera {
        
         // Euler angles:
         
-        VM.translate(0,0,-this.d);
+        VM.translate(0,0,-this.distance);
         VM.rotate(-this.angleZ, 0,0,1);
         VM.rotate( this.angleX, 1,0,0);
         VM.rotate(-this.angleY, 0,1,0);
@@ -34,10 +46,10 @@ export class Camera {
      * Calculates the projection matrix and returns it.
      * @returns J3DIMatrix PM (Projection Matrix)
      */
-    getProjectionMatrix(aspect_ratio) {
+    getProjectionMatrix(aspectRatio) {
         const PM = new J3DIMatrix4();
         
-        PM.perspective(this.fov, aspect_ratio, this.z_near, this.z_far);
+        PM.perspective(this.fov, aspectRatio, this.zNear, this.zFar);
         return PM;
     }
 }
