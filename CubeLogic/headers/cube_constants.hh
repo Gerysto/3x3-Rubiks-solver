@@ -5,6 +5,7 @@
 #include <vector>
 
 using namespace std;
+typedef unsigned char u_int8_t;
 
 const vector<u_int8_t> solved_corners = {0, 3, 6, 9, 12, 15, 18, 21};
 const vector<u_int8_t> corner_stiker_colors = {0,5,4,0,1,5,0,2,1,0,4,2,3,4,5,3,5,1,3,1,2,3,2,4};

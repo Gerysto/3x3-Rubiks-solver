@@ -44,3 +44,10 @@ void Cube::print_state() const {
 bool cmp(MoveSequence m1, MoveSequence m2) {
     return m1.size() < m2.size();
 }
+
+EMSCRIPTEN_BINDINGS(class_example) {
+    emscripten::class_<Cube>("Cube")
+        .constructor()
+        .function("execute_sequence_in_notation", &Cube::execute_sequence_in_notation)
+        .function("print_state", &Cube::print_state);
+}

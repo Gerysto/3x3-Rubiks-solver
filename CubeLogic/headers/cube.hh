@@ -2,6 +2,7 @@
 #define _CUBE_
 
 #include <iostream>
+#include <emscripten/bind.h>
 #include <vector>
 #include "state.hh"
 #include "move_sequence.hh"
@@ -92,5 +93,6 @@ class Cube {
 
     MoveSequence test_solver(int i);
 };
+
 
 #endif
