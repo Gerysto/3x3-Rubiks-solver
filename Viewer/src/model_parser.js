@@ -214,9 +214,8 @@ class Model {
 
     async loadMaterials(mtl_url, obj_url) {
         // Fetch .mtl file
-        // <<-------------------------------------------------------------------------------------------------------------------- CHANGE THIS!!
         const dir = obj_url.substring(0, obj_url.lastIndexOf("/")+1);
-        console.log(dir);
+        //console.log(dir);
         const response = await fetch(dir + mtl_url);
         if (!response.ok) {
             throw new Error('Failed to fetch from url: ' + mtl_url);
