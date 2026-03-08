@@ -7,7 +7,6 @@ class CubeController {
     private:
         Cube cube;
         Solver solver;
-        bool solver_initialized;
     
     public:
     

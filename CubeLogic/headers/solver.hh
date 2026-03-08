@@ -9,16 +9,22 @@
 
 class Solver {
     
-    public:
+    private:
+    
+    bool is_initialized;
 
+    public:
+    
     vector<int8_t> edge_orientation_lookup;
     vector<vector<int8_t>> domino_reduction_lookup;
     vector<vector<int8_t>> halfturn_reduction_lookup;
     vector<vector<int8_t>> final_solve_lookup;
 
     // Constructor:
-    // Fills all the lookup tables
     Solver();
+
+    // Fills all the lookup tables
+    void init();
 
     // Given the coordinates of a state in the last step,
     // returns the state they correspond to

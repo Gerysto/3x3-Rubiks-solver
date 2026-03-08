@@ -1,6 +1,11 @@
 #include "../headers/solver.hh"
 
     Solver::Solver() {
+        bool is_initialized = false;
+    }
+
+    // Fills all the lookup tables
+    void Solver::init() {
         fill_EO_lookup();
         cerr << "Finished Step 1 table" << endl;
         fill_DR_lookup();
@@ -9,6 +14,7 @@
         cerr << "Finished Step 3 table" << endl;
         fill_final_step_lookup();
         cerr << "Finished Step 4 table" << endl;
+        is_initialized = true;
     }
     
     // Returns the cube's Edge Orientation Coordinate
@@ -202,6 +208,7 @@
         }
         return s;
     }
+
     // Returns the distance that a state is from the provided step's solved state. 
     int Solver::lookup_state_distance(const State& s, int step) {
         int n;
@@ -431,6 +438,11 @@
     }
 
     MoveSequence Solver::find_full_solution(const State& s) {
+        if (not is_initialized) {
+            cerr << "Error: Solver is not initialized!" << endl;
+            return {};
+        }
+        
         State new_s = s;
         MoveSequence sol1, sol2, sol3, sol4;
         

@@ -7,7 +7,7 @@
  */
 CubeController::CubeController() {
     this->cube = Cube();
-    this->solver_initialized = false;
+    this->solver = Solver();
 }
 
 /**
@@ -15,8 +15,7 @@ CubeController::CubeController() {
  * (This may take a long time, so it should be run assyncronously).
  */
 void CubeController::init_solver() {
-    this->solver = Solver();
-    this->solver_initialized = true;
+    this->solver.init();
 }
 
 /*
@@ -47,11 +46,7 @@ void CubeController::reset_cube_state() {
  * Post: Finds a set of moves that solves the cube and returns it in the standard
  * Rubik's Cube notation.
  */
-string CubeController::find_solution() {
-    if (not solver_initialized) {
-        cerr << "Solver is not initialized!" << endl;
-    }
-    
+string CubeController::find_solution() {    
     // Solver is already initialized:
     MoveSequence m = solver.find_full_solution(cube.state);
     return m.to_notation(cube.orientation);
@@ -68,7 +63,7 @@ vector<u_int8_t> CubeController::get_cube_state() const{
 
 
 EMSCRIPTEN_BINDINGS(cube_controlller) {
-    emscripten::class_<Cube>("CubeController")
+    emscripten::class_<CubeController>("CubeController")
         .constructor()
         .function("init_solver", &CubeController::init_solver)
         .function("execute_sequence_in_notation", &CubeController::execute_sequence_in_notation)
