@@ -13,9 +13,8 @@ export class ShaderProgram {
     PMLoc : WebGLUniformLocation = -1;
     NMLoc : WebGLUniformLocation = -1;
 
-    constructor(gl : WebGL2RenderingContext, url_vertex: string, url_fragment: string) {
+    constructor() {
         this.program = WebGLProgram;
-        this.load_shaders(gl, url_vertex, url_fragment)
     }
 
     async load_shaders(gl : WebGL2RenderingContext, url_vertex: string, url_fragment: string) {
@@ -28,12 +27,10 @@ export class ShaderProgram {
 
         this.program = this.createProgram(gl, vs, fs);
         gl.useProgram(this.program);
-
         this.initLocations(gl);
     }
 
     initLocations(gl:WebGL2RenderingContext) {
-
         this.vertexLoc  = gl.getAttribLocation(this.program,  "vertex");
         this.normalLoc  = gl.getAttribLocation(this.program,  "normal");
         this.matambLoc  = gl.getAttribLocation(this.program,  "matamb");
@@ -59,6 +56,11 @@ export class ShaderProgram {
         this.VMLoc = VMLocAux as WebGLUniformLocation;
         this.PMLoc = PMLocAux as WebGLUniformLocation;
         this.NMLoc = NMLocAux as WebGLUniformLocation;
+
+        console.log(this.TGLoc);
+        console.log(this.VMLoc);
+        console.log(this.PMLoc);
+        console.log(this.NMLoc);
     }
 
     private async getShaderSource(url: string): Promise<string> {
