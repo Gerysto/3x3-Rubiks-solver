@@ -8,4 +8,10 @@ export class Box {
         this.min = v_min;
         this.max = v_max;
     }
+
+    center() {
+        return Vec3.add(this.min, this.max).scale(0.5);
+    }
+
+    
 }

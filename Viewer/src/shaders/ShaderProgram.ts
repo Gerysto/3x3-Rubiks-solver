@@ -13,9 +13,9 @@ export class ShaderProgram {
     PMLoc : number;
     NMLoc : number;
 
-    constructor(gl, vertexSource: string, fragmentSource: string) {
-        const vs = this.createShader(gl, gl.VERTEX_SHADER, vertexSource);
-        const fs = this.createShader(gl, gl.FRAGMENT_SHADER, fragmentSource);
+    constructor(gl, url_vertex: string, url_fragment: string) {
+        const vs = this.createShader(gl, gl.VERTEX_SHADER, url_vertex);
+        const fs = this.createShader(gl, gl.FRAGMENT_SHADER, url_fragment);
 
         this.program = this.createProgram(gl, vs, fs);
         gl.useProgram(this.program);
