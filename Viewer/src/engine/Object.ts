@@ -9,7 +9,7 @@ export class Material {
     Ks : number[];
     Ns : number;
 
-    constructor(Ka, Kd, Ks, Ns) {
+    constructor(Ka: number[], Kd: number[], Ks: number[], Ns: number) {
         this.Ka = Ka; // Ambient
         this.Kd = Kd; // Diffuse
         this.Ks = Ks; // Specular
@@ -18,11 +18,11 @@ export class Material {
 }
 
 export class Face {
-    v : number;
-    n : number;
+    v : number[];
+    n : number[];
     material : string;
 
-    constructor(v, n, m) {
+    constructor(v: number[], n: number[], m: string) {
         this.v = v; // Vertices
         this.n = n; // Normals
         this.material = m;
@@ -38,13 +38,18 @@ export class Object {
     ModelTransform: J3DIMatrix4;
 
     vao : WebGLVertexArrayObject;
-    gl : WebGL2RenderingContext;
 
     constructor() {
         this.materials = new Map();
         this.vertices = [];
         this.normals = [];
         this.faces = [];
+        this.boundingBox = new Box(
+            new Vec3( 1e100,  1e100,  1e100), // Min
+            new Vec3(-1e100, -1e100, -1e100)  // Max
+        );
+        this.ModelTransform = new J3DIMatrix4();
+        this.vao = -1;
     };
 
     computeBoundingBox() : void {
@@ -121,7 +126,7 @@ export class Object {
         gl.bindVertexArray(null);
     }
 
-    async readObj(obj_url) {
+    async readObj(obj_url: string) {
         const response = await fetch(obj_url);
         if (!response.ok) {
             throw new Error('Failed to fetch from url:' + obj_url);
@@ -207,7 +212,7 @@ export class Object {
         this.computeBoundingBox();
     };
 
-    private parseV(arr, curr_mtl) {
+    private parseV(arr: string[], curr_mtl: string) {
         let v : number[] = [];
         let n : number[] = [];
         let i = 0;
@@ -230,7 +235,7 @@ export class Object {
         }
     }
 
-    private parseVT(arr, curr_mtl) {
+    private parseVT(arr: string[], curr_mtl: string) {
         let v : number[] = [];
         let n : number[] = [];
         let i = 0;
@@ -255,7 +260,7 @@ export class Object {
         }
     }
 
-    private parseVN(arr, curr_mtl) {
+    private parseVN(arr: string[], curr_mtl: string) {
         let v : number[] = [];
         let n : number[] = [];
         let i = 0;
@@ -282,7 +287,7 @@ export class Object {
         }
     }
 
-    private parseVTN(arr, curr_mtl) {
+    private parseVTN(arr: string[], curr_mtl: string) {
         let v : number[] = [];
         let n : number[] = [];
         let i = 0;
@@ -312,7 +317,7 @@ export class Object {
         }
     }
 
-    private async loadMaterials(mtl_url, obj_url) {
+    private async loadMaterials(mtl_url: string, obj_url: string) {
         // Fetch .mtl file
         const dir = obj_url.substring(0, obj_url.lastIndexOf("/")+1);
         //console.log(dir);

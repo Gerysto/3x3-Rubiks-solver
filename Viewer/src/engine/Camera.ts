@@ -46,7 +46,7 @@ export class Camera {
      * Calculates the projection matrix and returns it.
      * @returns J3DIMatrix PM (Projection Matrix)
      */
-    getProjectionMatrix(aspectRatio) {
+    getProjectionMatrix(aspectRatio: number) : J3DIMatrix4 {
         const PM = new J3DIMatrix4();
         
         PM.perspective(this.fov, aspectRatio, this.zNear, this.zFar);

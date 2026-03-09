@@ -1,4 +1,4 @@
-import {Vec3} from './Vec3.ts';
+import {Vec3} from './Vec3.js';
 
 export class Box {
     min : Vec3;
