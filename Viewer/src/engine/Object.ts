@@ -41,6 +41,26 @@ export class Object {
         this.faces = [];
     };
 
+    computeBoundingBox(): Box {
+        let minX, minY, minZ, maxX, maxY, maxZ;
+        minX = minY = minZ = 1e100;
+        maxX = maxY = maxZ = -1e100;
+
+        for (let i = 0; i < this.vertices.length; i+=3) {
+            minX = Math.min(minX, this.vertices[i]);
+            minY = Math.min(minY, this.vertices[i+1]);
+            minZ = Math.min(minZ, this.vertices[i+2]);
+            maxX = Math.max(maxX, this.vertices[i]);
+            maxY = Math.max(maxY, this.vertices[i+1]);
+            maxZ = Math.max(maxZ, this.vertices[i+2]);
+        }
+
+        return new Box(
+            new Vec3(minX, minY, minZ),
+            new Vec3(maxX, maxY, maxZ)
+        );
+    }
+
     createVAO(gl: WebGL2RenderingContext, p: ShaderProgram) {
         let vao = gl.createVertexArray();
         gl.bindVertexArray(vao);
@@ -98,11 +118,6 @@ export class Object {
         gl.bindVertexArray(null);
         
         return vao;
-    }
-
-    computeBoundingBox(): Box {
-        // TODO!
-        return new Box(new Vec3(-1,-1,-1),new Vec3(1,1,1));
     }
 
     async readObj(obj_url) {

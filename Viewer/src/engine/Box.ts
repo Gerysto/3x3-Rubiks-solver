@@ -4,7 +4,7 @@ export class Box {
     min : Vec3;
     max : Vec3;
 
-    constructor(v_min, v_max) {
+    constructor(v_min: Vec3, v_max: Vec3) {
         this.min = v_min;
         this.max = v_max;
     }
