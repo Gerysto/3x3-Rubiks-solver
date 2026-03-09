@@ -1,4 +1,4 @@
-export class J3DIMatrix4 {
+declare class J3DIMatrix4 {
     constructor(m?: any);
     load(m: any): void;
     getAsArray(): number[];
@@ -15,10 +15,10 @@ export class J3DIMatrix4 {
     ortho(left:number, right:number, bottom:number, top:number, near:number, far:number): void;
     frustrum(left:number, right:number, bottom:number, top:number, near:number, far:number): void;
     perspective(fovy: number, aspect: number, zNear: number, zFar: number): void;
-    lookat(eyex:number, eyey:number, eyez:number, centerx:number, centery:number, centerz:number, upx:number, upy:number, upz:number);
+    lookat(eyex:number, eyey:number, eyez:number, centerx:number, centery:number, centerz:number, upx:number, upy:number, upz:number): void;
 }
 
-export class J3DIVector3 {
+declare class J3DIVector3 {
     constructor(x?: number, y?: number, z?: number);
     load(x: number, y: number, z: number): void;
     getAsArray() : number[];

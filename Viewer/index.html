@@ -11,15 +11,16 @@
             height: 100%;
         }
     </style>
-    <script src="libs/cube_lib.js"></script>
-    <script src="src/shader-utils.js"></script>
-    <script src="src/model_parser.js"></script>
+    <script>
+        async function mystart() {
+            console.log("Hello world!");
+            start();
+        }
+    </script>
     <script src="libs/J3DIMath.js"></script>
-    <script src="src/render_logic.js"></script>
-    <script src="src/index.js"></script>
-    <script src="src/view_controller.js"></script>
+    <script type="module" src="dist/main.js"></script>
 </head>
-<body onload="start()">
+<body>
     <input id = "scramble_field"></input>
     <button id="send_scramble">send scramble!</button>
     <canvas id="c"></canvas>

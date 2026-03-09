@@ -1,8 +1,8 @@
-import {Camera} from './Camera.ts';
-import {Vec3} from './Vec3.ts';
-import {Box} from './Box.ts';
-import {Object} from './Object.ts';
-import {J3DIMatrix4, J3DIVector3} from '../../libs/J3DIMath.js'
+import {Camera} from './Camera.js';
+import {Vec3} from './Vec3.js';
+import {Box} from './Box.js';
+import {Object} from './Object.js';
+//import {J3DIMatrix4, J3DIVector3} from '../../libs/J3DIMath.js'
 
 
 export class Scene {
@@ -12,6 +12,7 @@ export class Scene {
     boundingBox : Box;
 
     constructor() {
+        this.objects = [];
         this.camera = new Camera();
         this.boundingBox = new Box(
             new Vec3( 1e100,  1e100,  1e100), // Min

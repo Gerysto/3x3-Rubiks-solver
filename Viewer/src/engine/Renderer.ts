@@ -2,7 +2,7 @@ import {Scene} from './Scene.js';
 import {Camera} from './Camera.js';
 import {Object} from './Object.js';
 import {ShaderProgram} from '../shaders/ShaderProgram.js'
-import { J3DIMatrix4 } from '../../libs/J3DIMath.js';
+//import { J3DIMatrix4 } from '../../libs/J3DIMath.js';
 
 export class Renderer {
 
@@ -12,7 +12,7 @@ export class Renderer {
 
     constructor(gl: WebGL2RenderingContext, canvas: HTMLCanvasElement, program: ShaderProgram) {
         this.gl = gl;
-        
+
         const width = canvas.clientWidth;
         const height = canvas.clientHeight;
         this.program = program;

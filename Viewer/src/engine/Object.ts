@@ -1,7 +1,7 @@
 import {Box} from './Box.js';
 import {Vec3} from './Vec3.js';
 import {ShaderProgram} from '../shaders/ShaderProgram.js'
-import {J3DIMatrix4} from '../../libs/J3DIMath.js'
+//import {J3DIMatrix4} from '../../libs/J3DIMath.js'
 
 export class Material {
     Ka : number[];

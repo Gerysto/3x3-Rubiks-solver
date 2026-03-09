@@ -1,8 +1,8 @@
-import { Camera } from "./engine/Camera";
-import { Renderer } from "./engine/Renderer";
-import { Scene } from "./engine/Scene";
-import { Object } from "./engine/Object";
-import { ShaderProgram } from "./shaders/ShaderProgram";
+import { Camera } from "./engine/Camera.js";
+import { Renderer } from "./engine/Renderer.js";
+import { Scene } from "./engine/Scene.js";
+import { Object } from "./engine/Object.js";
+import { ShaderProgram } from "./shaders/ShaderProgram.js";
 
 const vertex_url = 'src/shaders/phong.vertex';
 const fragment_url = 'src/shaders/phong.vertex';
@@ -27,3 +27,5 @@ async function start() {
 
     renderer.start(scene, camera);
 }
+
+start();
