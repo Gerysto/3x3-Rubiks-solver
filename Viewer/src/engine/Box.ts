@@ -23,4 +23,9 @@ export class Box {
     height() : number {
         return this.max.y - this.min.y;
     }
+
+    expand(p : Vec3) {
+        this.max = Vec3.max(this.max, p);
+        this.min = Vec3.min(this.min, p);
+    }
 }

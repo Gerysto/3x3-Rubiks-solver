@@ -1,6 +1,7 @@
 import {Box} from './Box.js';
 import {Vec3} from './Vec3.js';
 import {ShaderProgram} from '../shaders/ShaderProgram.ts'
+import J3DIMatrix4 from '../../libs/J3DIMath-wrapper.js'
 
 export class Material {
     Ka : number[];
@@ -33,6 +34,7 @@ export class Object {
     vertices : number[];
     normals : number[];
     faces : Face[];
+    ModelTransform: J3DIMatrix4;
 
     constructor() {
         this.materials = new Map();
@@ -42,23 +44,22 @@ export class Object {
     };
 
     computeBoundingBox(): Box {
-        let minX, minY, minZ, maxX, maxY, maxZ;
-        minX = minY = minZ = 1e100;
-        maxX = maxY = maxZ = -1e100;
+        
+        let boundingBox = new Box(
+            new Vec3( 1e100,  1e100,  1e100), // Min
+            new Vec3(-1e100, -1e100, -1e100)  // Max
+        );
 
         for (let i = 0; i < this.vertices.length; i+=3) {
-            minX = Math.min(minX, this.vertices[i]);
-            minY = Math.min(minY, this.vertices[i+1]);
-            minZ = Math.min(minZ, this.vertices[i+2]);
-            maxX = Math.max(maxX, this.vertices[i]);
-            maxY = Math.max(maxY, this.vertices[i+1]);
-            maxZ = Math.max(maxZ, this.vertices[i+2]);
+            const point = new Vec3(
+                this.vertices[i  ],
+                this.vertices[i+1],
+                this.vertices[i+2]);
+
+            boundingBox.expand(point);
         }
 
-        return new Box(
-            new Vec3(minX, minY, minZ),
-            new Vec3(maxX, maxY, maxZ)
-        );
+        return boundingBox;
     }
 
     createVAO(gl: WebGL2RenderingContext, p: ShaderProgram) {
