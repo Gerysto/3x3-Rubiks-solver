@@ -12,13 +12,13 @@ import { Renderer } from "./engine/Renderer.js";
 import { Scene } from "./engine/Scene.js";
 import { Object } from "./engine/Object.js";
 import { ShaderProgram } from "./shaders/ShaderProgram.js";
-const vertex_url = 'src/shaders/phong.vertex';
-const fragment_url = 'src/shaders/phong.vertex';
+const vertex_url = 'src/shaders/phong.vert';
+const fragment_url = 'src/shaders/phong.frag';
 function start() {
     return __awaiter(this, void 0, void 0, function* () {
         const canvas = document.getElementById("c");
         const gl = canvas.getContext("webgl2");
-        const program = new ShaderProgram(gl, vertex_url, fragment_url);
+        const program = yield new ShaderProgram(gl, vertex_url, fragment_url);
         const renderer = new Renderer(gl, canvas, program);
         const scene = new Scene();
         const camera = new Camera();
@@ -27,6 +27,7 @@ function start() {
         object.readObj("assets/models/corners/c0.obj");
         object.createVAO(gl, program);
         scene.addObject(object);
+        console.log("Starting renderer!!");
         renderer.start(scene, camera);
     });
 }

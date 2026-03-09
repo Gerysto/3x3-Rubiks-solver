@@ -14,8 +14,17 @@ export class ShaderProgram {
     NMLoc : WebGLUniformLocation = -1;
 
     constructor(gl : WebGL2RenderingContext, url_vertex: string, url_fragment: string) {
-        const vs = this.createShader(gl, gl.VERTEX_SHADER, url_vertex);
-        const fs = this.createShader(gl, gl.FRAGMENT_SHADER, url_fragment);
+        this.program = WebGLProgram;
+        this.load_shaders(gl, url_vertex, url_fragment)
+    }
+
+    async load_shaders(gl : WebGL2RenderingContext, url_vertex: string, url_fragment: string) {
+        
+        const vs_source = await this.getShaderSource(url_vertex);
+        const fs_source = await this.getShaderSource(url_fragment);
+        
+        const vs = this.createShader(gl, gl.VERTEX_SHADER, vs_source);
+        const fs = this.createShader(gl, gl.FRAGMENT_SHADER, fs_source);
 
         this.program = this.createProgram(gl, vs, fs);
         gl.useProgram(this.program);
@@ -52,10 +61,20 @@ export class ShaderProgram {
         this.NMLoc = NMLocAux as WebGLUniformLocation;
     }
 
+    private async getShaderSource(url: string): Promise<string> {
+    let contents = await fetch(url);
+    if (!contents.ok) {
+        throw new Error("Failed to read contents of: " + url);
+    }
+    let result = await contents.text();
+    return result;
+}
+
+
     createShader(gl:WebGL2RenderingContext, type: GLenum, source: string) {
         var shader = gl.createShader(type);
         if (!(shader instanceof WebGLShader)) 
-            throw Error("Failed to load create shader!");
+            throw Error("Failed to create shader!");
         
         gl.shaderSource(shader,source);
         gl.compileShader(shader);
