@@ -36,6 +36,8 @@ export class Object {
     faces : Face[];
     boundingBox : Box;
     ModelTransform: J3DIMatrix4;
+    
+    vao : WebGLVertexArrayObject;
 
     constructor() {
         this.materials = new Map();
@@ -62,8 +64,8 @@ export class Object {
     }
 
     createVAO(gl: WebGL2RenderingContext, p: ShaderProgram) {
-        let vao = gl.createVertexArray();
-        gl.bindVertexArray(vao);
+        this.vao = gl.createVertexArray();
+        gl.bindVertexArray(this.vao);
 
         const vertices = this.get_VBO_vertices();
         const normals = this.get_VBO_normals();
@@ -116,8 +118,6 @@ export class Object {
         gl.vertexAttribPointer(p.matshinLoc, 1, gl.FLOAT, false, 0, 0);
         
         gl.bindVertexArray(null);
-        
-        return vao;
     }
 
     async readObj(obj_url) {

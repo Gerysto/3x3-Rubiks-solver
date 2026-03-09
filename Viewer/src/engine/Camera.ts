@@ -1,4 +1,4 @@
-import J3DIMatrix4 from "../../libs/J3DIMath-wrapper.js";
+import {J3DIMatrix4} from "../../libs/J3DIMath.js";
 
 export class Camera {
     
