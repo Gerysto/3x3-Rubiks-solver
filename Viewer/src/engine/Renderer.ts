@@ -10,8 +10,9 @@ export class Renderer {
     aspect_ratio: number;
     program : ShaderProgram;
 
-    constructor(canvas, program) {
-        this.gl = canvas.getContext("webgl2");
+    constructor(gl: WebGL2RenderingContext, canvas: HTMLCanvasElement, program: ShaderProgram) {
+        this.gl = gl;
+        
         const width = canvas.clientWidth;
         const height = canvas.clientHeight;
         this.program = program;
