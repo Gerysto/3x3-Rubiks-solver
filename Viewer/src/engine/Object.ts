@@ -1,7 +1,7 @@
 import {Box} from './Box.js';
 import {Vec3} from './Vec3.js';
-import {ShaderProgram} from '../shaders/ShaderProgram.ts'
-import J3DIMatrix4 from '../../libs/J3DIMath-wrapper.js'
+import {ShaderProgram} from '../shaders/ShaderProgram.js'
+import {J3DIMatrix4} from '../../libs/J3DIMath.js'
 
 export class Material {
     Ka : number[];
@@ -34,6 +34,7 @@ export class Object {
     vertices : number[];
     normals : number[];
     faces : Face[];
+    boundingBox : Box;
     ModelTransform: J3DIMatrix4;
 
     constructor() {
@@ -43,9 +44,9 @@ export class Object {
         this.faces = [];
     };
 
-    computeBoundingBox(): Box {
+    computeBoundingBox() : void {
         
-        let boundingBox = new Box(
+        this.boundingBox = new Box(
             new Vec3( 1e100,  1e100,  1e100), // Min
             new Vec3(-1e100, -1e100, -1e100)  // Max
         );
@@ -56,10 +57,8 @@ export class Object {
                 this.vertices[i+1],
                 this.vertices[i+2]);
 
-            boundingBox.expand(point);
+            this.boundingBox.expand(point);
         }
-
-        return boundingBox;
     }
 
     createVAO(gl: WebGL2RenderingContext, p: ShaderProgram) {
@@ -204,6 +203,7 @@ export class Object {
                     break;
             }
         }
+        this.computeBoundingBox();
     };
 
     private parseV(arr, curr_mtl) {

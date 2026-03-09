@@ -9,6 +9,10 @@ export class Vec3 {
         this.z = _z;
     }
 
+    static fromArray(arr: number[]): Vec3{
+        return new Vec3(arr[0], arr[1], arr[2]);
+    }
+
     /**
      * Adds v1 and v2 and returns the resulting Vec3 
      */
