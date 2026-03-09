@@ -42,9 +42,10 @@ export class Scene {
         let p_max = new J3DIVector3(max.x, max.y, max.z);
         let p_min = new J3DIVector3(min.x, min.y, min.z);
 
+        const TG : J3DIMatrix4 = obj.ModelTransform;
         // Convert min and max to World Space:
-        p_max.multVecMatrix(obj.ModelTransform);
-        p_min.multVecMatrix(obj.ModelTransform);
+        p_max.multVecMatrix(TG);
+        p_min.multVecMatrix(TG);
 
         
         this.boundingBox.expand(Vec3.fromArray

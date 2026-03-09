@@ -36,8 +36,9 @@ export class Object {
     faces : Face[];
     boundingBox : Box;
     ModelTransform: J3DIMatrix4;
-    
+
     vao : WebGLVertexArrayObject;
+    gl : WebGL2RenderingContext;
 
     constructor() {
         this.materials = new Map();

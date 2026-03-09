@@ -8,12 +8,13 @@ export class Renderer {
 
     gl: WebGL2RenderingContext;
     aspect_ratio: number;
+    program : ShaderProgram;
 
-    constructor(canvas) {
+    constructor(canvas, program) {
         this.gl = canvas.getContext("webgl2");
         const width = canvas.clientWidth;
         const height = canvas.clientHeight;
-
+        this.program = program;
         this.aspect_ratio = width/height;
 
         if(!this.gl) {
@@ -25,7 +26,7 @@ export class Renderer {
         this.gl.clearColor(0.8,0.8,0.8,1);
     }
 
-    start(scene: Scene, camera: Camera, program: ShaderProgram) {
+    start(scene: Scene, camera: Camera) {
         const loop = () => {
             this.gl.clear(
                 this.gl.COLOR_BUFFER_BIT |
@@ -33,14 +34,14 @@ export class Renderer {
             );
 
             for (const obj of scene.objects) {
-                this.drawObject(obj, camera, program);
+                this.drawObject(obj, camera);
             }
         }
 
         loop();
     }
 
-    drawObject(obj: Object, camera: Camera, program: ShaderProgram) {
+    drawObject(obj: Object, camera: Camera) {
         const gl = this.gl;
         const ra = this.aspect_ratio;
 
@@ -49,10 +50,10 @@ export class Renderer {
         const NM = this.normalMatrix(VM, TG);       // Normal matrix
         const PM = camera.getProjectionMatrix(ra);  // Projection matrix
         
-        VM.setUniform(gl, program.VMLoc, false);
-        TG.setUniform(gl, program.TGLoc, false);
-        NM.setUniform(gl, program.NMLoc, false);
-        PM.setUniform(gl, program.PMLoc, false);
+        VM.setUniform(gl, this.program.VMLoc, false);
+        TG.setUniform(gl, this.program.TGLoc, false);
+        NM.setUniform(gl, this.program.NMLoc, false);
+        PM.setUniform(gl, this.program.PMLoc, false);
 
         gl.bindVertexArray(obj.vao);
         gl.drawArrays(gl.TRIANGLES, 0, obj.vertices.length / 3);
