@@ -41,7 +41,7 @@ export class Renderer {
                 //console.log("Inside start function", obj);
                 this.drawObject(obj, camera);
             }
-            //requestAnimationFrame(loop);
+            requestAnimationFrame(loop);
         }
 
         loop();

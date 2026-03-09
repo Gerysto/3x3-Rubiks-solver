@@ -8,7 +8,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 export class ShaderProgram {
-    constructor(gl, url_vertex, url_fragment) {
+    constructor() {
         this.vertexLoc = -1;
         this.normalLoc = -1;
         this.matambLoc = -1;
@@ -20,7 +20,6 @@ export class ShaderProgram {
         this.PMLoc = -1;
         this.NMLoc = -1;
         this.program = WebGLProgram;
-        this.load_shaders(gl, url_fragment, url_fragment);
     }
     load_shaders(gl, url_vertex, url_fragment) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -56,6 +55,10 @@ export class ShaderProgram {
         this.VMLoc = VMLocAux;
         this.PMLoc = PMLocAux;
         this.NMLoc = NMLocAux;
+        console.log(this.TGLoc);
+        console.log(this.VMLoc);
+        console.log(this.PMLoc);
+        console.log(this.NMLoc);
     }
     getShaderSource(url) {
         return __awaiter(this, void 0, void 0, function* () {
