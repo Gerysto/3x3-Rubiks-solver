@@ -28,10 +28,9 @@ export class Renderer {
         this.gl.clearColor(0.8,0.8,0.8,1);
     }
 
-    start(scene: Scene, camera: Camera, rubiks_cube: RubiksCube) {
+    async start(scene: Scene, camera: Camera, rubiks_cube: RubiksCube) {
         let t = 0.0;
 
-        rubiks_cube.createVAOs(this.gl, this.program);
         const loop = () => {
             this.gl.clear(
                 this.gl.COLOR_BUFFER_BIT |

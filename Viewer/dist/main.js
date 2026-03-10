@@ -25,7 +25,7 @@ function start() {
         const scene = new Scene();
         const camera = new Camera();
         let cube = new RubiksCube();
-        cube.createVAOs(gl, program);
+        yield cube.createVAOs(gl, program);
         cube.add_to_scene(scene);
         const renderer = new Renderer(gl, canvas, program);
         new MouseController(camera, canvas);

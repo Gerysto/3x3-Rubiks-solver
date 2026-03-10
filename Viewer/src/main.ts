@@ -21,7 +21,7 @@ async function start() {
     const camera = new Camera();
 
     let cube: RubiksCube = new RubiksCube();
-    cube.createVAOs(gl, program);
+    await cube.createVAOs(gl, program);
     cube.add_to_scene(scene);
 
     const renderer = new Renderer(gl, canvas, program);

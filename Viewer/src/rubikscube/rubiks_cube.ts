@@ -18,12 +18,14 @@ export class RubiksCube {
         this.corners = [];
         this.edges = [];
         this.centers = [];
+    }
 
+    private async load() {
         for (let c = 0; c < 8; ++c) {
             const path = CORNER_MODELS_URL.replace('#', c.toString());
             let obj: MeshObject = new MeshObject();
             obj.ModelTransform = corner_TG[c];
-            obj.readObj(path);
+            await obj.readObj(path);
             this.corners.push(obj);
         }
 
@@ -31,7 +33,7 @@ export class RubiksCube {
             const path = EDGE_MODELS_URL.replace('#', i.toString());
             let obj: MeshObject = new MeshObject();
             obj.ModelTransform = edge_TG[i];
-            obj.readObj(path);
+            await obj.readObj(path);
             this.edges.push(obj);
         }
 
@@ -39,12 +41,13 @@ export class RubiksCube {
             const path = CENTER_MODELS_URL.replace('#', i.toString());
             let obj: MeshObject = new MeshObject();
             obj.ModelTransform = center_TG[i];
-            obj.readObj(path);
+            await obj.readObj(path);
             this.centers.push(obj);
         }
     }
 
-    createVAOs(gl: WebGL2RenderingContext, program: ShaderProgram) {
+    async createVAOs(gl: WebGL2RenderingContext, program: ShaderProgram) {
+        await this.load();
         for (let obj of this.corners) obj.createVAO(gl, program);
         for (let obj of this.edges)   obj.createVAO(gl, program);
         for (let obj of this.centers) obj.createVAO(gl, program);

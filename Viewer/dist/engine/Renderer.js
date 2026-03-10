@@ -1,3 +1,12 @@
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 //import { J3DIMatrix4 } from '../../libs/J3DIMath.js';
 export class Renderer {
     constructor(gl, canvas, program) {
@@ -14,26 +23,27 @@ export class Renderer {
         this.gl.clearColor(0.8, 0.8, 0.8, 1);
     }
     start(scene, camera, rubiks_cube) {
-        let t = 0.0;
-        rubiks_cube.createVAOs(this.gl, this.program);
-        const loop = () => {
-            this.gl.clear(this.gl.COLOR_BUFFER_BIT |
-                this.gl.DEPTH_BUFFER_BIT);
-            if (Renderer.resizeCanvasToDisplaySize(this.gl)) {
-                // Re-calculate projection view / projection matrices!
-            }
-            ;
-            for (const obj of scene.objects) {
-                //console.log("Inside start function", obj);
-                this.drawObject(obj, camera);
-            }
-            rubiks_cube.perform_move("R", true, t);
-            t += 0.01;
-            if (t > 1)
-                t -= 1;
-            requestAnimationFrame(loop);
-        };
-        loop();
+        return __awaiter(this, void 0, void 0, function* () {
+            let t = 0.0;
+            const loop = () => {
+                this.gl.clear(this.gl.COLOR_BUFFER_BIT |
+                    this.gl.DEPTH_BUFFER_BIT);
+                if (Renderer.resizeCanvasToDisplaySize(this.gl)) {
+                    // Re-calculate projection view / projection matrices!
+                }
+                ;
+                for (const obj of scene.objects) {
+                    //console.log("Inside start function", obj);
+                    this.drawObject(obj, camera);
+                }
+                rubiks_cube.perform_move("R", true, t);
+                t += 0.01;
+                if (t > 1)
+                    t -= 1;
+                requestAnimationFrame(loop);
+            };
+            loop();
+        });
     }
     drawObject(obj, camera) {
         const gl = this.gl;
