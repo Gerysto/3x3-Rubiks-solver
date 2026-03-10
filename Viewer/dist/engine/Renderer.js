@@ -36,17 +36,16 @@ export class Renderer {
         const TG = obj.ModelTransform; // Model matrix
         const NM = this.normalMatrix(VM, TG); // Normal matrix
         const PM = camera.getProjectionMatrix(ra); // Projection matrix
-        const F = false;
         /*console.log("Des de renderer: ", this.program.VMLoc);
         console.log("Des de renderer: ", this.program.TGLoc);
         console.log("Des de renderer: ", this.program.NMLoc);
         console.log("Des de renderer: ", this.program.PMLoc);*/
-        VM.setUniform(gl, this.program.VMLoc, F);
-        TG.setUniform(gl, this.program.TGLoc, F);
-        NM.setUniform(gl, this.program.NMLoc, F);
-        PM.setUniform(gl, this.program.PMLoc, F);
+        VM.setUniform(gl, this.program.VMLoc, false);
+        TG.setUniform(gl, this.program.TGLoc, false);
+        NM.setUniform(gl, this.program.NMLoc, false);
+        PM.setUniform(gl, this.program.PMLoc, false);
         gl.bindVertexArray(obj.vao);
-        gl.drawArrays(gl.TRIANGLES, 0, obj.vertices.length / 3);
+        gl.drawArrays(gl.TRIANGLES, 0, obj.faces.length * 3);
     }
     normalMatrix(VM, TG) {
         const NM = new J3DIMatrix4();
