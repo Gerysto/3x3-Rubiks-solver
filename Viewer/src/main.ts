@@ -4,6 +4,7 @@ import { Scene } from "./engine/Scene.js";
 import { Object } from "./engine/Object.js";
 import { ShaderProgram } from "./shaders/ShaderProgram.js";
 import { MouseController } from "./input/MouseController.js";
+import { RubiksCube } from "./rubikscube/rubiks_cube.js";
 
 const vertex_url = 'src/shaders/phong.vert';
 const fragment_url = 'src/shaders/phong.frag';
@@ -22,12 +23,9 @@ async function start() {
     new MouseController(camera, canvas);
     
     // Example: Loading just one model!
-    const object = new Object();
-
-    await object.readObj("assets/models/corners/c0.obj");
-    object.createVAO(gl, program);
-
-    scene.addObject(object);
+    let cube: RubiksCube = new RubiksCube();
+    cube.createVAOs(gl, program);
+    cube.add_to_scene(scene);
 
     console.log("Starting renderer!!");
     renderer.start(scene, camera);
