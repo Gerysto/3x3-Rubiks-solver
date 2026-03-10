@@ -37,9 +37,8 @@ export class Renderer {
                     this.drawObject(obj, camera);
                 }
                 rubiks_cube.perform_move("R", true, t);
-                t += 0.01;
-                if (t > 1)
-                    t -= 1;
+                t += 0.02;
+                //if (t > 1) t -= 1;
                 requestAnimationFrame(loop);
             };
             loop();

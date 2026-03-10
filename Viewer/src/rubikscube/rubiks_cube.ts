@@ -71,12 +71,14 @@ export class RubiksCube {
         let angle = 90*t;
         if (clockwhise) angle *= -1;
 
+        // TODO: change axis of rotation depending on the move!!
+
         // Corners
         for (let i of pieces_involved[0]) {
             // Divide index by 3 to conver from 'stiker index' to 'piece index'
             const piece = Math.floor(i/3);
             this.corners[piece].ModelTransform = new J3DIMatrix4();
-            this.corners[piece].ModelTransform.rotate(90*t, 1, 0, 0);
+            this.corners[piece].ModelTransform.rotate(angle, 1, 0, 0);
             this.corners[piece].ModelTransform.multiply(corner_TG[piece]);
         }
 
@@ -85,14 +87,14 @@ export class RubiksCube {
             // Divide index by 2 to conver from 'stiker index' to 'piece index'
             const piece = Math.floor(i/2);
             this.edges[piece].ModelTransform = new J3DIMatrix4();
-            this.edges[piece].ModelTransform.rotate(90*t, 1, 0, 0);
+            this.edges[piece].ModelTransform.rotate(angle, 1, 0, 0);
             this.edges[piece].ModelTransform.multiply(edge_TG[piece]);
         }
 
         // Centers: 
         for (let i of pieces_involved[2]) {
             this.centers[i].ModelTransform = new J3DIMatrix4();
-            this.centers[i].ModelTransform.rotate(90*t, 1, 0, 0);
+            this.centers[i].ModelTransform.rotate(angle, 1, 0, 0);
             this.centers[i].ModelTransform.multiply(center_TG[i]);
         }
     }
