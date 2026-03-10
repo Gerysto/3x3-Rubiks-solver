@@ -1,4 +1,4 @@
-import {Object} from '../engine/Object.js';
+import {MeshObject} from '../engine/MeshObject.js';
 import { Scene } from '../engine/Scene.js';
 import { ShaderProgram } from '../shaders/ShaderProgram.js';
 import { corner_TG, edge_TG, center_TG } from './piece_transformations.js';
@@ -10,9 +10,9 @@ const CENTER_MODELS_URL = 'assets/models/centers/f#.obj';
 
 export class RubiksCube {
 
-    corners: Object[];
-    edges: Object[];
-    centers: Object[];
+    corners: MeshObject[];
+    edges: MeshObject[];
+    centers: MeshObject[];
 
     constructor() {
         this.corners = [];
@@ -21,7 +21,7 @@ export class RubiksCube {
 
         for (let c = 0; c < 8; ++c) {
             const path = CORNER_MODELS_URL.replace('#', c.toString());
-            let obj: Object = new Object();
+            let obj: MeshObject = new MeshObject();
             obj.ModelTransform = corner_TG[c];
             obj.readObj(path);
             this.corners.push(obj);
@@ -29,7 +29,7 @@ export class RubiksCube {
 
         for (let i = 0; i < 12; ++i) {
             const path = EDGE_MODELS_URL.replace('#', i.toString());
-            let obj: Object = new Object();
+            let obj: MeshObject = new MeshObject();
             obj.ModelTransform = edge_TG[i];
             obj.readObj(path);
             this.edges.push(obj);
@@ -37,7 +37,7 @@ export class RubiksCube {
 
         for (let i = 0; i < 6; ++i) {
             const path = CENTER_MODELS_URL.replace('#', i.toString());
-            let obj: Object = new Object();
+            let obj: MeshObject = new MeshObject();
             obj.ModelTransform = center_TG[i];
             obj.readObj(path);
             this.centers.push(obj);
@@ -65,21 +65,25 @@ export class RubiksCube {
     perform_move(move: string, clockwhise: boolean, t: number) {
         const pieces_involved = PIECES_INVOLVED.get(move) as number[][];
 
+        let angle = 90*t;
+        if (clockwhise) angle *= -1;
+
         // Corners
         for (let i of pieces_involved[0]) {
             // Divide index by 3 to conver from 'stiker index' to 'piece index'
-
-            this.corners[i/3].ModelTransform = new J3DIMatrix4();
-            this.corners[i/3].ModelTransform.rotate(90*t, 1, 0, 0);
-            this.corners[i/3].ModelTransform.multiply(corner_TG[i]);
+            const piece = Math.floor(i/3);
+            this.corners[piece].ModelTransform = new J3DIMatrix4();
+            this.corners[piece].ModelTransform.rotate(90*t, 1, 0, 0);
+            this.corners[piece].ModelTransform.multiply(corner_TG[piece]);
         }
 
         // Edges: 
         for (let i of pieces_involved[1])   {
             // Divide index by 2 to conver from 'stiker index' to 'piece index'
-            this.edges[i/2].ModelTransform = new J3DIMatrix4();
-            this.edges[i/2].ModelTransform.rotate(90*t, 1, 0, 0);
-            this.edges[i/2].ModelTransform.multiply(edge_TG[i]);
+            const piece = Math.floor(i/2);
+            this.edges[piece].ModelTransform = new J3DIMatrix4();
+            this.edges[piece].ModelTransform.rotate(90*t, 1, 0, 0);
+            this.edges[piece].ModelTransform.multiply(edge_TG[piece]);
         }
 
         // Centers: 

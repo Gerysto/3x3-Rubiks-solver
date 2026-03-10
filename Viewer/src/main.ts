@@ -1,7 +1,7 @@
 import { Camera } from "./engine/Camera.js";
 import { Renderer } from "./engine/Renderer.js";
 import { Scene } from "./engine/Scene.js";
-import { Object } from "./engine/Object.js";
+import { MeshObject } from "./engine/MeshObject.js";
 import { ShaderProgram } from "./shaders/ShaderProgram.js";
 import { MouseController } from "./input/MouseController.js";
 import { RubiksCube } from "./rubikscube/rubiks_cube.js";
@@ -15,20 +15,22 @@ async function start() {
 
     const program = new ShaderProgram();
     await program.load_shaders(gl, vertex_url, fragment_url);
-    const renderer = new Renderer(gl, canvas, program);
+    program.use(gl);
 
     const scene = new Scene();
     const camera = new Camera();
-    
-    new MouseController(camera, canvas);
-    
-    // Example: Loading just one model!
+
     let cube: RubiksCube = new RubiksCube();
     cube.createVAOs(gl, program);
     cube.add_to_scene(scene);
 
+    const renderer = new Renderer(gl, canvas, program);
+
+    new MouseController(camera, canvas);
+    
+
     console.log("Starting renderer!!");
-    renderer.start(scene, camera);
+    renderer.start(scene, camera, cube);
 }
 
 

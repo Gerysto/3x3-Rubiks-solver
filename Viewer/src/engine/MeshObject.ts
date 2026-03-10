@@ -29,7 +29,7 @@ export class Face {
     };
 }
 
-export class Object {
+export class MeshObject {
     materials : Map<string,Material>
     vertices : number[];
     normals : number[];

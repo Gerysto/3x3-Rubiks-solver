@@ -1,13 +1,13 @@
 import {Camera} from './Camera.js';
 import {Vec3} from './Vec3.js';
 import {Box} from './Box.js';
-import {Object} from './Object.js';
+import {MeshObject} from './MeshObject.js';
 //import {J3DIMatrix4, J3DIVector3} from '../../libs/J3DIMath.js'
 
 
 export class Scene {
 
-    objects : Object[];
+    objects : MeshObject[];
     camera : Camera;
     boundingBox : Box;
 
@@ -20,7 +20,7 @@ export class Scene {
         );
     }
 
-    addObject(obj: Object) {
+    addObject(obj: MeshObject) {
         this.objects.push(obj);
         this.expandSceneBoundingBox(obj);
     }
@@ -36,7 +36,7 @@ export class Scene {
         }
     }
 
-    private expandSceneBoundingBox(obj: Object) {
+    private expandSceneBoundingBox(obj: MeshObject) {
         const max = obj.boundingBox.max;
         const min = obj.boundingBox.min;
 

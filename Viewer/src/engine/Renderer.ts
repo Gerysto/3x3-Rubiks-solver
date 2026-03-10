@@ -1,7 +1,8 @@
 import {Scene} from './Scene.js';
 import {Camera} from './Camera.js';
-import {Object} from './Object.js';
+import {MeshObject} from './MeshObject.js';
 import {ShaderProgram} from '../shaders/ShaderProgram.js'
+import { RubiksCube } from '../rubikscube/rubiks_cube.js';
 //import { J3DIMatrix4 } from '../../libs/J3DIMath.js';
 
 export class Renderer {
@@ -27,7 +28,10 @@ export class Renderer {
         this.gl.clearColor(0.8,0.8,0.8,1);
     }
 
-    start(scene: Scene, camera: Camera) {
+    start(scene: Scene, camera: Camera, rubiks_cube: RubiksCube) {
+        let t = 0.0;
+
+        rubiks_cube.createVAOs(this.gl, this.program);
         const loop = () => {
             this.gl.clear(
                 this.gl.COLOR_BUFFER_BIT |
@@ -41,13 +45,18 @@ export class Renderer {
                 //console.log("Inside start function", obj);
                 this.drawObject(obj, camera);
             }
+
+            rubiks_cube.perform_move("R", true, t);
+
+            t += 0.01;
+            if (t > 1) t -= 1;
             requestAnimationFrame(loop);
         }
 
         loop();
     }
 
-    drawObject(obj: Object, camera: Camera) {
+    drawObject(obj: MeshObject, camera: Camera) {
         const gl = this.gl;
         const ra = this.aspect_ratio;
 
@@ -69,6 +78,7 @@ export class Renderer {
 
         gl.bindVertexArray(obj.vao);
         gl.drawArrays(gl.TRIANGLES, 0, obj.faces.length*3);
+        gl.bindVertexArray(null);
     }
 
     private normalMatrix(VM: J3DIMatrix4, TG: J3DIMatrix4) : J3DIMatrix4 {

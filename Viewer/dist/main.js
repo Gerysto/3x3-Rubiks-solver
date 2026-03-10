@@ -21,16 +21,16 @@ function start() {
         const gl = canvas.getContext("webgl2");
         const program = new ShaderProgram();
         yield program.load_shaders(gl, vertex_url, fragment_url);
-        const renderer = new Renderer(gl, canvas, program);
+        program.use(gl);
         const scene = new Scene();
         const camera = new Camera();
-        new MouseController(camera, canvas);
-        // Example: Loading just one model!
         let cube = new RubiksCube();
         cube.createVAOs(gl, program);
         cube.add_to_scene(scene);
+        const renderer = new Renderer(gl, canvas, program);
+        new MouseController(camera, canvas);
         console.log("Starting renderer!!");
-        renderer.start(scene, camera);
+        renderer.start(scene, camera, cube);
     });
 }
 start();

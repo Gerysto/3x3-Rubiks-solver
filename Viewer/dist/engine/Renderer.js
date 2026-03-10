@@ -13,7 +13,9 @@ export class Renderer {
         this.gl.enable(this.gl.DEPTH_TEST);
         this.gl.clearColor(0.8, 0.8, 0.8, 1);
     }
-    start(scene, camera) {
+    start(scene, camera, rubiks_cube) {
+        let t = 0.0;
+        rubiks_cube.createVAOs(this.gl, this.program);
         const loop = () => {
             this.gl.clear(this.gl.COLOR_BUFFER_BIT |
                 this.gl.DEPTH_BUFFER_BIT);
@@ -25,6 +27,10 @@ export class Renderer {
                 //console.log("Inside start function", obj);
                 this.drawObject(obj, camera);
             }
+            rubiks_cube.perform_move("R", true, t);
+            t += 0.01;
+            if (t > 1)
+                t -= 1;
             requestAnimationFrame(loop);
         };
         loop();
@@ -46,6 +52,7 @@ export class Renderer {
         PM.setUniform(gl, this.program.PMLoc, false);
         gl.bindVertexArray(obj.vao);
         gl.drawArrays(gl.TRIANGLES, 0, obj.faces.length * 3);
+        gl.bindVertexArray(null);
     }
     normalMatrix(VM, TG) {
         const NM = new J3DIMatrix4();
