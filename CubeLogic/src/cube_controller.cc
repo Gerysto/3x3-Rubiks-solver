@@ -52,15 +52,21 @@ string CubeController::find_solution() {
     return m.to_notation(cube.orientation);
 }
 
-/**
- * Returns the cube state in a way that makes it slightly easier to draw.
- */
-vector<u_int8_t> CubeController::get_cube_state() const{
-    // TODO!
-    cout << "TODO!!!!" << endl;
-    return {};
+vector<int> CubeController::get_state_corners() const{
+    vector<int> res;
+    for (const int x: cube.state.corners) {
+        res.push_back((int) x);
+    }
+    return res;
 }
 
+vector<int> CubeController::get_state_edges() const{
+    vector<int> res;
+    for (const int x: cube.state.edges) {
+        res.push_back((int) x);
+    }
+    return res;
+}
 
 EMSCRIPTEN_BINDINGS(cube_controller) {
     emscripten::class_<CubeController>("CubeController")
@@ -70,5 +76,8 @@ EMSCRIPTEN_BINDINGS(cube_controller) {
         .function("print_state", &CubeController::print_state)
         .function("reset_cube_state", &CubeController::reset_cube_state)
         .function("find_solution", &CubeController::find_solution)
-        .function("get_cube_state", &CubeController::get_cube_state);
-    }
+        .function("get_state_corners", &CubeController::get_state_corners)
+        .function("get_state_edges", &CubeController::get_state_edges);
+
+    emscripten::register_vector<int>("VectorInt");
+}

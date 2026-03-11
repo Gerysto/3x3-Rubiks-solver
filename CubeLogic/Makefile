@@ -34,10 +34,11 @@ wasm:
 	src/orientation.cc src/solver.cc \
 	src/state.cc \
 	-o bin/cube_lib.js \
-	-s MODULARIZE=1 -s \
-	EXPORT_NAME="createModule" \
+	-s MODULARIZE=1 \
+	-s EXPORT_ES6=1 \
+	-s EXPORT_NAME="createModule" \
 	--bind
-
+	
 	cp bin/cube_lib.js ../Viewer/libs/cube_lib.js
 	cp bin/cube_lib.wasm ../Viewer/libs/cube_lib.wasm
 

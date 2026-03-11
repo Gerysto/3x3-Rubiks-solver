@@ -49,8 +49,9 @@ class CubeController {
     /**
      * Returns the cube state in a way that makes it slightly easier to draw.
      */
-    vector<u_int8_t> get_cube_state() const;
+    vector<int> get_state_corners() const;
 
+    vector<int> get_state_edges() const;
 };
 
 
