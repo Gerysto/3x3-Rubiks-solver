@@ -1,7 +1,7 @@
 
 var createModule = (() => {
-  var _scriptDir = typeof document !== 'undefined' && document.currentScript ? document.currentScript.src : undefined;
-  if (typeof __filename !== 'undefined') _scriptDir = _scriptDir || __filename;
+  var _scriptDir = import.meta.url;
+  
   return (
 function(createModule) {
   createModule = createModule || {};
@@ -1566,10 +1566,15 @@ function createExportWrapper(name, fixedasm) {
 }
 
 var wasmBinaryFile;
+if (Module['locateFile']) {
   wasmBinaryFile = 'cube_lib.wasm';
   if (!isDataURI(wasmBinaryFile)) {
     wasmBinaryFile = locateFile(wasmBinaryFile);
   }
+} else {
+  // Use bundler-friendly `new URL(..., import.meta.url)` pattern; works in browsers too.
+  wasmBinaryFile = new URL('cube_lib.wasm', import.meta.url).toString();
+}
 
 function getBinary(file) {
   try {
@@ -3555,6 +3560,26 @@ var ASM_CONSTS = {
               return undefined;
           },
       });
+    }
+
+
+  function __emval_incref(handle) {
+      if (handle > 4) {
+          emval_handle_array[handle].refcount += 1;
+      }
+    }
+
+  function requireRegisteredType(rawType, humanName) {
+      var impl = registeredTypes[rawType];
+      if (undefined === impl) {
+          throwBindingError(humanName + " has unknown type " + getTypeName(rawType));
+      }
+      return impl;
+    }
+  function __emval_take_value(type, argv) {
+      type = requireRegisteredType(type, '_emval_take_value');
+      var v = type['readValueFromPointer'](argv);
+      return Emval.toHandle(v);
     }
 
   function _abort() {
@@ -6607,6 +6632,9 @@ var asmLibraryArg = {
   "_embind_register_std_string": __embind_register_std_string,
   "_embind_register_std_wstring": __embind_register_std_wstring,
   "_embind_register_void": __embind_register_void,
+  "_emval_decref": __emval_decref,
+  "_emval_incref": __emval_incref,
+  "_emval_take_value": __emval_take_value,
   "abort": _abort,
   "emscripten_memcpy_big": _emscripten_memcpy_big,
   "emscripten_resize_heap": _emscripten_resize_heap,
@@ -7188,9 +7216,4 @@ run();
 }
 );
 })();
-if (typeof exports === 'object' && typeof module === 'object')
-  module.exports = createModule;
-else if (typeof define === 'function' && define['amd'])
-  define([], function() { return createModule; });
-else if (typeof exports === 'object')
-  exports["createModule"] = createModule;
+export default createModule;
