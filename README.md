@@ -15,10 +15,10 @@ The goal is to eventually integrate both parts using WebAssembly so the user can
 * [x] Fully implemented cube logic and solver (C++)
 * [x] 3D cube visualization (WebGL2)
 * [x] Rotate the cube using Euler angles in the viewer
-* [ ] Integrate solver and viewer using WebAssembly
+* [x] Integrate solver and viewer using WebAssembly
 * [ ] Move-based interactions in the viewer
-* [ ] Animate solving sequences in the 3D view
-* [ ] Scramble and user-input functionality
+* [x] Animate solving sequences in the 3D view
+* [x] Scramble and user-input functionality
 
 ## Project Structure
 
