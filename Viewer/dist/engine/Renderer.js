@@ -1,14 +1,3 @@
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-import createModule from '../../libs/cube_lib.js';
-//import { J3DIMatrix4 } from '../../libs/J3DIMath.js';
 export class Renderer {
     constructor(gl, canvas, program) {
         this.gl = gl;
@@ -23,40 +12,16 @@ export class Renderer {
         this.gl.enable(this.gl.DEPTH_TEST);
         this.gl.clearColor(0.8, 0.8, 0.8, 1);
     }
-    vectorToArray(v) {
-        let res = [];
-        for (let i = 0; i < v.size(); ++i) {
-            res.push(v.get(i));
+    render(scene, camera) {
+        this.gl.clear(this.gl.COLOR_BUFFER_BIT |
+            this.gl.DEPTH_BUFFER_BIT);
+        if (Renderer.resizeCanvasToDisplaySize(this.gl)) {
+            // TODO: Re-calculate projection view / projection matrices here!
         }
-        return res;
-    }
-    start(scene, camera, rubiks_cube) {
-        return __awaiter(this, void 0, void 0, function* () {
-            let t = 0.0;
-            let module = yield createModule();
-            let ctrl = new module.CubeController();
-            ctrl.execute_sequence_in_notation("R U R' U'");
-            const corner_state = this.vectorToArray(ctrl.get_state_corners());
-            const edge_state = this.vectorToArray(ctrl.get_state_edges());
-            rubiks_cube.update_state(corner_state, edge_state);
-            const loop = () => {
-                this.gl.clear(this.gl.COLOR_BUFFER_BIT |
-                    this.gl.DEPTH_BUFFER_BIT);
-                if (Renderer.resizeCanvasToDisplaySize(this.gl)) {
-                    // Re-calculate projection view / projection matrices!
-                }
-                ;
-                for (const obj of scene.objects) {
-                    //console.log("Inside start function", obj);
-                    this.drawObject(obj, camera);
-                }
-                //rubiks_cube.perform_move("R", true, t);
-                t += 0.02;
-                //if (t > 1) t -= 1;
-                requestAnimationFrame(loop);
-            };
-            loop();
-        });
+        ;
+        for (const obj of scene.objects) {
+            this.drawObject(obj, camera);
+        }
     }
     drawObject(obj, camera) {
         const gl = this.gl;

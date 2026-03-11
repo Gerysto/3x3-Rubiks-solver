@@ -29,6 +29,10 @@ export const EDGE_CYCLE = {
     RO_SLICE: [4, 1, 16, 20],
     GB_SLICE: [7, 2, 19, 22]
 };
+export const SOLVED = {
+    CORNERS: [0, 3, 6, 9, 12, 15, 18, 21],
+    EDGES: [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22]
+};
 /**
  *  Edges involved in each turn (clockwhise)
  */

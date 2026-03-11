@@ -13,6 +13,9 @@ import { Scene } from "./engine/Scene.js";
 import { ShaderProgram } from "./shaders/ShaderProgram.js";
 import { MouseController } from "./input/MouseController.js";
 import { RubiksCube } from "./rubikscube/rubiks_cube.js";
+import { RubiksAnimator } from "./rubikscube/rubiks_animator.js";
+import { init_listeners } from "./eventListeners.js";
+import createModule from "../libs/cube_lib.js";
 const vertex_url = 'src/shaders/phong.vert';
 const fragment_url = 'src/shaders/phong.frag';
 function start() {
@@ -29,8 +32,24 @@ function start() {
         cube.add_to_scene(scene);
         const renderer = new Renderer(gl, canvas, program);
         new MouseController(camera, canvas);
+        let module = yield createModule();
+        let ctrl = new module.CubeController();
+        const animator = new RubiksAnimator(cube, ctrl);
+        console.log("Initializing listeners!!");
+        init_listeners(animator);
         console.log("Starting renderer!!");
-        renderer.start(scene, camera, cube);
+        start_rendering(renderer, scene, camera, animator);
     });
+}
+function start_rendering(renderer, scene, camera, animator) {
+    let prev_time = 0;
+    const loop = (time) => {
+        const dt = time - prev_time;
+        prev_time = time;
+        animator.update(dt / 1000);
+        renderer.render(scene, camera);
+        requestAnimationFrame(loop);
+    };
+    requestAnimationFrame(loop);
 }
 start();
