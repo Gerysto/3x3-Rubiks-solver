@@ -2,10 +2,6 @@ import {Scene} from './Scene.js';
 import {Camera} from './Camera.js';
 import {MeshObject} from './MeshObject.js';
 import {ShaderProgram} from '../shaders/ShaderProgram.js';
-import { RubiksCube } from '../rubikscube/rubiks_cube.js';
-import createModule, { CubeModule } from '../../libs/cube_lib.js';
-
-//import { J3DIMatrix4 } from '../../libs/J3DIMath.js';
 
 export class Renderer {
 
@@ -30,45 +26,19 @@ export class Renderer {
         this.gl.clearColor(0.8,0.8,0.8,1);
     }
 
-    vectorToArray(v: any): number[] {
-        let res = [];
-        for (let i = 0; i < v.size(); ++i) {
-            res.push(v.get(i));
+    render(scene: Scene, camera: Camera) {
+        this.gl.clear(
+            this.gl.COLOR_BUFFER_BIT |
+            this.gl.DEPTH_BUFFER_BIT
+        );
+
+        if (Renderer.resizeCanvasToDisplaySize(this.gl)) {
+            // TODO: Re-calculate projection view / projection matrices here!
+        };
+        
+        for (const obj of scene.objects) {
+            this.drawObject(obj, camera);
         }
-        return res;
-    }
-
-    async start(scene: Scene, camera: Camera, rubiks_cube: RubiksCube) {
-        let t = 0.0;
-        let module = await createModule();
-        let ctrl = new module.CubeController();
-        ctrl.execute_sequence_in_notation("R");
-
-        const corner_state = this.vectorToArray(ctrl.get_state_corners());
-        const edge_state   = this.vectorToArray(ctrl.get_state_edges());
-        rubiks_cube.update_state(corner_state, edge_state);
-        const loop = () => {
-            this.gl.clear(
-                this.gl.COLOR_BUFFER_BIT |
-                this.gl.DEPTH_BUFFER_BIT
-            );
-            if (Renderer.resizeCanvasToDisplaySize(this.gl)) {
-                // Re-calculate projection view / projection matrices!
-            };
-            
-            for (const obj of scene.objects) {
-                //console.log("Inside start function", obj);
-                this.drawObject(obj, camera);
-            }
-
-            //rubiks_cube.perform_move("R", true, t);
-
-            t += 0.02;
-            //if (t > 1) t -= 1;
-            requestAnimationFrame(loop);
-        }
-
-        loop();
     }
 
     drawObject(obj: MeshObject, camera: Camera) {
