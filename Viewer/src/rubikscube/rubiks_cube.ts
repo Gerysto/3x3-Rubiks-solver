@@ -94,12 +94,7 @@ export class RubiksCube {
             // Divide index by 3 to conver from 'stiker index' to 'piece index'
             const pos = Math.floor(i/3);
             const piece = Math.floor(this.state.corners[pos]/3);
-            
-            /**
-             * i = 6 -> pos = 2
-             * piece = 6         stiker = 20
-             */
-
+        
             this.corners[piece].ModelTransform = new J3DIMatrix4();
             this.corners[piece].ModelTransform.rotate(angle, x, y, z);
             this.corners[piece].ModelTransform.multiply(corner_TG[pos]);
