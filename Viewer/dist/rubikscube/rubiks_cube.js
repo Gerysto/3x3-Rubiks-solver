@@ -74,7 +74,6 @@ export class RubiksCube {
         let angle = 90 * t;
         if (clockwhise)
             angle *= -1;
-        // TODO: change axis of rotation depending on the move!!
         const aux = AXIS_OF_ROTATION.get(move);
         if (aux == undefined) {
             throw Error("Invalid move: '" + move + "' ");
