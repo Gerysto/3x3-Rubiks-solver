@@ -102,4 +102,29 @@ export class RubiksCube {
             this.centers[i].ModelTransform.multiply(center_TG[i]);
         }
     }
+    update_state(corners, edges) {
+        console.log("Updating state: ", corners, edges);
+        for (let i = 0; i < corners.length; ++i) {
+            // TODO: Take piece orientation into account!
+            const piece = Math.floor(corners[i] / 3);
+            this.corners[piece].ModelTransform = new J3DIMatrix4();
+            this.corners[piece].ModelTransform.multiply(corner_TG[i]);
+            const orientation = corners[i] % 3;
+            if (orientation != 0) {
+                // Orient the corner:
+                this.corners[piece].ModelTransform.rotate(-orientation * 360 / 3, -1, 1, -1);
+            }
+        }
+        for (let i = 0; i < edges.length; ++i) {
+            // TODO: Take piece orientation into account!
+            const piece = Math.floor(edges[i] / 2);
+            this.edges[piece].ModelTransform = new J3DIMatrix4();
+            this.edges[piece].ModelTransform.multiply(edge_TG[i]);
+            const orientation = edges[i] % 2;
+            if (orientation != 0) {
+                // Orient the edge:
+                this.corners[piece].ModelTransform.rotate(180, 0, 1, -1);
+            }
+        }
+    }
 }
