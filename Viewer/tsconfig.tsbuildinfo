@@ -1,0 +1,1 @@
+{"root":["./src/main.ts","./src/engine/Box.ts","./src/engine/Camera.ts","./src/engine/Object.ts","./src/engine/Renderer.ts","./src/engine/Scene.ts","./src/engine/Vec3.ts","./src/input/MouseController.ts","./src/shaders/ShaderProgram.ts","./libs/J3DIMath.d.ts"],"version":"5.9.3"}

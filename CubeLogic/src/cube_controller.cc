@@ -62,7 +62,7 @@ vector<u_int8_t> CubeController::get_cube_state() const{
 }
 
 
-EMSCRIPTEN_BINDINGS(cube_controlller) {
+EMSCRIPTEN_BINDINGS(cube_controller) {
     emscripten::class_<CubeController>("CubeController")
         .constructor()
         .function("init_solver", &CubeController::init_solver)
@@ -71,5 +71,4 @@ EMSCRIPTEN_BINDINGS(cube_controlller) {
         .function("reset_cube_state", &CubeController::reset_cube_state)
         .function("find_solution", &CubeController::find_solution)
         .function("get_cube_state", &CubeController::get_cube_state);
-
     }
