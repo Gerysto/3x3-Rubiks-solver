@@ -1,10 +1,13 @@
 import { Camera } from "./engine/Camera.js";
 import { Renderer } from "./engine/Renderer.js";
 import { Scene } from "./engine/Scene.js";
-import { MeshObject } from "./engine/MeshObject.js";
 import { ShaderProgram } from "./shaders/ShaderProgram.js";
 import { MouseController } from "./input/MouseController.js";
-import { RubiksCube } from "./rubikscube/rubiks_cube.js";
+import { RubiksCube, State } from "./rubikscube/rubiks_cube.js";
+import { RubiksAnimator } from "./rubikscube/rubiks_animator.js";
+import { init_listeners } from "./eventListeners.js";
+
+import createModule from "../libs/cube_lib.js";
 
 const vertex_url = 'src/shaders/phong.vert';
 const fragment_url = 'src/shaders/phong.frag';
@@ -28,10 +31,31 @@ async function start() {
 
     new MouseController(camera, canvas);
     
+    let module = await createModule();
+    let ctrl = new module.CubeController();
 
+    const animator: RubiksAnimator = new RubiksAnimator(cube, ctrl);
+
+    console.log("Initializing listeners!!");
+    init_listeners(animator);    
+    
     console.log("Starting renderer!!");
-    renderer.start(scene, camera, cube);
+    start_rendering(renderer, scene, camera, animator);
 }
 
+function start_rendering(renderer: Renderer, scene: Scene, camera: Camera, animator: RubiksAnimator) {
+    let prev_time = 0;
+    const loop = (time: number) => {
+        const dt = time - prev_time;
+        prev_time = time;
+        
+        animator.update(dt/1000);
+
+        renderer.render(scene, camera);
+        requestAnimationFrame(loop);
+    }
+
+    requestAnimationFrame(loop);
+}
 
 start();
