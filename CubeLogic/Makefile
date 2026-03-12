@@ -37,6 +37,7 @@ wasm:
 	-s MODULARIZE=1 \
 	-s EXPORT_ES6=1 \
 	-s EXPORT_NAME="createModule" \
+	-s ALLOW_MEMORY_GROWTH=1 \
 	--bind
 	
 	cp bin/cube_lib.js ../Viewer/libs/cube_lib.js
