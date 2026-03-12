@@ -14,7 +14,7 @@ import { ShaderProgram } from "./shaders/ShaderProgram.js";
 import { MouseController } from "./input/MouseController.js";
 import { RubiksCube } from "./rubikscube/rubiks_cube.js";
 import { RubiksAnimator } from "./rubikscube/rubiks_animator.js";
-import { init_listeners } from "./eventListeners.js";
+import { init_listeners } from "./input/eventListeners.js";
 import createModule from "../libs/cube_lib.js";
 const vertex_url = 'src/shaders/phong.vert';
 const fragment_url = 'src/shaders/phong.frag';

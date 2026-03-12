@@ -1,5 +1,5 @@
 import { State } from '../rubikscube/rubiks_cube.js';
-const TPS = 5; // Turns per second 
+const TPS = 16; // Turns per second 
 export class RubiksAnimator {
     constructor(cube, ctrl) {
         this.cube = cube;

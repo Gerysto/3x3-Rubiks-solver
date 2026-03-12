@@ -1,7 +1,7 @@
 import { CubeController } from '../../libs/cube_lib.js';
 import { State, RubiksCube } from '../rubikscube/rubiks_cube.js';
 
-const TPS: number = 5; // Turns per second 
+const TPS: number = 16; // Turns per second 
 
 export class RubiksAnimator {
 
