@@ -1,8 +1,6 @@
 import { CubeController } from '../../libs/cube_lib.js';
 import { State, RubiksCube } from '../rubikscube/rubiks_cube.js';
 
-const TPS: number = 16; // Turns per second 
-
 export class RubiksAnimator {
 
     cube: RubiksCube;
@@ -10,7 +8,8 @@ export class RubiksAnimator {
     queue: [State, string, boolean][];
 
     cube_ctrl: any;
-
+    TPS: number = 16; // Turns per second 
+    
     // (final_state, move, clockwhise?)
     current_move: [State, string, boolean] | null;
 
@@ -20,6 +19,7 @@ export class RubiksAnimator {
         this.queue = [];
         this.current_move = null;
         this.cube_ctrl = ctrl;
+        this.TPS = 5;
     }
 
     enqueue(final_state: State, move: string, clockwhise: boolean) {
@@ -36,7 +36,7 @@ export class RubiksAnimator {
 
         const [final_state, move, clockwhise] = this.current_move;
 
-        this.progress += TPS*dt;
+        this.progress += this.TPS*dt;
         this.cube.perform_move(move, clockwhise, this.progress);
 
         if (this.progress > 1.0) {

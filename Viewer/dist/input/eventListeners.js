@@ -10,6 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 export function init_listeners(animator) {
     const send_button = document.getElementById("send_scramble");
     const solve_button = document.getElementById("solve");
+    const turn_speed = document.getElementById("turn_speed");
     send_button.addEventListener('click', () => {
         const scramble_field = document.getElementById("scramble_field");
         let alg = scramble_field.value;
@@ -18,6 +19,10 @@ export function init_listeners(animator) {
     solve_button.addEventListener('click', () => {
         const s = animator.cube_ctrl.find_solution();
         animator.enqueue_algorithm(s);
+    });
+    turn_speed.addEventListener("change", () => {
+        const tps = parseFloat(turn_speed.value);
+        animator.TPS = tps;
     });
     function init_solver() {
         return __awaiter(this, void 0, void 0, function* () {

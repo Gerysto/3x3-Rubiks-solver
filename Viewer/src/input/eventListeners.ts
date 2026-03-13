@@ -3,6 +3,7 @@ import { RubiksAnimator } from "../rubikscube/rubiks_animator";
 export function init_listeners(animator: RubiksAnimator): void{
     const send_button  = document.getElementById("send_scramble") as HTMLButtonElement;
     const solve_button = document.getElementById("solve") as HTMLButtonElement;
+    const turn_speed = document.getElementById("turn_speed") as HTMLInputElement;
     
     send_button.addEventListener('click', () => {
         const scramble_field = document.getElementById("scramble_field") as HTMLInputElement;
@@ -15,10 +16,16 @@ export function init_listeners(animator: RubiksAnimator): void{
         animator.enqueue_algorithm(s);
     });
 
+    turn_speed.addEventListener("change", () => {
+        const tps: number = parseFloat(turn_speed.value);
+        animator.TPS = tps;
+    })
+
+    
+
     async function init_solver() {
         animator.cube_ctrl.init_solver();
         console.log("Finished initializing solver!");
     }
-
     // init_solver(); <--- UN COMMENT! (this really slows down the page!)
 }

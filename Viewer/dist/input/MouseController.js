@@ -19,11 +19,11 @@ export class MouseController {
         });
         this.canvas.addEventListener("wheel", (e) => {
             if (e.deltaY > 0 && this.camera.fov > 20) {
-                console.log("Zoom in: ", e.deltaY);
+                //console.log("Zoom in: ", e.deltaY);
                 this.camera.fov /= 1.2;
             }
             else if (e.deltaY < 0 && this.camera.fov < 130) {
-                console.log("Zoom out!", e.deltaY);
+                //console.log("Zoom out!", e.deltaY);
                 this.camera.fov *= 1.2;
             }
         });
