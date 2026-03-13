@@ -10,18 +10,22 @@ export class MouseController {
         this.canvas.addEventListener("mousemove", (e) => {
             const new_X = e.clientX - this.canvas.offsetLeft;
             const new_Y = e.clientY - this.canvas.offsetTop;
-            if (e.shiftKey && this.mouse_pressed) {
-                camera.fov += 5 * (new_X - this.mouseX) / this.canvas.width;
-                this.mouseX = new_X;
-                this.mouseY = new_Y;
-                return;
-            }
             if (this.mouse_pressed) {
                 this.camera.angleY += -(new_X - this.mouseX);
                 this.camera.angleX += (new_Y - this.mouseY);
             }
             this.mouseX = new_X;
             this.mouseY = new_Y;
+        });
+        this.canvas.addEventListener("wheel", (e) => {
+            if (e.deltaY > 0 && this.camera.fov > 20) {
+                console.log("Zoom in: ", e.deltaY);
+                this.camera.fov /= 1.2;
+            }
+            else if (e.deltaY < 0 && this.camera.fov < 130) {
+                console.log("Zoom out!", e.deltaY);
+                this.camera.fov *= 1.2;
+            }
         });
     }
 }

@@ -20,5 +20,5 @@ export function init_listeners(animator: RubiksAnimator): void{
         console.log("Finished initializing solver!");
     }
 
-    init_solver();
+    // init_solver(); <--- UN COMMENT! (this really slows down the page!)
 }
