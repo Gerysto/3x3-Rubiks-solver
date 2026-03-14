@@ -37,7 +37,7 @@ async function start() {
     const animator: RubiksAnimator = new RubiksAnimator(cube, ctrl);
 
     console.log("Initializing listeners!!");
-    init_listeners(animator);    
+    init_listeners(animator, camera);    
     
     console.log("Starting renderer!!");
     start_rendering(renderer, scene, camera, animator);
