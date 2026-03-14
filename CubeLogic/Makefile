@@ -1,47 +1,50 @@
 CXX := g++
 CXXFLAGS := -O2 -MMD -MP
 
-SRCS := $(wildcard src/*.cc)
-OBJS := $(SRCS:src/%.cc=bin/%.o)
+# 1. Definició de fonts
+ALL_SRCS  := $(wildcard src/*.cc)
+SRCS_CPP  := $(filter-out src/cube_controller.cc, $(ALL_SRCS))
+SRCS_WASM := $(filter-out src/main.cc, $(ALL_SRCS))
+
+# 2. Definició d'objectes (només per a la versió CPP)
+# Fem servir SRCS_CPP per generar la llista d'objectes
+OBJS := $(SRCS_CPP:src/%.cc=bin/%.o)
 DEPS := $(OBJS:.o=.d)
 
-TARGET := bin/program.exe
+TARGET_CPP := bin/program.exe
 
-# Default target
-all: $(TARGET)
+.PHONY: cpp wasm clean run
 
-# Link step
-$(TARGET): $(OBJS)
+# Target per defecte
+cpp: $(TARGET_CPP)
+
+# Pas d'enllaç (Linking) per a C++
+$(TARGET_CPP): $(OBJS)
+	@mkdir -p bin
 	$(CXX) $(OBJS) -o $@
 
-# Compile step (pattern rule)
+# Pas de compilació (Pattern rule)
 bin/%.o: src/%.cc
+	@mkdir -p bin
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-# Clean target
-clean:
-	rm -f bin/*.o bin/*.d $(TARGET)
-
-# Run target
-run: $(TARGET)
-	./$(TARGET)
-
+# Target per a WebAssembly (Emscripten acostuma a compilar tot de cop)
 wasm:
-	emcc \
-	src/cube_controller.cc \
-	src/cube.cc src/mathlib.cc \
-	src/move_sequence.cc \
-	src/orientation.cc src/solver.cc \
-	src/state.cc \
-	-o bin/cube_lib.js \
-	-s MODULARIZE=1 \
-	-s EXPORT_ES6=1 \
-	-s EXPORT_NAME="createModule" \
-	-s ALLOW_MEMORY_GROWTH=1 \
-	--bind
-	
+	@mkdir -p bin
+	emcc $(SRCS_WASM) \
+		-o bin/cube_lib.js \
+		-s MODULARIZE=1 \
+		-s EXPORT_ES6=1 \
+		-s EXPORT_NAME="createModule" \
+		-s ALLOW_MEMORY_GROWTH=1 \
+		--bind
 	cp bin/cube_lib.js ../Viewer/libs/cube_lib.js
 	cp bin/cube_lib.wasm ../Viewer/libs/cube_lib.wasm
 
-# Include auto-generated header dependencies
+clean:
+	rm -rf bin/*.o bin/*.d $(TARGET_CPP) bin/cube_lib.js bin/cube_lib.wasm
+
+run: cpp
+	./$(TARGET_CPP)
+
 -include $(DEPS)

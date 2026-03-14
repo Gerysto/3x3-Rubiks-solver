@@ -52,6 +52,8 @@ class CubeController {
     vector<int> get_state_corners() const;
 
     vector<int> get_state_edges() const;
+
+    string generate_random_scramble(int length) const;    
 };
 
 

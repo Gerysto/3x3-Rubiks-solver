@@ -1,5 +1,5 @@
 #include "../headers/move_sequence.hh"
-
+#include <math.h>
 
 MoveSequence::MoveSequence() {
     move_sequence = vector<int8_t>(0);
@@ -22,10 +22,13 @@ MoveSequence::MoveSequence(Orientation& orientation, const string& move_sequence
 
 
 void MoveSequence::generate_random(int length) {
-    move_sequence = vector<int8_t>(length);
-    for(int i = 0; i < length; ++i) {
-        move_sequence[i] = (rand()%6 + 1)*(2*(rand()%2) - 1);
+    MoveSequence m = MoveSequence();
+    while(m.size() < length) {
+        int move = (rand()%6 + 1)*(2*(rand()%2) - 1);
+        m.add_move(move);
+        m = MoveSequence::compress(m);
     }
+    *this = m;
 }
 
 
@@ -226,6 +229,53 @@ MoveSequence MoveSequence::conjugate(const MoveSequence& setup_moves) const {
     return setup_moves.append(*this).append(inv);
 }
 
+MoveSequence MoveSequence::compress(const MoveSequence &m) {
+    MoveSequence res;
+    if(m.size() == 0) return m;
+    int last_move = abs(m.get_move(0));
+    int count = 1;
+    for (int i = 1; i < m.move_sequence.size(); ++i) {
+        int new_move = m.move_sequence[i];
+        if (last_move == new_move || last_move == -new_move) {
+            // Count is increased by the sign of the new move.
+            count += new_move/abs(new_move);
+        }
+        else {
+            switch((count%4+4)%4){
+                case 0: 
+                    break;
+                case 1:    
+                    res.add_move(last_move);
+                    break;
+                case 2:
+                    res.add_move(last_move);
+                    res.add_move(last_move);
+                    break;
+                case 3:
+                    res.add_move(-last_move);
+                    break;
+            }
+
+            last_move = new_move;
+            count = 1;
+        }
+    }
+    switch((count%4+4)%4){
+        case 0: 
+            break;
+        case 1:    
+            res.add_move(last_move);
+            break;
+        case 2:
+            res.add_move(last_move);
+            res.add_move(last_move);
+            break;
+        case 3:
+            res.add_move(-last_move);
+            break;
+    }
+    return res;
+}
 
 void MoveSequence::print() const {
     cout << "sequence: [";

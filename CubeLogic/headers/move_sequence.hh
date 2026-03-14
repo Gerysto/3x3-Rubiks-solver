@@ -105,6 +105,8 @@ class MoveSequence {
      * Displays the raw sequence in the terminal. 
     */
     void print() const;
+
+    static MoveSequence compress(const MoveSequence &m); 
 };
 
 #endif

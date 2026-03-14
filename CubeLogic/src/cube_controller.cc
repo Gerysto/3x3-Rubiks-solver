@@ -68,6 +68,14 @@ vector<int> CubeController::get_state_edges() const{
     return res;
 }
 
+
+string CubeController::generate_random_scramble(int length) const {
+    MoveSequence m;
+    m.generate_random(length);
+    m.print();
+    return m.to_notation(this->cube.orientation);
+}  
+
 EMSCRIPTEN_BINDINGS(cube_controller) {
     emscripten::class_<CubeController>("CubeController")
         .constructor()
@@ -77,7 +85,8 @@ EMSCRIPTEN_BINDINGS(cube_controller) {
         .function("reset_cube_state", &CubeController::reset_cube_state)
         .function("find_solution", &CubeController::find_solution)
         .function("get_state_corners", &CubeController::get_state_corners)
-        .function("get_state_edges", &CubeController::get_state_edges);
+        .function("get_state_edges", &CubeController::get_state_edges)
+        .function("generate_random_scramble", &CubeController::generate_random_scramble);
 
     emscripten::register_vector<int>("VectorInt");
 }
