@@ -6,6 +6,7 @@ export interface CubeController {
     find_solution(): string;
     get_state_corners(): any;
     get_state_edges(): any;
+    generate_random_scramble(length: number): string
 }
 
 export interface CubeModule {
