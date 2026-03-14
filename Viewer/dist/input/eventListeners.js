@@ -7,12 +7,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-export function init_listeners(animator) {
+export function init_listeners(animator, camera) {
     const send_button = document.getElementById("send_scramble");
     const solve_button = document.getElementById("solve");
     const turn_speed = document.getElementById("turn_speed");
+    const default_orientation = document.getElementById("default_orientation");
+    const random_scramble = document.getElementById("random_scramble");
+    const scramble_field = document.getElementById("scramble_field");
     send_button.addEventListener('click', () => {
-        const scramble_field = document.getElementById("scramble_field");
         let alg = scramble_field.value;
         animator.enqueue_algorithm(alg);
     });
@@ -20,9 +22,19 @@ export function init_listeners(animator) {
         const s = animator.cube_ctrl.find_solution();
         animator.enqueue_algorithm(s);
     });
-    turn_speed.addEventListener("change", () => {
+    turn_speed.addEventListener('input', () => {
         const tps = parseFloat(turn_speed.value);
         animator.TPS = tps;
+    });
+    default_orientation.addEventListener('click', () => {
+        camera.angleX = 45;
+        camera.angleY = 0;
+        camera.angleZ = 0;
+    });
+    random_scramble.addEventListener('click', () => {
+        let s = animator.cube_ctrl.generate_random_scramble(30);
+        scramble_field.value = s;
+        console.log(s);
     });
     function init_solver() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -30,5 +42,5 @@ export function init_listeners(animator) {
             console.log("Finished initializing solver!");
         });
     }
-    // init_solver(); <--- UN COMMENT! (this really slows down the page!)
+    init_solver(); // <--- UN COMMENT! (this really slows down the page!)
 }
