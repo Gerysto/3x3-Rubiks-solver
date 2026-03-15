@@ -5,10 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Template</title>
     <style>
+        html,body {
+            height:100%;
+        }
         #c {
+            margin-left: 5%;
+            margin-right: 5%;
+
+            margin-top: 20px;
+            margin-bottom: 20px;
             border: 2px solid black;
-            width: 100%;
-            height: 100%;
+            height:40%;
+            width:90%;
+            touch-action: none;
+        }
+        *{
+            font-family: 'Courier New', Courier, monospace;
+        }
+        .container{
+            margin-top: 20px;
+            margin-bottom: 20px;
         }
     </style>
     <script>
@@ -21,12 +37,25 @@
     <script type="module" src="dist/main.js"></script>
 </head>
 <body>
-    <input  id="scramble_field" placeholder="e.g. R U R' U'"></input>
-    <button id="send_scramble">send scramble!</button>
-    <button id="random_scramble">Random scramble :D</button>
-    <button id="solve">Solve!</button>
+    
+    <div class="container" style="display:flex; flex-direction: column;">
+        <input  id="scramble_field" placeholder="e.g. R U R' U'">
+        <button id="send_scramble">Execute Sequence</button>
+        <button id="random_scramble">Random Scramble</button>
+    </div>
+
+    <div class="container" style="display: flex; flex-direction: column;">
+        <div style="display: flex;">
+            <label> TurnSpeed:</label>
+            <label id="turn_speed_label" style="margin-left:5px; margin-right:5px"> 15.5 </label>
+            <label> TPS </label>
+        </div>
+        <input  id="turn_speed" type="range" min="0.2" max="20" step="0.2" value="5.0">
+    </div>
+    <div class="container" style="display: flex;">
+        <button id="solve" style="width:100%">Solve!</button>
+        <button id="default_orientation" style="width:100%">Return to default orientation</button>
+    </div>
     <canvas id="c"></canvas>
-    <input  id="turn_speed" type="range" min="0.2" max="20" step="0.2" value="5.0">
-    <button id="default_orientation">Return to default orientation</button>
 </body>
 </html>
