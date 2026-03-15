@@ -11,6 +11,7 @@ export function init_listeners(animator, camera) {
     const send_button = document.getElementById("send_scramble");
     const solve_button = document.getElementById("solve");
     const turn_speed = document.getElementById("turn_speed");
+    const turn_speed_label = document.getElementById("turn_speed_label");
     const default_orientation = document.getElementById("default_orientation");
     const random_scramble = document.getElementById("random_scramble");
     const scramble_field = document.getElementById("scramble_field");
@@ -24,6 +25,7 @@ export function init_listeners(animator, camera) {
     });
     turn_speed.addEventListener('input', () => {
         const tps = parseFloat(turn_speed.value);
+        turn_speed_label.innerHTML = turn_speed.value + " TPS";
         animator.TPS = tps;
     });
     default_orientation.addEventListener('click', () => {

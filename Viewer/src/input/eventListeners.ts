@@ -6,6 +6,7 @@ export function init_listeners(animator: RubiksAnimator,
     const send_button  = document.getElementById("send_scramble") as HTMLButtonElement;
     const solve_button = document.getElementById("solve") as HTMLButtonElement;
     const turn_speed = document.getElementById("turn_speed") as HTMLInputElement;
+    const turn_speed_label = document.getElementById("turn_speed_label") as HTMLLabelElement;
     const default_orientation = document.getElementById("default_orientation") as HTMLButtonElement;
     const random_scramble = document.getElementById("random_scramble") as HTMLButtonElement;
 
@@ -23,6 +24,7 @@ export function init_listeners(animator: RubiksAnimator,
 
     turn_speed.addEventListener('input', () => {
         const tps: number = parseFloat(turn_speed.value);
+        turn_speed_label.innerHTML = turn_speed.value + " TPS";
         animator.TPS = tps;
     });
 
