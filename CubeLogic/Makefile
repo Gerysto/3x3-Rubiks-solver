@@ -37,9 +37,11 @@ wasm:
 		-s EXPORT_ES6=1 \
 		-s EXPORT_NAME="createModule" \
 		-s ALLOW_MEMORY_GROWTH=1 \
+		--preload-file data/ \
 		--bind
 	cp bin/cube_lib.js ../Viewer/libs/cube_lib.js
 	cp bin/cube_lib.wasm ../Viewer/libs/cube_lib.wasm
+	cp bin/cube_lib.data ../Viewer/cube_lib.data
 
 clean:
 	rm -rf bin/*.o bin/*.d $(TARGET_CPP) bin/cube_lib.js bin/cube_lib.wasm
