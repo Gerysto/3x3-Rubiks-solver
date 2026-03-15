@@ -5,10 +5,6 @@ using namespace std;
 
 
 int main() {
-    Orientation o;
-    MoveSequence m;
-
-    m.generate_random(20);
-    m.print();
-    cout << m.to_notation(o);
+    Solver s;
+    s.compute_and_store_table_data();
 }
