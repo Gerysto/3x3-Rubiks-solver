@@ -17,9 +17,9 @@ class CubeController {
     CubeController();
 
     /**
-     * Performs all the precomputations requiered for solving the cube.
-     * (This may take a long time, so it should be run assyncronously).
-     */
+     * Fills all the heuristic tables requiered for solving the cube
+     * by reading the tables stored in the precomputed tables it requieres.
+    */ 
     void init_solver();
 
     /*

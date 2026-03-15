@@ -7,7 +7,6 @@
  */
 CubeController::CubeController() {
     this->cube = Cube();
-    this->solver = Solver();
 }
 
 /**
@@ -15,7 +14,7 @@ CubeController::CubeController() {
  * (This may take a long time, so it should be run assyncronously).
  */
 void CubeController::init_solver() {
-    this->solver.init();
+    this->solver.read_table_data();
 }
 
 /*
