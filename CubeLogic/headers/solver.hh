@@ -3,6 +3,8 @@
 #include <queue>
 #include <set>
 #include <map>
+#include <fstream>
+#include <cstdint>
 #include "state.hh"
 #include "mathlib.hh"
 
@@ -10,21 +12,49 @@
 class Solver {
     
     private:
-    
-    bool is_initialized;
 
-    public:
+    string EO_table_url  = "data/tables/EO_table";
+    string DR_table_url  = "data/tables/DR_table";
+    string HtR_table_url = "data/tables/HtR_table";
+    string FS_table_url  = "data/tables/FS_table";
     
     vector<int8_t> edge_orientation_lookup;
     vector<vector<int8_t>> domino_reduction_lookup;
     vector<vector<int8_t>> halfturn_reduction_lookup;
     vector<vector<int8_t>> final_solve_lookup;
+    
+    bool is_initialized;
+
+    static void read_vector_from_file(vector<int8_t>& table, const string file_url);
+    
+    static void read_matrix_from_file(vector<vector<int8_t>>& table, const string file_url);
+
+    static void dump_vector_to_file(const vector<int8_t>& table, const string file_url);
+
+    static void dump_matrix_to_file(const vector<vector<int8_t>>& table, const string file_url);
+
+    public:
 
     // Constructor:
     Solver();
 
-    // Fills all the lookup tables
-    void init();
+    // Precomputes and stores all the heuristic tables requiered for
+    // solving the cube into 4 binary files in the 'data/' folder.    
+    // File names are stored as constants in this class:
+    //      - EO_table_url
+    //      - DR_table_url
+    //      - HtR_table_url
+    //      - FS_table_url
+    void compute_and_store_table_data();
+
+    // Fills all the heuristic tables requiered for solving the cube
+    // by reading the corresponding binary files in the 'data/' folder.
+    // File names are stored as constants in this class:
+    //      - EO_table_url
+    //      - DR_table_url
+    //      - HtR_table_url
+    //      - FS_table_url
+    void read_table_data();
 
     // Given the coordinates of a state in the last step,
     // returns the state they correspond to
@@ -87,7 +117,6 @@ class Solver {
     void solve_final_step(const State& s, MoveSequence& m);
 
     MoveSequence find_full_solution(const State& s);
-
 };
 
 #endif

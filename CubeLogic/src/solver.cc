@@ -5,7 +5,25 @@
     }
 
     // Fills all the lookup tables
-    void Solver::init() {
+    void Solver::read_table_data() {
+        read_vector_from_file(this->edge_orientation_lookup, EO_table_url); 
+        cerr << "Finished Step 1 table" << endl;
+
+        read_matrix_from_file(this->domino_reduction_lookup, DR_table_url); 
+        cerr << "Finished Step 2 table" << endl;
+
+        read_matrix_from_file(this->halfturn_reduction_lookup, HtR_table_url); 
+        cerr << "Finished Step 3 table" << endl;
+
+        read_matrix_from_file(this->final_solve_lookup, FS_table_url); 
+        cerr << "Finished Step 4 table" << endl;
+
+
+
+        is_initialized = true;
+    }
+
+    void Solver::compute_and_store_table_data() {
         fill_EO_lookup();
         cerr << "Finished Step 1 table" << endl;
         fill_DR_lookup();
@@ -14,7 +32,89 @@
         cerr << "Finished Step 3 table" << endl;
         fill_final_step_lookup();
         cerr << "Finished Step 4 table" << endl;
+
+        dump_vector_to_file(this->edge_orientation_lookup, EO_table_url); 
+
+        dump_matrix_to_file(this->domino_reduction_lookup, DR_table_url); 
+
+        dump_matrix_to_file(this->halfturn_reduction_lookup, HtR_table_url); 
+
+        dump_matrix_to_file(this->final_solve_lookup, FS_table_url); 
+
         is_initialized = true;
+    }
+
+    void Solver::read_vector_from_file(vector<int8_t>& table, const string file_url) {
+        int64_t size;
+        ifstream file = ifstream(file_url, ifstream::binary);
+        if (!file.is_open()) {
+            cerr << "Failed to open file: " << file_url << endl;
+            return;
+        } 
+        file.read(reinterpret_cast<char*>(&size), sizeof(size));
+        table.resize(size, -1);
+        file.read(reinterpret_cast<char*>(table.data()), size);
+
+        file.close();
+    }
+
+    void Solver::read_matrix_from_file(vector<vector<int8_t>>& table, const string file_url) {
+        int64_t rows, columns;
+
+        ifstream file = ifstream(file_url, ifstream::binary);
+        if (!file.is_open()) {
+            cerr << "Failed to open file: " << file_url << endl;
+            return;
+        } 
+        // Read the size:
+        file.read(reinterpret_cast<char*>(&rows), sizeof(rows));
+        file.read(reinterpret_cast<char*>(&columns), sizeof(columns));
+        table.resize(rows, vector<int8_t>(columns, -1));
+        
+        // Read the contents:
+        for (int i = 0; i < rows; ++i) {
+            file.read(reinterpret_cast<char*>(table[i].data()), columns);
+        }
+        file.close();
+
+    }
+
+    void Solver::dump_vector_to_file(const vector<int8_t>& table, const string file_url) {
+        int64_t size = table.size();
+        
+        ofstream file = ofstream(file_url, ifstream::binary);
+        if (!file.is_open()) {
+            cerr << "Failed to open file: " << file_url << endl;
+            return;
+        } 
+        // Write the size:
+        file.write(reinterpret_cast<const char*>(&size), sizeof(size));
+        
+        // Write the contents:
+        file.write(reinterpret_cast<const char*>(table.data()), size);
+        file.close();
+    }
+
+    void Solver::dump_matrix_to_file(const vector<vector<int8_t>>& table, const string file_url) {
+        int64_t rows = table.size();
+        int64_t columns = table[0].size();
+        cout << "Writting matrix of size: " << rows << "x" << columns << endl;
+
+        // Write the size:
+        ofstream file = ofstream(file_url, ifstream::binary);
+        if (!file.is_open()) {
+            cerr << "Failed to open file: " << file_url << endl;
+            return;
+        } 
+        
+        file.write(reinterpret_cast<const char*>(&rows), sizeof(rows));
+        file.write(reinterpret_cast<const char*>(&columns), sizeof(columns));
+        
+        // Write the contents:
+        for (const vector<int8_t>& vec: table) {
+            file.write(reinterpret_cast<const char*>(vec.data()), columns);
+        }
+        file.close();
     }
     
     // Returns the cube's Edge Orientation Coordinate
@@ -67,7 +167,13 @@
 
         for (int i = 0; i < N; ++i) {
             if (is_edge_from_E_slice(s.edges[i])) {
-                if (N-i != middle_edge_count) ESEPC += choose(N-i-1, middle_edge_count);
+                if (N-i != middle_edge_count) {
+                    int inc = choose(N-i-1, middle_edge_count);
+                    if (inc < 0) {
+                        // TODO! Handle incorrect input for choose function
+                    }
+                    ESEPC += inc;
+                }
                 middle_edge_count--;
             }
         }
@@ -119,7 +225,13 @@
         for (int i = 0; i < s.corners.size(); ++i) {
             
             if (corner_belongs_in_WBO_orbit(s.corners[i])) {
-                if (N-i != orbit_corner_count) COPC += choose(N-i-1, orbit_corner_count);
+                if (N-i != orbit_corner_count) {
+                    int inc= choose(N-i-1, orbit_corner_count);
+                    if (inc < 0) {
+                        // TODO! Handle incorrect input for choose function
+                    }
+                    COPC += inc;
+                }
                 orbit_corner_count--;
             }
         }
@@ -134,7 +246,13 @@
             if (i > 3 and i < 8) continue; 
             
             if (is_edge_from_M_slice(s.edges[i])) {
-                if (N-j != middle_edge_count) MSEPC += choose(N-j-1, middle_edge_count);
+                if (N-j != middle_edge_count) {
+                    int inc= choose(N-j-1, middle_edge_count);
+                    if (inc < 0) {
+                        // TODO! Handle incorrect input for choose function
+                    }
+                    MSEPC += inc;
+                }
                 middle_edge_count--;
             }
             j++;
