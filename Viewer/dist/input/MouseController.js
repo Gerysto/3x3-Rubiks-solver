@@ -1,16 +1,20 @@
 export class MouseController {
     constructor(camera, canvas) {
-        this.mouseX = 0;
-        this.mouseY = 0;
+        this.mouseX = null;
+        this.mouseY = null;
         this.camera = camera;
         this.canvas = canvas;
         this.mouse_pressed = false;
         this.canvas.addEventListener("pointerdown", () => this.mouse_pressed = true);
-        this.canvas.addEventListener("pointerup", () => this.mouse_pressed = false);
+        this.canvas.addEventListener("pointerup", () => {
+            this.mouse_pressed = false;
+            this.mouseX = null;
+            this.mouseY = null;
+        });
         this.canvas.addEventListener("pointermove", (e) => {
             const new_X = e.clientX - this.canvas.offsetLeft;
             const new_Y = e.clientY - this.canvas.offsetTop;
-            if (this.mouse_pressed) {
+            if (this.mouse_pressed && this.mouseX != null && this.mouseY != null) {
                 this.camera.angleY += -(new_X - this.mouseX);
                 this.camera.angleX += (new_Y - this.mouseY);
             }
