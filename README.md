@@ -40,7 +40,7 @@ As mentioned before, the C++ solver can be used independently of the viewer.
 cd CubeLogic
 
 # Compile (uses g++)
-make all
+make cpp
 
 # Run the binary
 make run
