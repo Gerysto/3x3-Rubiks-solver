@@ -242,7 +242,7 @@ Module['FS_createPath']("/data", "tables", true, true);
     }
 
     }
-    loadPackage({"files": [{"filename": "/data/tables/DR_table", "start": 0, "end": 1082581}, {"filename": "/data/tables/HtR_table", "start": 1082581, "end": 1087497}, {"filename": "/data/tables/EO_table", "start": 1087497, "end": 1089553}, {"filename": "/data/tables/FS_table", "start": 1089553, "end": 9052193}], "remote_package_size": 9052193, "package_uuid": "3ba19602-3383-4341-9eb5-eae84075de73"});
+    loadPackage({"files": [{"filename": "/data/tables/DR_table", "start": 0, "end": 542392}, {"filename": "/data/tables/HtR_table", "start": 542392, "end": 544858}, {"filename": "/data/tables/EO_table", "start": 544858, "end": 545890}, {"filename": "/data/tables/FS_table", "start": 545890, "end": 4527218}], "remote_package_size": 4527218, "package_uuid": "25c6ad8b-9bc2-45fb-b723-9a2fdced6c53"});
 
   })();
 
@@ -6364,12 +6364,6 @@ var ASM_CONSTS = {
       return 0;
     }
 
-  function _exit(status) {
-      // void _exit(int status);
-      // http://pubs.opengroup.org/onlinepubs/000095399/functions/exit.html
-      exit(status);
-    }
-
   function _fd_close(fd) {
   try {
   
@@ -7113,7 +7107,6 @@ var asmLibraryArg = {
   "emscripten_resize_heap": _emscripten_resize_heap,
   "environ_get": _environ_get,
   "environ_sizes_get": _environ_sizes_get,
-  "exit": _exit,
   "fd_close": _fd_close,
   "fd_read": _fd_read,
   "fd_seek": _fd_seek,

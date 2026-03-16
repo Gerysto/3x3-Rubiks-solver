@@ -4,6 +4,22 @@
         bool is_initialized = false;
     }
 
+
+    int8_t vec_max(const vector<int8_t>& vec) {
+        int8_t curr_max = 100;
+        for (int8_t x: vec) curr_max = min(curr_max, x);
+
+        return curr_max;
+    }
+
+
+    int8_t mat_max(const vector<vector<int8_t>>& mat) {
+        int8_t curr_max = 100;
+        for (vector<int8_t> vec: mat) curr_max = min(curr_max, vec_max(vec));
+
+        return curr_max;
+    }
+
     // Fills all the lookup tables
     void Solver::read_table_data() {
         read_vector_from_file(this->edge_orientation_lookup, EO_table_url); 
@@ -18,10 +34,18 @@
         read_matrix_from_file(this->final_solve_lookup, FS_table_url); 
         cerr << "Finished Step 4 table" << endl;
 
+        int m1 =  int(vec_max(this->edge_orientation_lookup));
+        int m2 =  int(mat_max(this->domino_reduction_lookup));
+        int m3 =  int(mat_max(this->halfturn_reduction_lookup));
+        int m4 =  int(mat_max(this->final_solve_lookup));
 
-
+        cout << "MAX: " << m1 << endl;
+        cout << "MAX: " << m2 << endl;
+        cout << "MAX: " << m3 << endl;
+        cout << "MAX: " << m4 << endl;
         is_initialized = true;
     }
+
 
     void Solver::compute_and_store_table_data() {
         fill_EO_lookup();
@@ -33,6 +57,17 @@
         fill_final_step_lookup();
         cerr << "Finished Step 4 table" << endl;
 
+        int m1 =     vec_max(this->edge_orientation_lookup);
+        int m2 = int(mat_max(this->domino_reduction_lookup));
+        int m3 = int(mat_max(this->halfturn_reduction_lookup));
+        int m4 = int(mat_max(this->final_solve_lookup));
+
+        cout << "MAX: " << m1 << endl;
+        cout << "MAX: " << m2 << endl;
+        cout << "MAX: " << m3 << endl;
+        cout << "MAX: " << m4 << endl;
+        
+
         dump_vector_to_file(this->edge_orientation_lookup, EO_table_url); 
 
         dump_matrix_to_file(this->domino_reduction_lookup, DR_table_url); 
@@ -40,6 +75,8 @@
         dump_matrix_to_file(this->halfturn_reduction_lookup, HtR_table_url); 
 
         dump_matrix_to_file(this->final_solve_lookup, FS_table_url); 
+
+
 
         is_initialized = true;
     }
@@ -51,9 +88,21 @@
             cerr << "Failed to open file: " << file_url << endl;
             return;
         } 
+
         file.read(reinterpret_cast<char*>(&size), sizeof(size));
-        table.resize(size, -1);
-        file.read(reinterpret_cast<char*>(table.data()), size);
+        
+        vector<int8_t> aux((size+1)/2);
+        
+        file.read(reinterpret_cast<char*>(aux.data()), aux.size());
+        table.resize(size);
+        
+        int i = 0;
+        for (int8_t byte: aux) {
+            // Split into two 4-bit numbers
+            table[i] = (byte >> 4) & 0xF;
+            if(i+1 < table.size()) table[i+1] = byte & 0xF;
+            i+=2;
+        }
 
         file.close();
     }
@@ -73,8 +122,17 @@
         
         // Read the contents:
         for (int i = 0; i < rows; ++i) {
-            file.read(reinterpret_cast<char*>(table[i].data()), columns);
+            vector<int8_t> aux((columns+1)/2);
+            file.read(reinterpret_cast<char*>(aux.data()), aux.size());
+            int j = 0;
+            for (int8_t byte: aux) {
+                // Split into two 4-bit numbers
+                table[i][j] = (byte >> 4) & 0xF;
+                if(j+1 < table[i].size()) table[i][j+1] = byte & 0xF;
+                j+=2;
+            }
         }
+
         file.close();
 
     }
@@ -90,8 +148,18 @@
         // Write the size:
         file.write(reinterpret_cast<const char*>(&size), sizeof(size));
         
+
+        vector<int8_t> aux((size+1)/2);
+
+        int j = 0;
+        for (int i = 0; i < aux.size(); i++) {
+            // Split into two 4-bit numbers
+            if (2*i+1 < table.size()) aux[i] = (table[2*i] << 4) | (table[2*i+1] & 0xF);
+            else aux[i] = (table[2*i] << 4);
+        }
+
+        file.write(reinterpret_cast<const char*>(aux.data()), aux.size());
         // Write the contents:
-        file.write(reinterpret_cast<const char*>(table.data()), size);
         file.close();
     }
 
@@ -112,7 +180,17 @@
         
         // Write the contents:
         for (const vector<int8_t>& vec: table) {
-            file.write(reinterpret_cast<const char*>(vec.data()), columns);
+            // col+1/2 --> To round up
+            vector<int8_t> aux((columns+1)/2);
+
+            int j = 0;
+            for (int i = 0; i < aux.size(); i++) {
+                // Split into two 4-bit numbers
+                if (2*i+1 < vec.size()) aux[i] = (vec[2*i] << 4) | (vec[2*i+1] & 0xF);
+                else aux[i] = (vec[2*i] << 4);
+            }
+
+            file.write(reinterpret_cast<const char*>(aux.data()), aux.size());
         }
         file.close();
     }
@@ -464,8 +542,10 @@
 
     bool Solver::isSolvableWithHalfTurns(const State& s) {
         pair<int,int> coord = get_final_coordinate(s);
-        return final_solve_lookup[coord.first][coord.second] != -1;
-        //return false; 
+        
+        // Non-existant values are set to -1 (but they're stored as 4 bit numbers)
+        // thus, when read back, they become 15
+        return final_solve_lookup[coord.first][coord.second] != 15;
     }
 
     void Solver::solve_EO(const State& s, MoveSequence& sol) {

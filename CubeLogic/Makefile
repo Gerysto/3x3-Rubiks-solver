@@ -1,5 +1,6 @@
 CXX := g++
 CXXFLAGS := -O2 -MMD -MP
+#CXXFLAGS := -g -O0 -MMD -MP # For debugging
 
 # 1. Definició de fonts
 ALL_SRCS  := $(wildcard src/*.cc)
@@ -17,6 +18,7 @@ TARGET_CPP := bin/program.exe
 
 # Target per defecte
 cpp: $(TARGET_CPP)
+	
 
 # Pas d'enllaç (Linking) per a C++
 $(TARGET_CPP): $(OBJS)
