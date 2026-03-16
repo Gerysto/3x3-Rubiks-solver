@@ -21,6 +21,15 @@ export class Renderer {
             throw new Error("Failed to start WebGL!");
         }
 
+
+        window.addEventListener('resize', () => {
+            const width = canvas.clientWidth;
+            const height = canvas.clientHeight;
+
+            this.aspect_ratio = width/height;
+            this.gl.viewport(0,0, canvas.width, canvas.height);    
+        });
+
         this.gl.viewport(0,0, canvas.width, canvas.height);
         this.gl.enable(this.gl.DEPTH_TEST);
         this.gl.clearColor(0.8,0.8,0.8,1);
