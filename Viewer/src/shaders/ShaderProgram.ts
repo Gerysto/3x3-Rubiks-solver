@@ -13,6 +13,9 @@ export class ShaderProgram {
     PMLoc : WebGLUniformLocation = -1;
     NMLoc : WebGLUniformLocation = -1;
 
+    pieceTypeLoc : WebGLUniformLocation = -1;
+    pieceIdLoc   : WebGLUniformLocation = -1;
+
     constructor() {
         this.program = WebGLProgram;
     }
@@ -43,6 +46,9 @@ export class ShaderProgram {
         const PMLocAux = gl.getUniformLocation(this.program, "PM");
         const NMLocAux = gl.getUniformLocation(this.program, "NM");
 
+        const PieceType = gl.getUniformLocation(this.program, "piece_type");
+        const PieceId = gl.getUniformLocation(this.program, "piece_id");
+
         if (!(TGLocAux instanceof WebGLUniformLocation)) 
             throw Error("Failed to assign location to uniform TGLoc");
         if (!(VMLocAux instanceof WebGLUniformLocation)) 
@@ -52,15 +58,24 @@ export class ShaderProgram {
         if (!(NMLocAux instanceof WebGLUniformLocation)) 
             throw Error("Failed to assign location to uniform NMLoc");
 
+
+        if (!(PieceType instanceof WebGLUniformLocation)) 
+            throw Error("Failed to assign location to uniform pieceType");
+        if (!(PieceId instanceof WebGLUniformLocation)) 
+            throw Error("Failed to assign location to uniform pieceId");
+
         this.TGLoc = TGLocAux as WebGLUniformLocation;
         this.VMLoc = VMLocAux as WebGLUniformLocation;
         this.PMLoc = PMLocAux as WebGLUniformLocation;
         this.NMLoc = NMLocAux as WebGLUniformLocation;
 
-        console.log(this.TGLoc);
-        console.log(this.VMLoc);
-        console.log(this.PMLoc);
-        console.log(this.NMLoc);
+        this.pieceTypeLoc = PieceType as WebGLUniformLocation;
+        this.pieceIdLoc = PieceId as WebGLUniformLocation;
+
+        //console.log(this.TGLoc);
+        //console.log(this.VMLoc);
+        //console.log(this.PMLoc);
+        //console.log(this.NMLoc);
     }
 
     private async getShaderSource(url: string): Promise<string> {
