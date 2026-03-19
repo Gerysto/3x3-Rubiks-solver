@@ -1,5 +1,5 @@
-import { MeshObject } from "../engine/MeshObject";
-import { ShaderProgram } from "../shaders/ShaderProgram";
+import { MeshObject } from "../engine/MeshObject.js";
+import { ShaderProgram } from "../shaders/ShaderProgram.js";
 
 export class PieceObject extends MeshObject {
 
