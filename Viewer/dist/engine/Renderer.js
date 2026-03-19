@@ -8,20 +8,14 @@ export class Renderer {
         if (!this.gl) {
             throw new Error("Failed to start WebGL!");
         }
-        window.addEventListener('resize', () => {
-            const width = canvas.clientWidth;
-            const height = canvas.clientHeight;
-            this.aspect_ratio = width / height;
-            this.gl.viewport(0, 0, canvas.width, canvas.height);
-        });
         this.gl.viewport(0, 0, canvas.width, canvas.height);
         this.gl.enable(this.gl.DEPTH_TEST);
-        this.gl.clearColor(1, 1, 1, 1);
+        this.gl.clearColor(0.8, 0.8, 0.8, 1);
     }
     render(scene, camera) {
         this.gl.clear(this.gl.COLOR_BUFFER_BIT |
             this.gl.DEPTH_BUFFER_BIT);
-        if (Renderer.resizeCanvasToDisplaySize(this.gl)) {
+        if (this.resizeCanvasToDisplaySize(this.gl)) {
             // TODO: Re-calculate projection view / projection matrices here!
         }
         ;
@@ -40,8 +34,8 @@ export class Renderer {
         console.log("Des de renderer: ", this.program.TGLoc);
         console.log("Des de renderer: ", this.program.NMLoc);
         console.log("Des de renderer: ", this.program.PMLoc);*/
+        obj.send_uniforms(gl, this.program);
         VM.setUniform(gl, this.program.VMLoc, false);
-        TG.setUniform(gl, this.program.TGLoc, false);
         NM.setUniform(gl, this.program.NMLoc, false);
         PM.setUniform(gl, this.program.PMLoc, false);
         gl.bindVertexArray(obj.vao);
@@ -56,7 +50,7 @@ export class Renderer {
         NM.transpose();
         return NM;
     }
-    static resizeCanvasToDisplaySize(gl) {
+    resizeCanvasToDisplaySize(gl) {
         const canvas = gl.canvas;
         const dpr = window.devicePixelRatio || 1;
         const displayWidth = Math.floor(canvas.clientWidth * dpr);
@@ -64,6 +58,7 @@ export class Renderer {
         if (canvas.width !== displayWidth || canvas.height !== displayHeight) {
             canvas.width = displayWidth;
             canvas.height = displayHeight;
+            this.aspect_ratio = displayWidth / displayHeight;
             gl.viewport(0, 0, canvas.width, canvas.height);
             return true;
         }

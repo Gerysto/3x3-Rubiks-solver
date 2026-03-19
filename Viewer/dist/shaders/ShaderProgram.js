@@ -19,6 +19,8 @@ export class ShaderProgram {
         this.VMLoc = -1;
         this.PMLoc = -1;
         this.NMLoc = -1;
+        this.pieceTypeLoc = -1;
+        this.pieceIdLoc = -1;
         this.program = WebGLProgram;
     }
     load_shaders(gl, url_vertex, url_fragment) {
@@ -43,6 +45,8 @@ export class ShaderProgram {
         const VMLocAux = gl.getUniformLocation(this.program, "VM");
         const PMLocAux = gl.getUniformLocation(this.program, "PM");
         const NMLocAux = gl.getUniformLocation(this.program, "NM");
+        const PieceType = gl.getUniformLocation(this.program, "piece_type");
+        const PieceId = gl.getUniformLocation(this.program, "piece_id");
         if (!(TGLocAux instanceof WebGLUniformLocation))
             throw Error("Failed to assign location to uniform TGLoc");
         if (!(VMLocAux instanceof WebGLUniformLocation))
@@ -51,14 +55,20 @@ export class ShaderProgram {
             throw Error("Failed to assign location to uniform PMLoc");
         if (!(NMLocAux instanceof WebGLUniformLocation))
             throw Error("Failed to assign location to uniform NMLoc");
+        if (!(PieceType instanceof WebGLUniformLocation))
+            throw Error("Failed to assign location to uniform pieceType");
+        if (!(PieceId instanceof WebGLUniformLocation))
+            throw Error("Failed to assign location to uniform pieceId");
         this.TGLoc = TGLocAux;
         this.VMLoc = VMLocAux;
         this.PMLoc = PMLocAux;
         this.NMLoc = NMLocAux;
-        console.log(this.TGLoc);
-        console.log(this.VMLoc);
-        console.log(this.PMLoc);
-        console.log(this.NMLoc);
+        this.pieceTypeLoc = PieceType;
+        this.pieceIdLoc = PieceId;
+        //console.log(this.TGLoc);
+        //console.log(this.VMLoc);
+        //console.log(this.PMLoc);
+        //console.log(this.NMLoc);
     }
     getShaderSource(url) {
         return __awaiter(this, void 0, void 0, function* () {
