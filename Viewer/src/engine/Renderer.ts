@@ -47,6 +47,7 @@ export class Renderer {
 
         const VM = camera.getViewMatrix();          // View matrix
         const TG = obj.ModelTransform;              // Model matrix
+
         const NM = this.normalMatrix(VM, TG);       // Normal matrix
         const PM = camera.getProjectionMatrix(ra);  // Projection matrix
         
@@ -54,12 +55,10 @@ export class Renderer {
         console.log("Des de renderer: ", this.program.TGLoc);
         console.log("Des de renderer: ", this.program.NMLoc);
         console.log("Des de renderer: ", this.program.PMLoc);*/
-
+        obj.send_uniforms(gl, this.program);
         VM.setUniform(gl, this.program.VMLoc, false);
-        TG.setUniform(gl, this.program.TGLoc, false);
         NM.setUniform(gl, this.program.NMLoc, false);
         PM.setUniform(gl, this.program.PMLoc, false);
-
 
         gl.bindVertexArray(obj.vao);
         gl.drawArrays(gl.TRIANGLES, 0, obj.faces.length*3);
