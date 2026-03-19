@@ -1,7 +1,7 @@
 import { MeshObject } from "../engine/MeshObject";
 import { ShaderProgram } from "../shaders/ShaderProgram";
 
-class PieceObject extends MeshObject {
+export class PieceObject extends MeshObject {
 
     static readonly CORNER_PIECE = 0;
     static readonly EDGE_PIECE   = 1;

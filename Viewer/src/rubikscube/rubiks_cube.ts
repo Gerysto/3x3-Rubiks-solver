@@ -1,12 +1,13 @@
-import {MeshObject} from '../engine/MeshObject.js';
+import { PieceObject } from './PieceObject.js';
 import { Scene } from '../engine/Scene.js';
 import { ShaderProgram } from '../shaders/ShaderProgram.js';
 import { corner_TG, edge_TG, center_TG } from './piece_transformations.js';
 import { PIECES_INVOLVED, AXIS_OF_ROTATION, SOLVED } from './rubiks_constants.js';
+import { MeshObject } from '../engine/MeshObject.js';
 
-const CORNER_MODELS_URL = 'assets/models/corners/c#.obj';
-const EDGE_MODELS_URL   = 'assets/models/edges/e#.obj';
-const CENTER_MODELS_URL = 'assets/models/centers/f#.obj';
+const CORNER_MODEL_URL = 'assets/models/corner_piece.obj';
+const EDGE_MODEL_URL   = 'assets/models/edge_piece.obj';
+const CENTER_MODEL_URL = 'assets/models/center_piece.obj';
 
 export class State {
     corners: number[];
@@ -20,9 +21,9 @@ export class State {
 
 export class RubiksCube {
 
-    corners: MeshObject[];
-    edges: MeshObject[];
-    centers: MeshObject[];
+    corners: PieceObject[];
+    edges: PieceObject[];
+    centers: PieceObject[];
     state: State;
 
     constructor() {
@@ -33,27 +34,32 @@ export class RubiksCube {
     }
 
     private async load() {
-        for (let c = 0; c < 8; ++c) {
-            const path = CORNER_MODELS_URL.replace('#', c.toString());
-            let obj: MeshObject = new MeshObject();
-            obj.ModelTransform = corner_TG[c];
-            await obj.readObj(path);
+        const base_corner = new MeshObject();
+        const base_edge   = new MeshObject();
+        const base_center = new MeshObject(); 
+
+        base_corner.readObj(CORNER_MODEL_URL);
+        base_edge  .readObj(EDGE_MODEL_URL);
+        base_center.readObj(CENTER_MODEL_URL);
+
+        for (let i = 0; i < 8; ++i) {
+            let obj: PieceObject = new PieceObject(PieceObject.CORNER_PIECE, i);
+            obj.copy_properties_of(base_corner);
+            obj.ModelTransform = corner_TG[i];
             this.corners.push(obj);
         }
 
         for (let i = 0; i < 12; ++i) {
-            const path = EDGE_MODELS_URL.replace('#', i.toString());
-            let obj: MeshObject = new MeshObject();
+            let obj: PieceObject = new PieceObject(PieceObject.EDGE_PIECE, i);
+            obj.copy_properties_of(base_edge);
             obj.ModelTransform = edge_TG[i];
-            await obj.readObj(path);
             this.edges.push(obj);
         }
 
         for (let i = 0; i < 6; ++i) {
-            const path = CENTER_MODELS_URL.replace('#', i.toString());
-            let obj: MeshObject = new MeshObject();
+            let obj: PieceObject = new PieceObject(PieceObject.CENTER_PIECE, i);
+            obj.copy_properties_of(base_center);
             obj.ModelTransform = center_TG[i];
-            await obj.readObj(path);
             this.centers.push(obj);
         }
     }
