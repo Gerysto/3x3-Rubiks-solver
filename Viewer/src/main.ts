@@ -33,6 +33,7 @@ async function start() {
     
     let module = await createModule();
     let ctrl = new module.CubeController();
+    ctrl.init_solver();
 
     const animator: RubiksAnimator = new RubiksAnimator(cube, ctrl);
 
@@ -40,6 +41,11 @@ async function start() {
     init_listeners(animator, camera);    
     
     console.log("Starting renderer!!");
+
+    const loader = document.getElementById("loader") as HTMLDivElement;
+    loader.style.display = "none";
+    loader.hidden = true;
+    canvas.style.display = "block";
     start_rendering(renderer, scene, camera, animator);
 }
 

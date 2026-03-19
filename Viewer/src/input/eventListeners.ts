@@ -39,12 +39,4 @@ export function init_listeners(animator: RubiksAnimator,
         scramble_field.value = s;
         console.log(s);
     });
-
-    async function init_solver() {
-        animator.cube_ctrl.init_solver();
-        console.log("Finished initializing solver!");
-    }
-
-
-    init_solver();// <--- UN COMMENT! (this really slows down the page!)
 }

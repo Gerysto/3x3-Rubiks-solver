@@ -26,13 +26,53 @@
             margin-top: 20px;
             margin-bottom: 20px;
         }
-    </style>
-    <script>
-        async function mystart() {
-            console.log("Hello world!");
-            start();
+        
+        #loader-spinner {
+        width:120px;
+        height:120px;
+        animation: rotation 2s linear infinite;
         }
-    </script>
+
+        .square1 {
+        width: 30px;
+        height: 30px;
+        border: 1px solid black;
+        border-radius: 6px;
+        margin: 4px;
+        animation: colors1 1s linear infinite;
+        }
+        .square2 {
+        width: 30px;
+        height: 30px;
+        border: 1px solid black;
+        border-radius: 6px;
+        margin: 4px;
+        animation: colors2 3s linear infinite;
+        }
+
+
+        @keyframes colors1 {
+            0%   {background-color: yellow;}
+            40%  {background-color: yellow;}
+            50%  {background-color: white ;}
+            90%  {background-color: white;}
+            100% {background-color: yellow;}
+        }
+
+        @keyframes colors2 {
+            0%   {background-color: white;}
+            40%  {background-color: white;}
+            50%  {background-color: yellow ;}
+            90%  {background-color: yellow;}
+            100% {background-color: white;}
+        }
+
+        @keyframes rotation {
+            0%    {transform: rotate(0deg);}
+            100%  {transform: rotate(90deg);}
+        }
+
+    </style>
     <script src="libs/J3DIMath.js"></script>
     <script type="module" src="dist/bundle.js"></script>
 </head>
@@ -55,6 +95,25 @@
         <button id="solve" style="width:100%">Solve!</button>
         <button id="default_orientation" style="width:100%">Return to default orientation</button>
     </div>
-    <canvas id="c"></canvas>
+    <div id="loader" style="margin-top: 10em">
+        <div id="loader-spinner" style="margin:auto">
+            <div style="display:flex; flex:horizontal">
+            <div class="square1"></div>
+            <div class="square2"></div>
+            <div class="square1"></div>
+            </div>
+            <div style="display:flex; flex:horizontal">
+            <div class="square2"></div>
+            <div class="square1"></div>
+            <div class="square2"></div>
+            </div>
+            <div style="display:flex; flex:horizontal">
+            <div class="square1"></div>
+            <div class="square2"></div>
+            <div class="square1"></div>
+            </div>
+        </div>
+    </div>
+    <canvas id="c" style="display:none"></canvas>
 </body>
 </html>
