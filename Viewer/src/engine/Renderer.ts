@@ -21,15 +21,6 @@ export class Renderer {
             throw new Error("Failed to start WebGL!");
         }
 
-
-        window.addEventListener('resize', () => {
-            const width = canvas.clientWidth;
-            const height = canvas.clientHeight;
-
-            this.aspect_ratio = width/height;
-            this.gl.viewport(0,0, canvas.width, canvas.height);    
-        });
-
         this.gl.viewport(0,0, canvas.width, canvas.height);
         this.gl.enable(this.gl.DEPTH_TEST);
         this.gl.clearColor(0.8,0.8,0.8,1);
@@ -41,7 +32,7 @@ export class Renderer {
             this.gl.DEPTH_BUFFER_BIT
         );
 
-        if (Renderer.resizeCanvasToDisplaySize(this.gl)) {
+        if (this.resizeCanvasToDisplaySize(this.gl)) {
             // TODO: Re-calculate projection view / projection matrices here!
         };
         
@@ -85,7 +76,7 @@ export class Renderer {
     }
 
 
-    private static resizeCanvasToDisplaySize(gl:WebGL2RenderingContext) : boolean {
+    private resizeCanvasToDisplaySize(gl:WebGL2RenderingContext) : boolean {
         const canvas : HTMLCanvasElement = gl.canvas as HTMLCanvasElement;
         const dpr = window.devicePixelRatio || 1;
         const displayWidth = Math.floor(canvas.clientWidth * dpr);
@@ -94,6 +85,7 @@ export class Renderer {
         if (canvas.width !== displayWidth || canvas.height !== displayHeight) {
             canvas.width = displayWidth;
             canvas.height = displayHeight;
+            this.aspect_ratio = displayWidth/displayHeight;
             gl.viewport(0,0, canvas.width, canvas.height);
             return true;
         }
