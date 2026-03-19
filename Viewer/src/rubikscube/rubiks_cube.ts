@@ -38,9 +38,9 @@ export class RubiksCube {
         const base_edge   = new MeshObject();
         const base_center = new MeshObject(); 
 
-        base_corner.readObj(CORNER_MODEL_URL);
-        base_edge  .readObj(EDGE_MODEL_URL);
-        base_center.readObj(CENTER_MODEL_URL);
+        await base_corner.readObj(CORNER_MODEL_URL);
+        await base_edge  .readObj(EDGE_MODEL_URL);
+        await base_center.readObj(CENTER_MODEL_URL);
 
         for (let i = 0; i < 8; ++i) {
             let obj: PieceObject = new PieceObject(PieceObject.CORNER_PIECE, i);
