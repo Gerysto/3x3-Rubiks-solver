@@ -52,6 +52,31 @@ export class MeshObject {
         this.vao = -1;
     };
 
+    /**
+     * Updates this MeshObject by copying all properties from the given instance.
+     *
+     * Most properties are assigned by reference, meaning the two objects will
+     * share the same underlying data (materials, vertices, normals, faces,
+     * boundingBox, and vao). The only exception is `ModelTransform`, which is
+     * duplicated by value to avoid sharing the same matrix instance.
+     *
+     * @param obj The MeshObject whose properties should be copied onto this one.
+     */
+    copy_properties_of(obj: MeshObject) {
+        this.materials = obj.materials;
+        this.vertices  = obj.vertices;
+        this.normals   = obj.normals;
+        this.faces     = obj.faces;
+        this.boundingBox = obj.boundingBox;
+        this.vao = obj.vao;
+
+        this.ModelTransform = new J3DIMatrix4(obj.ModelTransform);
+    }
+
+    send_uniforms(gl: WebGL2RenderingContext, program: ShaderProgram) {
+        this.ModelTransform.setUniform(gl, program.TGLoc, false);
+    }
+
     computeBoundingBox() : void {
         
         this.boundingBox = new Box(
