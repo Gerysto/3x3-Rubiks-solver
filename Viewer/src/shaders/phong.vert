@@ -97,28 +97,28 @@ vec3 get_center_color(int id, vec3 col) {
     return col.r * center_colors[id];
 }
 
+vec3 get_piece_color(int type, int id, vec3 color) {
+    if (type == CORNER_PIECE) {
+        return get_corner_color(id, color);
+    } 
+    
+    if (type == EDGE_PIECE) {
+        return get_edge_color(id, color);
+    }
+    
+    if (type == CENTER_PIECE) {
+        return get_center_color(id, color);
+    }
+}
+
 void main() {
     vec4 v = VM*TG*vec4(vertex, 1.0);
     vertexSCO = v.xyz;
     normalSCO = normalize((NM*vec4(normal, 1.0)).xyz);
     f_matamb = matamb;
+    f_matdiff = get_piece_color(piece_type, piece_id, matdiff);
     f_matspec = matspec;
     f_matshin = matshin;
-
-    
-    // Determine the color:
-
-    if (piece_type == CORNER_PIECE) {
-        f_matdiff = get_corner_color(piece_id, matdiff);
-    } 
-    else if (piece_type == EDGE_PIECE) {
-        f_matdiff = get_edge_color(piece_id, matdiff);
-    }
-    else if (piece_type == EDGE_PIECE) {
-        f_matdiff = get_center_color(piece_id, matdiff);
-    }
-
-
 
     gl_Position = PM*v;
 
