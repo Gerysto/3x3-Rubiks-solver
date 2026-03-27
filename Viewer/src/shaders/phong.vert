@@ -39,6 +39,7 @@ const int CORNER_PIECE = 0;
 const int EDGE_PIECE   = 1;
 const int CENTER_PIECE = 2;
 
+
 vec3[] corner_colors =  vec3[](
     white , blue  , orange, // Corner 0
     white , red   , blue  , // Corner 1 
