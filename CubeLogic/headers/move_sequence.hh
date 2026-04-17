@@ -3,9 +3,14 @@
 
 #include <iostream>
 #include <vector>
+#include <exception>
 #include "orientation.hh"
 
 using namespace std;
+
+class InvalidSequenceException: public exception {
+    virtual const char* what() const throw();
+};
 
 class MoveSequence {
     private:
@@ -53,6 +58,10 @@ class MoveSequence {
      * standard cubing notation.
     */
     MoveSequence(Orientation& orientation, const string& move_sequence);
+
+
+    static bool is_move_valid(const string& move);
+    static bool is_sequence_valid(const string& seq);
 
     /*
      * Generates a random sequence of moves with the length given.

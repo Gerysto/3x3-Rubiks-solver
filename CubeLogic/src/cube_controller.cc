@@ -1,6 +1,7 @@
 #include "../headers/cube_controller.hh"
 #include <emscripten/bind.h>
 
+
 /**
  * Default constructor: Initializes the Cube to the solved state
  * It does not initialize the solver! This has to be done separately!
@@ -75,6 +76,17 @@ string CubeController::generate_random_scramble(int length) const {
     return m.to_notation(this->cube.orientation);
 }  
 
+bool CubeController::is_scramble_correct(const string& s) const {
+    Orientation o;
+    //try {
+        MoveSequence m = MoveSequence(o, s);
+    //}
+    //catch (InvalidSequenceException& w) {
+        //return false;
+    //}
+    return true;
+}
+
 EMSCRIPTEN_BINDINGS(cube_controller) {
     emscripten::class_<CubeController>("CubeController")
         .constructor()
@@ -85,7 +97,8 @@ EMSCRIPTEN_BINDINGS(cube_controller) {
         .function("find_solution", &CubeController::find_solution)
         .function("get_state_corners", &CubeController::get_state_corners)
         .function("get_state_edges", &CubeController::get_state_edges)
-        .function("generate_random_scramble", &CubeController::generate_random_scramble);
+        .function("generate_random_scramble", &CubeController::generate_random_scramble)
+        .function("is_scramble_correct", &CubeController::is_scramble_correct);
 
     emscripten::register_vector<int>("VectorInt");
 }

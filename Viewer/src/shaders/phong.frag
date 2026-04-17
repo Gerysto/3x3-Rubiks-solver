@@ -17,7 +17,7 @@ uniform mat4 VM;
 vec3 lightCol = vec3(1.0,1.0,1.0);
 vec3 cameraLight = vec3(0,0,0);
 
-const float lightDistance = 3.0;
+const float lightDistance = 1000.0;
 
 const vec3 lights[8] = vec3[8](
     vec3(-lightDistance , -lightDistance ,-lightDistance ),
@@ -45,17 +45,19 @@ vec3 specular(vec3 L, vec3 vertexSCO, vec3 normalSCO) {
 }
 
 
-vec3 phong_lighting(vec3 normalSCO, vec3 vertexSCO) {
+vec3 phong_lighting(vec3 normal, vec3 vertex) {
     
-    vec3 col;
+    vec3 col = vec3(0.0);
+    vec3 L_cam =  cameraLight - vertex;
     col += ambient();
-    col += diffuse(cameraLight, normalSCO);
-    col += specular(cameraLight, vertexSCO, normalSCO);
+    col += diffuse(cameraLight, normal)/sqrt(9.0);
+    col += specular(cameraLight, vertex, normal)/sqrt(9.0);
+    
     for (int i = 0; i < 8; ++i) {
-        vec3 L = vec3(VM*vec4(lights[i] ,1.0)) - vertexSCO;
+        vec3 L = vec3(VM*vec4(lights[i] ,1.0)) - vertex;
         L = normalize(L);
-        col += diffuse(L, normalSCO);
-        col += specular(L, vertexSCO, normalSCO);
+        col += diffuse(L, normal)/sqrt(9.0);
+        col += specular(L, vertex, normal)/sqrt(9.0);
     }
     return col;
 }
@@ -64,7 +66,7 @@ void main() {
 
     vec3 col, L, n;
     n = normalize(normalSCO);
-    col = phong_lighting(normalSCO, vertexSCO);
+    col = phong_lighting(n, vertexSCO);
 
     FragColor = vec4(col,1.0);
 }

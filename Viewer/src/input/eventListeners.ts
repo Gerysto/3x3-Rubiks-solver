@@ -12,6 +12,18 @@ export function init_listeners(animator: RubiksAnimator,
 
     const scramble_field = document.getElementById("scramble_field") as HTMLInputElement;
 
+
+    scramble_field.addEventListener('input',() => {
+        let is_correct: boolean = animator.cube_ctrl.is_scramble_correct(scramble_field.value);
+        
+        if (!is_correct) {
+            send_button.disabled = true;
+        }
+        else {
+            send_button.disabled = false;
+        }
+    });
+
     send_button.addEventListener('click', () => {    
         let alg = scramble_field.value as string;
         animator.enqueue_algorithm(alg);

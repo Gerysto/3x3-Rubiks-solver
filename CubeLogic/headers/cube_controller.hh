@@ -53,7 +53,9 @@ class CubeController {
 
     vector<int> get_state_edges() const;
 
-    string generate_random_scramble(int length) const;    
+    string generate_random_scramble(int length) const; 
+
+    bool is_scramble_correct(const string& s) const;
 };
 
 

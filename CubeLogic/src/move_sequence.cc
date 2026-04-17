@@ -1,10 +1,10 @@
 #include "../headers/move_sequence.hh"
 #include <math.h>
+#include <algorithm>
 
 MoveSequence::MoveSequence() {
     move_sequence = vector<int8_t>(0);
 }
-
 
 MoveSequence::MoveSequence(Orientation& orientation, const string& move_sequence) {
     string my_move = "";
@@ -109,6 +109,19 @@ MoveSequence MoveSequence::translate_single_move(Orientation& orientation, const
     else return result;
 }
 
+bool MoveSequence::is_move_valid(const string& move) {
+    if(move.length() == 2 and move[1] == '\'');
+    if(move.length() == 2 and move[1] == '2');
+    if (move.length())
+    vector<char> ok_moves = {'U','R','F','D','L','B','X','Y','Z','M','E','S','u','r','f','d','l','b'};
+
+    return find(ok_moves.begin(), ok_moves.end(), move[0]) != ok_moves.end();
+}
+
+bool MoveSequence::is_sequence_valid(const string& seq) {
+    
+
+}
 
 MoveSequence MoveSequence::inverse() const {
     MoveSequence seq;
