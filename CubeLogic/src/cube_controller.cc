@@ -77,14 +77,7 @@ string CubeController::generate_random_scramble(int length) const {
 }  
 
 bool CubeController::is_scramble_correct(const string& s) const {
-    Orientation o;
-    //try {
-        MoveSequence m = MoveSequence(o, s);
-    //}
-    //catch (InvalidSequenceException& w) {
-        //return false;
-    //}
-    return true;
+    return MoveSequence::is_sequence_valid(s);
 }
 
 EMSCRIPTEN_BINDINGS(cube_controller) {

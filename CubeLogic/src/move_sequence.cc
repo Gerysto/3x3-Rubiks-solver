@@ -111,16 +111,25 @@ MoveSequence MoveSequence::translate_single_move(Orientation& orientation, const
 
 bool MoveSequence::is_move_valid(const string& move) {
     if(move.length() == 2 and move[1] == '\'');
-    if(move.length() == 2 and move[1] == '2');
-    if (move.length())
+    else if(move.length() == 2 and move[1] == '2');
+    else if (move.length() >= 2) return false;
+
     vector<char> ok_moves = {'U','R','F','D','L','B','X','Y','Z','M','E','S','u','r','f','d','l','b'};
 
     return find(ok_moves.begin(), ok_moves.end(), move[0]) != ok_moves.end();
 }
 
 bool MoveSequence::is_sequence_valid(const string& seq) {
-    
-
+    string my_move = "";
+    for(int i = 0; i < seq.length(); ++i) {
+        char c = seq[i];
+        if(c != ' ') my_move.push_back(c);
+        else {
+            if(my_move != "" && !is_move_valid(my_move)) return false;
+            my_move = "";
+        }
+    }
+    return my_move == "" || is_move_valid(my_move);
 }
 
 MoveSequence MoveSequence::inverse() const {

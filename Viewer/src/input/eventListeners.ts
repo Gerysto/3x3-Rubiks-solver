@@ -15,6 +15,7 @@ export function init_listeners(animator: RubiksAnimator,
 
     scramble_field.addEventListener('input',() => {
         let is_correct: boolean = animator.cube_ctrl.is_scramble_correct(scramble_field.value);
+        console.log("Is correct? ", is_correct);
         
         if (!is_correct) {
             send_button.disabled = true;
