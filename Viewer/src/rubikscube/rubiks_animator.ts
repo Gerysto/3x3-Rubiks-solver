@@ -59,13 +59,23 @@ export class RubiksAnimator {
         
         for (let move of seq) {
             let clockwhise = true;
-            if (move.length == 2 && move[1] == "'") clockwhise = false;
+            let double_move = false;
+
             if (move.length == 0) continue;
+            else if (move.length == 2 && move[1] == "'") clockwhise = false;
+            else if (move.length == 2 && move[1] == "2") {move = move[0], double_move = true;}
+            else if (move.length >= 2) throw Error("Invalid move squence");
             
             this.cube_ctrl.execute_sequence_in_notation(move);
             let c = this.vectorToArray(this.cube_ctrl.get_state_corners());
             let e = this.vectorToArray(this.cube_ctrl.get_state_edges());
             this.enqueue(new State(c,e), move[0], clockwhise);
+            if (double_move) {
+                this.cube_ctrl.execute_sequence_in_notation(move);
+                let c = this.vectorToArray(this.cube_ctrl.get_state_corners());
+                let e = this.vectorToArray(this.cube_ctrl.get_state_edges());
+                this.enqueue(new State(c,e), move[0], clockwhise);
+            }
         }
     }
 
