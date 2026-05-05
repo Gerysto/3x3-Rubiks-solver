@@ -9,7 +9,7 @@ in vec3 f_matdiff;
 in vec3 f_matspec;
 in float f_matshin;
 
-float shin = 300.0;
+float shin = 800.0;
 out vec4 FragColor;
 
 
@@ -42,7 +42,7 @@ vec3 diffuse(vec3 L, vec3 norm) {
 vec3 specular(vec3 L, vec3 vertexSCO, vec3 normalSCO) {
     vec3 R = 2.0*dot(normalSCO,L)*normalSCO - L;
     vec3 v = normalize(vertexSCO);
-    return lightCol*f_matspec*0.5*min(max(pow(dot(-v,R),shin),0.0),1.0);
+    return lightCol*f_matspec*min(max(pow(dot(-v,R),shin),0.0),1.0);
 }
 
 
@@ -51,14 +51,14 @@ vec3 phong_lighting(vec3 normal, vec3 vertex) {
     vec3 col = vec3(0.0);
     vec3 L_cam =  cameraLight - vertex;
     col += ambient();
-    col += diffuse(cameraLight, normal)/sqrt(9.0);
-    col += specular(cameraLight, vertex, normal)/sqrt(9.0);
+    col += diffuse(cameraLight, normal)/sqrt(8.0);
+    col += specular(cameraLight, vertex, normal)/sqrt(8.0);
     
     for (int i = 0; i < 8; ++i) {
         vec3 L = vec3(VM*vec4(lights[i] ,1.0)) - vertex;
         L = normalize(L);
-        col += diffuse(L, normal)/sqrt(9.0);
-        col += specular(L, vertex, normal)/sqrt(9.0);
+        col += diffuse(L, normal)/sqrt(8.0);
+        col += 0.4*specular(L, vertex, normal)/sqrt(8.0);
     }
     return col;
 }
