@@ -22,6 +22,10 @@ class CubeController {
     */ 
     void init_solver();
 
+    /**
+     * Updates the state of the cube using the corner and edge configurations passed as input.
+     */
+    void set_state(const vector<int>& corners, const vector<int>& edges);
     /*
      * Given a move-sequence in the standard Rubik's cube notation, 
      * it performs set move-sequence to the cube. 

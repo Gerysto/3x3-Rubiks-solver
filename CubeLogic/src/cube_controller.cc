@@ -18,6 +18,11 @@ void CubeController::init_solver() {
     this->solver.read_table_data();
 }
 
+void CubeController::set_state(const vector<int>& corners, const vector<int>& edges) {
+    for (int i = 0; i < cube.state.corners.size(); ++i) cube.state.corners[i] = corners[i];
+    for (int i = 0; i < cube.state.edges.size(); ++i) cube.state.edges[i] = edges[i];
+}
+
 /*
     * Given a move-sequence in the standard Rubik's cube notation, 
     * it performs set move-sequence to the cube. 
@@ -84,6 +89,7 @@ EMSCRIPTEN_BINDINGS(cube_controller) {
     emscripten::class_<CubeController>("CubeController")
         .constructor()
         .function("init_solver", &CubeController::init_solver)
+        .function("set_state", &CubeController::set_state)
         .function("execute_sequence_in_notation", &CubeController::execute_sequence_in_notation)
         .function("print_state", &CubeController::print_state)
         .function("reset_cube_state", &CubeController::reset_cube_state)

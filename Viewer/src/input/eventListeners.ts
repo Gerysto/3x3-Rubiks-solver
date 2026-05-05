@@ -46,15 +46,19 @@ export function init_listeners(animator: RubiksAnimator,
         const cog_image = document.getElementById('cog-img') as HTMLImageElement;
         cog_image.classList.add("animated");
         solve_button.disabled = true;
+        send_button.disabled = true;
 
 
         const solver_worker = new Worker(
             "src/workers/SolverWorker.js", {type: 'module'});
 
+            // TODO! GET RID OF THIS WAIT!!!!!! ------------------------------------------------------------ TODO!!!!
         console.log("STARTS WAITING....");
         await new Promise(r => setTimeout(r, 5000));
         console.log("STOPS WAITING!");
-
+            // TODO! GET RID OF THIS WAIT!!!!!! ------------------------------------------------------------ TODO!!!!
+        
+        
         // Obtain the state:
         const state = {corners: animator.cube.state.corners,
                        edges: animator.cube.state.edges}
@@ -68,6 +72,7 @@ export function init_listeners(animator: RubiksAnimator,
             animator.enqueue_algorithm(sequence);
 
             solve_button.disabled = false;
+            send_button.disabled = false;
             cog_image.classList.remove("animated");
         };
 
