@@ -5,51 +5,119 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>3x3 Rubik's Cube</title>
     <style>
-        html,body {
-            height:100%;
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background: #f3f4f6;
+            margin: 0;
+        }
+        .app {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
         }
         #c {
-            margin-left: 5%;
-            margin-right: 5%;
+            width: 100%;
+            height: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+            background: white;
+        }
+        .container {
+            background: white;
+            padding: 16px;
+            border-radius: 10px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.10);
+        }
+        .flex-col {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .flex-row {
+            display: flex;
+            gap: 10px;
+        }
+        button {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.2s;
+        }
+        button:hover {
+            background: #1e4fd1;
+        }
+        button:disabled {
+            background: #888;
+            pointer-events: none;
+        }
 
-            margin-top: 20px;
-            margin-bottom: 20px;
-            border: 2px solid black;
-            height:40%;
-            width:90%;
-            touch-action: none;
-        }
-        *{
-            font-family: 'Courier New', Courier, monospace;
-        }
-        .container{
-            margin-top: 20px;
-            margin-bottom: 20px;
-        }
         
+
+        button.secondary {
+            background: #e5e7eb;
+            color: #111;
+        }
+        input {
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #2563eb;
+        }
+
+        label {
+            font-weight:900;
+            font-size: 14px;
+            color: #444;
+        }
+
+        #loader{
+            display:flex;
+            align-items: center;
+            justify-content: center;
+            height: 400px;
+
+        }
         #loader-spinner {
-        width:120px;
-        height:120px;
-        animation: rotation 2s linear infinite;
+            width:120px;
+            height:120px;
+            animation: rotation 2s linear infinite;
         }
 
         .square1 {
-        width: 30px;
-        height: 30px;
-        border: 1px solid black;
-        border-radius: 6px;
-        margin: 4px;
-        animation: colors1 0.8s linear infinite;
+            width: 30px;
+            height: 30px;
+            border: 1px solid black;
+            border-radius: 6px;
+            margin: 4px;
+            animation: colors1 0.8s linear infinite;
         }
         .square2 {
-        width: 30px;
-        height: 30px;
-        border: 1px solid black;
-        border-radius: 6px;
-        margin: 4px;
-        animation: colors2 0.8s linear infinite;
+            width: 30px;
+            height: 30px;
+            border: 1px solid black;
+            border-radius: 6px;
+            margin: 4px;
+            animation: colors2 0.8s linear infinite;
         }
-
+        .full-width {
+            width: 100%;
+        }
+        .button-row {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
         #scramble_field {
             margin-bottom: 2px;
         }
