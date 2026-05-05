@@ -41,31 +41,43 @@ export function init_listeners(animator: RubiksAnimator,
         animator.enqueue_algorithm(alg);
     })
 
+
     solve_button.addEventListener('click', async () => {
         const cog_image = document.getElementById('cog-img') as HTMLImageElement;
         cog_image.classList.add("animated");
-        
+        solve_button.disabled = true;
+
+
         const solver_worker = new Worker(
             "src/workers/SolverWorker.js", {type: 'module'});
 
         console.log("STARTS WAITING....");
         await new Promise(r => setTimeout(r, 5000));
         console.log("STOPS WAITING!");
-        // Obtain the state:
-        
 
-        solver_worker.postMessage(animator.cube_ctrl);
+        // Obtain the state:
+        const state = {corners: animator.cube.state.corners,
+                       edges: animator.cube.state.edges}
+        
+        solver_worker.postMessage(state);
         console.log("MESSAGE SENT TO WORKER!!");
         
-        
+        solver_worker.onmessage = (e) => {
+            console.log("Response recieved!!!");
+            let sequence: string = e.data;
+            animator.enqueue_algorithm(sequence);
+
+            solve_button.disabled = false;
+            cog_image.classList.remove("animated");
+        };
+
         /*
         const s = animator.cube_ctrl.find_solution();
         animator.enqueue_algorithm(s);*/
-        
-        solve_button.disabled = true;
-        solve_button.disabled = false;
-        cog_image.classList.remove("animated");
+
     });
+
+
 
     turn_speed.addEventListener('input', () => {
         const tps: number = parseFloat(turn_speed.value);

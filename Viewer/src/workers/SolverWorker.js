@@ -16,14 +16,16 @@ const wasmConfig = {
 
 const moduleInstance = await createModule(wasmConfig);
 const ctrl = new moduleInstance.CubeController();
-
 ctrl.init_solver(); // Thinking :D
-
+ctrl.execute_sequence_in_notation("R U R' U' R' F R F'");
 
 
 onmessage = (e) => {
     console.log("Message recieved from main script!");
-    const cube_ctrl = e.data;
-    const s = cube_ctrl.find_solution();
+    const cube_state = e.data;
+    console.log("Data: ", cube_state);
+    const s = ctrl.find_solution();
     console.log("Solution: ", s);
+
+    self.postMessage(s);
 }
