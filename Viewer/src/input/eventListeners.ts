@@ -41,9 +41,19 @@ export function init_listeners(animator: RubiksAnimator,
         animator.enqueue_algorithm(alg);
     })
 
-    solve_button.addEventListener('click', () => {
+    solve_button.addEventListener('click', async () => {
+        const cog_image = document.getElementById('cog-img') as HTMLImageElement;
+        cog_image.classList.add("animated");
+        console.log("STARTS WAITING....");
+
         const s = animator.cube_ctrl.find_solution();
         animator.enqueue_algorithm(s);
+        
+        solve_button.disabled = true;
+        await new Promise(r => setTimeout(r, 5000));
+        console.log("STOPS WAITING!");
+        solve_button.disabled = false;
+        cog_image.classList.remove("animated");
     });
 
     turn_speed.addEventListener('input', () => {

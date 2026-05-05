@@ -52,17 +52,24 @@
         button:hover {
             background: #1e4fd1;
         }
+
         button:disabled {
             background: #888;
             pointer-events: none;
         }
+        button#solve {
+            padding-right:2em;
+        }
 
-        
+        #cog-img.animated {
+            animation: full-rotation 4s linear infinite
+        }
 
         button.secondary {
             background: #e5e7eb;
             color: #111;
         }
+
         input {
             padding: 10px;
             border-radius: 8px;
@@ -86,12 +93,11 @@
             align-items: center;
             justify-content: center;
             height: 400px;
-
         }
         #loader-spinner {
             width:120px;
             height:120px;
-            animation: rotation 2s linear infinite;
+            animation: rotation 10s linear infinite;
         }
 
         .square1 {
@@ -155,6 +161,10 @@
             0%    {transform: rotate(0deg);}
             100%  {transform: rotate(90deg);}
         }
+        @keyframes full-rotation {
+            0%    {transform: rotate(0deg);}
+            100%  {transform: rotate(360deg);}
+        }
 
     </style>
     <script src="libs/J3DIMath.js"></script>
@@ -178,7 +188,12 @@
         </div>
 
         <div class="container flex-row">
-            <button id="solve" class="primary full-width">Solve!</button>
+            <button id="solve" class="primary full-width flex-row">
+                <img id="cog-img" style="height:2em" src="assets/images/cog.png"></img>
+                <div class="flex-col" style="justify-content:center; width:100%">
+                    <span style="justify-content:center;">Solve!</span>
+                </div>
+            </button>
             <button id="default_orientation" class="secondary full-width">Return to default orientation</button>
         </div>
         
