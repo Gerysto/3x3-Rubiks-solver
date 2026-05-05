@@ -1,6 +1,8 @@
 import { Camera } from "../engine/Camera";
 import { RubiksAnimator } from "../rubikscube/rubiks_animator";
 
+
+
 export function init_listeners(animator: RubiksAnimator,
                                camera: Camera): void{
     const send_button  = document.getElementById("send_scramble") as HTMLButtonElement;
@@ -12,9 +14,9 @@ export function init_listeners(animator: RubiksAnimator,
 
     const scramble_field = document.getElementById("scramble_field") as HTMLInputElement;
 
-
     scramble_field.classList.add('valid');
-    scramble_field.addEventListener('input',() => {
+    
+    function check_input_scramble() {
         let is_correct: boolean = animator.cube_ctrl.is_scramble_correct(scramble_field.value);
         console.log("Is correct? ", is_correct);
         
@@ -26,7 +28,12 @@ export function init_listeners(animator: RubiksAnimator,
             scramble_field.classList.replace('invalid', 'valid');
             send_button.disabled = false;
         }
-    });
+    }
+    check_input_scramble();
+    turn_speed.value = animator.TPS.toString();
+    turn_speed_label.innerHTML = animator.TPS.toString() + " TPS";
+
+    scramble_field.addEventListener('input', () => check_input_scramble());
 
     send_button.addEventListener('click', () => {    
         let alg = scramble_field.value as string;
@@ -54,5 +61,6 @@ export function init_listeners(animator: RubiksAnimator,
         let s = animator.cube_ctrl.generate_random_scramble(30);
         scramble_field.value = s;
         console.log(s);
+        check_input_scramble();
     });
 }
