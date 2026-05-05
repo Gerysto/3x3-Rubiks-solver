@@ -92,43 +92,47 @@
     <script type="module" src="dist/bundle.js"></script>
 </head>
 <body>
-    
-    <div class="container" style="display:flex; flex-direction: column;">
-        <input  class="valid" id="scramble_field" placeholder="e.g. R U R' U'">
-        <button id="send_scramble">Execute Sequence</button>
-        <button id="random_scramble">Random Scramble</button>
-    </div>
+    <div class="app">
+        <div class="container flex-col">
+            <label for="scramble_field">Move sequence:</label>
+            <input class="valid" id="scramble_field" placeholder="R U R' U' R' F R2 U' R' U' R U R' F'">
+            <button id="send_scramble">Execute Sequence</button>
+            <button id="random_scramble" class="secondary">Random Scramble</button>
+        </div>
 
-    <div class="container" style="display: flex; flex-direction: column;">
-        <div style="display: flex;">
-            <label> TurnSpeed:</label>
-            <label id="turn_speed_label" style="margin-left:5px; margin-right:5px">
+        <div class="container flex-col">
+            <div class="flex-row">
+                <label for="turn_speed"> Turn speed:</label>
+                <label for="turn_speed" id="turn_speed_label"></label>
+            </div>
+            <input  id="turn_speed" type="range" min="0.2" max="20" step="0.2" value="5.0">
         </div>
-        <input  id="turn_speed" type="range" min="0.2" max="20" step="0.2" value="5.0">
-    </div>
-    <div class="container" style="display: flex;">
-        <button id="solve" style="width:100%">Solve!</button>
-        <button id="default_orientation" style="width:100%">Return to default orientation</button>
-    </div>
-    <div id="loader" style="margin-top: 10em">
-        <div id="loader-spinner" style="margin:auto">
-            <div style="display:flex; flex:horizontal">
-            <div class="square1"></div>
-            <div class="square2"></div>
-            <div class="square1"></div>
-            </div>
-            <div style="display:flex; flex:horizontal">
-            <div class="square2"></div>
-            <div class="square1"></div>
-            <div class="square2"></div>
-            </div>
-            <div style="display:flex; flex:horizontal">
-            <div class="square1"></div>
-            <div class="square2"></div>
-            <div class="square1"></div>
+
+        <div class="container flex-row">
+            <button id="solve" class="primary full-width">Solve!</button>
+            <button id="default_orientation" class="secondary full-width">Return to default orientation</button>
+        </div>
+        
+        <div id="loader">
+            <div id="loader-spinner">
+                <div style="display:flex; flex:horizontal">
+                    <div class="square1"></div>
+                    <div class="square2"></div>
+                    <div class="square1"></div>
+                </div>
+                <div style="display:flex; flex:horizontal">
+                    <div class="square2"></div>
+                    <div class="square1"></div>
+                    <div class="square2"></div>
+                </div>
+                <div style="display:flex; flex:horizontal">
+                    <div class="square1"></div>
+                    <div class="square2"></div>
+                    <div class="square1"></div>
+                </div>
             </div>
         </div>
+        <canvas id="c" style="display:none"></canvas>
     </div>
-    <canvas id="c" style="display:none"></canvas>
 </body>
 </html>
