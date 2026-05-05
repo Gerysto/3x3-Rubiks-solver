@@ -13,14 +13,17 @@ export function init_listeners(animator: RubiksAnimator,
     const scramble_field = document.getElementById("scramble_field") as HTMLInputElement;
 
 
+    scramble_field.classList.add('valid');
     scramble_field.addEventListener('input',() => {
         let is_correct: boolean = animator.cube_ctrl.is_scramble_correct(scramble_field.value);
         console.log("Is correct? ", is_correct);
         
         if (!is_correct) {
             send_button.disabled = true;
+            scramble_field.classList.replace('valid', 'invalid');
         }
         else {
+            scramble_field.classList.replace('invalid', 'valid');
             send_button.disabled = false;
         }
     });

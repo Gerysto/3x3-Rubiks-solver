@@ -9,12 +9,13 @@ in vec3 f_matdiff;
 in vec3 f_matspec;
 in float f_matshin;
 
+float shin = 300.0;
 out vec4 FragColor;
 
 
 uniform mat4 VM;
 
-vec3 lightCol = vec3(1.0,1.0,1.0);
+vec3 lightCol = vec3(1.0);
 vec3 cameraLight = vec3(0,0,0);
 
 const float lightDistance = 1000.0;
@@ -41,7 +42,7 @@ vec3 diffuse(vec3 L, vec3 norm) {
 vec3 specular(vec3 L, vec3 vertexSCO, vec3 normalSCO) {
     vec3 R = 2.0*dot(normalSCO,L)*normalSCO - L;
     vec3 v = normalize(vertexSCO);
-    return lightCol*f_matspec*min(max(pow(dot(-v,R),f_matshin),0.0),1.0);
+    return lightCol*f_matspec*0.5*min(max(pow(dot(-v,R),shin),0.0),1.0);
 }
 
 

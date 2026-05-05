@@ -126,7 +126,7 @@ export class RubiksCube {
 
             const orientation = this.state.edges[pos]%2;
             if (orientation != 0) {
-                // Orient the corner:
+                // Orient the edge:
                 this.edges[piece].ModelTransform.rotate(
                     180, 0,1,-1
                 );

@@ -50,6 +50,21 @@
         animation: colors2 0.8s linear infinite;
         }
 
+        #scramble_field {
+            margin-bottom: 2px;
+        }
+        #scramble_field.invalid {
+            border: 2px solid #AF0000;
+            border-radius:0.4em;
+            outline: none;
+        }
+        
+        #scramble_field.valid {
+            border: 2px solid black;
+            border-radius:0.4em;
+            outline: none;
+        }
+
 
         @keyframes colors1 {
             0%   {background-color: yellow;}
@@ -79,7 +94,7 @@
 <body>
     
     <div class="container" style="display:flex; flex-direction: column;">
-        <input  id="scramble_field" placeholder="e.g. R U R' U'">
+        <input  class="valid" id="scramble_field" placeholder="e.g. R U R' U'">
         <button id="send_scramble">Execute Sequence</button>
         <button id="random_scramble">Random Scramble</button>
     </div>
