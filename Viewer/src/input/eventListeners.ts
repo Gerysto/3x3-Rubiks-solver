@@ -29,6 +29,7 @@ export function init_listeners(animator: RubiksAnimator,
             send_button.disabled = false;
         }
     }
+    
     check_input_scramble();
     turn_speed.value = animator.TPS.toString();
     turn_speed_label.innerHTML = animator.TPS.toString() + " TPS";
