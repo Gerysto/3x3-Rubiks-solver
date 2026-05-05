@@ -3,8 +3,8 @@ import { RubiksAnimator } from "../rubikscube/rubiks_animator";
 
 
 
-export function init_listeners(animator: RubiksAnimator,
-                               camera: Camera): void{
+export async function init_listeners(animator: RubiksAnimator,
+                               camera: Camera) {
     const send_button  = document.getElementById("send_scramble") as HTMLButtonElement;
     const solve_button = document.getElementById("solve") as HTMLButtonElement;
     const turn_speed = document.getElementById("turn_speed") as HTMLInputElement;
@@ -41,23 +41,20 @@ export function init_listeners(animator: RubiksAnimator,
         animator.enqueue_algorithm(alg);
     })
 
-
+    // Create worker:
+    const solver_worker = new Worker("src/workers/SolverWorker.js", {type: 'module'});
+    // Wait for worker to initialize:
+    await new Promise((resolve) => {
+        solver_worker.onmessage = (e) => {
+            if (e.data == 'READY') resolve("You shall pass!");
+        }
+    });
+    
     solve_button.addEventListener('click', async () => {
         const cog_image = document.getElementById('cog-img') as HTMLImageElement;
         cog_image.classList.add("animated");
         solve_button.disabled = true;
-        send_button.disabled = true;
-
-
-        const solver_worker = new Worker(
-            "src/workers/SolverWorker.js", {type: 'module'});
-
-            // TODO! GET RID OF THIS WAIT!!!!!! ------------------------------------------------------------ TODO!!!!
-        console.log("STARTS WAITING....");
-        await new Promise(r => setTimeout(r, 5000));
-        console.log("STOPS WAITING!");
-            // TODO! GET RID OF THIS WAIT!!!!!! ------------------------------------------------------------ TODO!!!!
-        
+        send_button.disabled = true;        
         
         // Obtain the state:
         const state = {corners: animator.cube.state.corners,
@@ -75,11 +72,6 @@ export function init_listeners(animator: RubiksAnimator,
             send_button.disabled = false;
             cog_image.classList.remove("animated");
         };
-
-        /*
-        const s = animator.cube_ctrl.find_solution();
-        animator.enqueue_algorithm(s);*/
-
     });
 
 

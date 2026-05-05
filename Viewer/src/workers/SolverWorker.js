@@ -17,7 +17,7 @@ const wasmConfig = {
 const moduleInstance = await createModule(wasmConfig);
 const ctrl = new moduleInstance.CubeController();
 ctrl.init_solver(); // Thinking :D
-
+self.postMessage('READY');
 
 onmessage = (e) => {
     console.log("Message recieved from main script!");
