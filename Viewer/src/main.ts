@@ -33,7 +33,6 @@ async function start() {
     
     let module = await createModule();
     let ctrl = new module.CubeController();
-    ctrl.init_solver();
 
     const animator: RubiksAnimator = new RubiksAnimator(cube, ctrl);
 
