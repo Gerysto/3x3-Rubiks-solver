@@ -39,7 +39,8 @@ export const SOLVED = {
     CORNERS: [0, 3, 6, 9, 12, 15, 18, 21],
     EDGES:   [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22]
 }
- 
+
+export const DEFAULT_ORIENTATION = [0,1,2,3,4,5];
 
 
 /**

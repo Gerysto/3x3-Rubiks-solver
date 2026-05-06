@@ -2,7 +2,7 @@ import { PieceObject } from './PieceObject.js';
 import { Scene } from '../engine/Scene.js';
 import { ShaderProgram } from '../shaders/ShaderProgram.js';
 import { corner_TG, edge_TG, center_TG } from './piece_transformations.js';
-import { PIECES_INVOLVED, AXIS_OF_ROTATION, SOLVED } from './rubiks_constants.js';
+import { PIECES_INVOLVED, AXIS_OF_ROTATION, SOLVED, DEFAULT_ORIENTATION} from './rubiks_constants.js';
 import { MeshObject } from '../engine/MeshObject.js';
 
 const CORNER_MODEL_URL = 'assets/models/corner_piece.obj';
@@ -12,10 +12,12 @@ const CENTER_MODEL_URL = 'assets/models/center_piece.obj';
 export class State {
     corners: number[];
     edges: number[];
+    orientation: number[];
 
-    constructor(corners: number[], edges: number[]) {
+    constructor(corners: number[], edges: number[], orientation: number[]) {
         this.corners = corners;
         this.edges = edges;
+        this.orientation = orientation;
     }
 }
 
@@ -30,7 +32,7 @@ export class RubiksCube {
         this.corners = [];
         this.edges = [];
         this.centers = [];
-        this.state = new State(SOLVED.CORNERS, SOLVED.EDGES);
+        this.state = new State(SOLVED.CORNERS, SOLVED.EDGES, DEFAULT_ORIENTATION);
     }
 
     private async load() {

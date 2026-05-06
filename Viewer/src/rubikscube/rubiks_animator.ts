@@ -69,12 +69,14 @@ export class RubiksAnimator {
             this.cube_ctrl.execute_sequence_in_notation(move);
             let c = this.vectorToArray(this.cube_ctrl.get_state_corners());
             let e = this.vectorToArray(this.cube_ctrl.get_state_edges());
-            this.enqueue(new State(c,e), move[0], clockwhise);
+            let o = this.vectorToArray(this.cube_ctrl.get_cube_orientation());
+            this.enqueue(new State(c,e,o), move[0], clockwhise);
             if (double_move) {
                 this.cube_ctrl.execute_sequence_in_notation(move);
                 let c = this.vectorToArray(this.cube_ctrl.get_state_corners());
                 let e = this.vectorToArray(this.cube_ctrl.get_state_edges());
-                this.enqueue(new State(c,e), move[0], clockwhise);
+                let o = this.vectorToArray(this.cube_ctrl.get_cube_orientation());
+                this.enqueue(new State(c,e,o), move[0], clockwhise);
             }
         }
     }
