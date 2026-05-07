@@ -97,6 +97,13 @@ class Orientation {
     */
     u_int8_t get_side(u_int8_t face) const;
 
+    vector<u_int8_t> get_face_to_side() const;
+
+    vector<u_int8_t> get_side_to_face() const;
+
+    void set_face_to_side(const vector<u_int8_t>& face_to_side);
+
+    void set_side_to_face(const vector<u_int8_t>& side_to_face);
     /*
      * Displays the two vectors which define the cube's orientation.
     */

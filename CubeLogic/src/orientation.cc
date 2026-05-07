@@ -57,6 +57,29 @@ u_int8_t Orientation::get_side(u_int8_t face) const {
     return face_to_side[face];
 }
 
+
+vector<u_int8_t> Orientation::get_face_to_side() const {
+    return this->face_to_side;
+}
+
+vector<u_int8_t> Orientation::get_side_to_face() const {
+    return this->side_to_face;
+}
+
+void Orientation::set_face_to_side(const vector<u_int8_t>& face_to_side) {
+    this->face_to_side = face_to_side;
+    for (int i = 0; i < face_to_side.size(); ++i) {
+        this->side_to_face[face_to_side[i]] = i;
+    }
+}
+
+void Orientation::set_side_to_face(const vector<u_int8_t>& side_to_face) {
+    this->side_to_face = side_to_face;
+    for (int i = 0; i < side_to_face.size(); ++i) {
+        this->face_to_side[side_to_face[i]] = i;
+    }
+}
+
 void Orientation::display() const {
     cout << "SIDE TO FACE: ";
     for(int i = 0; i < side_to_face.size(); ++i) {

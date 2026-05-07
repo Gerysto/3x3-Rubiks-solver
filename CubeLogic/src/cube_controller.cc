@@ -18,9 +18,12 @@ void CubeController::init_solver() {
     this->solver.read_table_data();
 }
 
-void CubeController::set_state(const vector<int>& corners, const vector<int>& edges) {
+void CubeController::set_state(const vector<int>& corners, const vector<int>& edges, const vector<int>& orientation) {
     for (int i = 0; i < cube.state.corners.size(); ++i) cube.state.corners[i] = corners[i];
     for (int i = 0; i < cube.state.edges.size(); ++i) cube.state.edges[i] = edges[i];
+    vector<u_int8_t> orientation_uint8;
+    for (int i = 0; i < orientation.size(); ++i) orientation_uint8[i] = orientation[i];
+    cube.orientation.set_side_to_face(orientation_uint8);
 }
 
 /*
@@ -73,6 +76,14 @@ vector<int> CubeController::get_state_edges() const{
     return res;
 }
 
+vector<int> CubeController::get_cube_orientation() const{
+    vector<int> res;
+    for (const int x: cube.orientation.get_side_to_face()) {
+        res.push_back((int) x);
+    }
+    return res;
+}
+
 
 string CubeController::generate_random_scramble(int length) const {
     MoveSequence m;
@@ -96,6 +107,7 @@ EMSCRIPTEN_BINDINGS(cube_controller) {
         .function("find_solution", &CubeController::find_solution)
         .function("get_state_corners", &CubeController::get_state_corners)
         .function("get_state_edges", &CubeController::get_state_edges)
+        .function("get_cube_orientation", &CubeController::get_cube_orientation)
         .function("generate_random_scramble", &CubeController::generate_random_scramble)
         .function("is_scramble_correct", &CubeController::is_scramble_correct);
 

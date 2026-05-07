@@ -25,7 +25,7 @@ class CubeController {
     /**
      * Updates the state of the cube using the corner and edge configurations passed as input.
      */
-    void set_state(const vector<int>& corners, const vector<int>& edges);
+    void set_state(const vector<int>& corners, const vector<int>& edges, const vector<int>& orientation);
     /*
      * Given a move-sequence in the standard Rubik's cube notation, 
      * it performs set move-sequence to the cube. 
@@ -56,6 +56,8 @@ class CubeController {
     vector<int> get_state_corners() const;
 
     vector<int> get_state_edges() const;
+
+    vector<int> get_cube_orientation() const;
 
     string generate_random_scramble(int length) const; 
 
