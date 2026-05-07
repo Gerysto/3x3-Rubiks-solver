@@ -92,6 +92,7 @@ export class RubiksCube {
      * @param t interpolation parameter (ranging from 0 to 1)
      */
     perform_move(move: string, clockwhise: boolean, t: number) {
+        
         const pieces_involved = PIECES_INVOLVED.get(move) as number[][];
 
         let angle = 90*t;
