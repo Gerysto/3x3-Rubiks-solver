@@ -1,5 +1,5 @@
 import createModule from "../../libs/cube_lib.js";
-
+import {arrayToVectorInt, vectorIntToArray} from "../../libs/wasm_utils.js"
 
 const wasmConfig = {
     locateFile: function(path) {
@@ -24,12 +24,10 @@ onmessage = (e) => {
     const cube_state = e.data;
     console.log("Data: ", cube_state);
     
-    let corners = new moduleInstance.VectorInt();
-    for (let c of cube_state.corners) corners.push_back(parseInt(c));
-    
-    let edges = new moduleInstance.VectorInt();
-    for (let e of cube_state.edges) edges.push_back(parseInt(e));
-    ctrl.set_state(corners, edges);
+    let corners = arrayToVectorInt(cube_state.corners, moduleInstance);
+    let edges = arrayToVectorInt(cube_state.edges, moduleInstance);
+    let orientation = arrayToVectorInt(cube_state.orientation, moduleInstance);
+    ctrl.set_state(corners, edges, orientation);
 
     const s = ctrl.find_solution();
     console.log("Solution: ", s);

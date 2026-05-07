@@ -50,3 +50,23 @@ const L = new J3DIMatrix4(); L.rotate(-PI/2, 0,1,0); L.multiply(F);
 export const center_TG = [U, R, F, D, L, B];
 
 const cubeTransform = new J3DIMatrix4(); cubeTransform.scale(0.7, 0.7, 0.7);
+
+
+// Constants to help with cube orientation: 
+
+// X_TOP_TOP: Transformation that moves the X colored face to the top of the cube.
+const W_TO_TOP = new J3DIMatrix4();
+const R_TO_TOP = new J3DIMatrix4(); R_TO_TOP.rotate( PI/2, 0,0,1);
+const G_TO_TOP = new J3DIMatrix4(); G_TO_TOP.rotate(-PI/2, 1,0,0);
+const Y_TO_TOP = new J3DIMatrix4(); Y_TO_TOP.rotate( PI  , 1,0,0);
+const O_TO_TOP = new J3DIMatrix4(); O_TO_TOP.rotate(-PI/2, 0,0,1);
+const B_TO_TOP = new J3DIMatrix4(); B_TO_TOP.rotate( PI/2, 1,0,0);
+
+export const BRING_COLOR_TO_TOP = [
+    {TG: W_TO_TOP, MOVE: ""  }, 
+    {TG: R_TO_TOP, MOVE: "Z'" }, 
+    {TG: G_TO_TOP, MOVE: "X"}, 
+    {TG: Y_TO_TOP, MOVE: "X2"}, 
+    {TG: O_TO_TOP, MOVE: "Z"}, 
+    {TG: B_TO_TOP, MOVE: "X'" }];
+

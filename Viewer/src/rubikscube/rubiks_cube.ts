@@ -1,9 +1,11 @@
 import { PieceObject } from './PieceObject.js';
 import { Scene } from '../engine/Scene.js';
 import { ShaderProgram } from '../shaders/ShaderProgram.js';
-import { corner_TG, edge_TG, center_TG } from './piece_transformations.js';
-import { PIECES_INVOLVED, AXIS_OF_ROTATION, SOLVED, DEFAULT_ORIENTATION} from './rubiks_constants.js';
+import { corner_TG, edge_TG, center_TG, BRING_COLOR_TO_TOP} from './piece_transformations.js';
+import { PIECES_INVOLVED, AXIS_OF_ROTATION, SOLVED, DEFAULT_ORIENTATION, FACE_INDEX, SIDE_INDEX} from './rubiks_constants.js';
 import { MeshObject } from '../engine/MeshObject.js';
+import { arrayToVectorInt, vectorIntToArray } from '../../libs/wasm_utils.js'
+import createModule, { CubeModule } from '../../libs/cube_lib.js';
 
 const CORNER_MODEL_URL = 'assets/models/corner_piece.obj';
 const EDGE_MODEL_URL   = 'assets/models/edge_piece.obj';
@@ -27,12 +29,16 @@ export class RubiksCube {
     edges: PieceObject[];
     centers: PieceObject[];
     state: State;
+    cube_module: CubeModule;
+    orientation_transform: J3DIMatrix4;
 
-    constructor() {
+    constructor(cube_module: CubeModule) {
         this.corners = [];
         this.edges = [];
         this.centers = [];
         this.state = new State(SOLVED.CORNERS, SOLVED.EDGES, DEFAULT_ORIENTATION);
+        this.cube_module = cube_module;
+        this.orientation_transform = new J3DIMatrix4();
     }
 
     private async load() {
@@ -93,6 +99,7 @@ export class RubiksCube {
 
         const aux = AXIS_OF_ROTATION.get(move)
         if (aux == undefined) {
+            return;
             throw Error("Invalid move: '" + move + "' ");
         }
         const [x, y, z] = aux as number[];
@@ -105,6 +112,7 @@ export class RubiksCube {
         
             this.corners[piece].ModelTransform = new J3DIMatrix4();
             this.corners[piece].ModelTransform.rotate(angle, x, y, z);
+            this.corners[piece].ModelTransform.multiply(this.orientation_transform);
             this.corners[piece].ModelTransform.multiply(corner_TG[pos]);
 
             const orientation = this.state.corners[pos]%3;
@@ -124,6 +132,7 @@ export class RubiksCube {
 
             this.edges[piece].ModelTransform = new J3DIMatrix4();
             this.edges[piece].ModelTransform.rotate(angle, x, y, z);
+            this.edges[piece].ModelTransform.multiply(this.orientation_transform);
             this.edges[piece].ModelTransform.multiply(edge_TG[pos]);
 
             const orientation = this.state.edges[pos]%2;
@@ -139,18 +148,22 @@ export class RubiksCube {
         for (let i of pieces_involved[2]) {
             this.centers[i].ModelTransform = new J3DIMatrix4();
             this.centers[i].ModelTransform.rotate(angle, x, y, z);
+            this.centers[i].ModelTransform.multiply(this.orientation_transform);
             this.centers[i].ModelTransform.multiply(center_TG[i]);
         }
     }
 
-    update_state(corners: number[], edges: number[]) {
+    update_state(corners: number[], edges: number[], cube_orientation: number[]) {
         this.state.corners = corners;
         this.state.edges = edges;
+        this.state.orientation = cube_orientation;
+        this.orientation_transform = this.get_orientation_transformation();
 
         console.log("Updating state: ", corners, edges);
         for (let i = 0; i < corners.length; ++i) {
             const piece = Math.floor(corners[i]/3);
             this.corners[piece].ModelTransform = new J3DIMatrix4();
+            this.corners[piece].ModelTransform.multiply(this.orientation_transform);
             this.corners[piece].ModelTransform.multiply(corner_TG[i]);
             
             const orientation = corners[i]%3;
@@ -165,6 +178,7 @@ export class RubiksCube {
         for (let i = 0; i < edges.length; ++i) {
             const piece = Math.floor(edges[i]/2); 
             this.edges[piece].ModelTransform = new J3DIMatrix4();
+            this.edges[piece].ModelTransform.multiply(this.orientation_transform);
             this.edges[piece].ModelTransform.multiply(edge_TG[i]);
 
             const orientation = edges[i]%2;
@@ -175,7 +189,60 @@ export class RubiksCube {
         }
 
         for (let i in this.centers) {
-            this.centers[i].ModelTransform = center_TG[i]
+            this.centers[i].ModelTransform = new J3DIMatrix4();
+            this.centers[i].ModelTransform.multiply(this.orientation_transform);
+            this.centers[i].ModelTransform.multiply(center_TG[i]);
         }
+    }
+
+    static move_color_to_front_with_Y_moves(orientation: number[], center_color: number): J3DIMatrix4 {
+        // side of the cube where the center_color is located (Front, Top, Right,...)
+        let side = orientation.findIndex((color) => color == center_color);
+        let rot = new J3DIMatrix4();
+        switch (side) {
+            case SIDE_INDEX.FRONT:
+                break;
+            case SIDE_INDEX.RIGHT:
+                rot.rotate(-90, 0, 1, 0);
+                break;
+            case SIDE_INDEX.LEFT:
+                rot.rotate(90, 0, 1, 0);
+                break;
+            case SIDE_INDEX.BACK:
+                rot.rotate(180, 0, 1, 0);
+                break;
+            default:
+                console.log("Orientation: ", orientation);
+                console.log("center color: ", center_color);
+                throw new Error("Impossible state!! Rotation cannot be achieved with Y turns!");
+        }
+        return rot;
+    }
+
+    get_orientation_transformation(): J3DIMatrix4 {
+        // The face-color that should be on top:
+        const TOP_COLOR = this.state.orientation[0];
+        // The face-color that should be at the front:
+        const FRONT_COLOR = this.state.orientation[2];
+        console.log("Top: ", TOP_COLOR, "| Front: ", FRONT_COLOR); 
+        const dummy_cube = new this.cube_module.CubeController();
+        dummy_cube.set_state(
+                arrayToVectorInt(SOLVED.CORNERS, this.cube_module),
+                arrayToVectorInt(SOLVED.EDGES, this.cube_module),
+                arrayToVectorInt(DEFAULT_ORIENTATION, this.cube_module));
+
+        // Simulate the move we perform to place the TOP_COLOR in the U layer:
+        console.log("PROBLEMATIC SECTION: ");
+        console.log("Orientation in .ts", this.state.orientation);
+        dummy_cube.execute_sequence_in_notation(
+            BRING_COLOR_TO_TOP[TOP_COLOR].MOVE);
+
+        const new_orientation = vectorIntToArray(dummy_cube.get_cube_orientation());
+        // Find out how to move the FRONT_COLOR to the F layer:
+        
+        const TG = new J3DIMatrix4();
+        TG.multiply(RubiksCube.move_color_to_front_with_Y_moves(new_orientation, FRONT_COLOR));
+        TG.multiply(BRING_COLOR_TO_TOP[TOP_COLOR].TG);
+        return TG;
     }
 }

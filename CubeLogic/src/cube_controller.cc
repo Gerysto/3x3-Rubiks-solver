@@ -21,7 +21,7 @@ void CubeController::init_solver() {
 void CubeController::set_state(const vector<int>& corners, const vector<int>& edges, const vector<int>& orientation) {
     for (int i = 0; i < cube.state.corners.size(); ++i) cube.state.corners[i] = corners[i];
     for (int i = 0; i < cube.state.edges.size(); ++i) cube.state.edges[i] = edges[i];
-    vector<u_int8_t> orientation_uint8;
+    vector<u_int8_t> orientation_uint8(6);
     for (int i = 0; i < orientation.size(); ++i) orientation_uint8[i] = orientation[i];
     cube.orientation.set_side_to_face(orientation_uint8);
 }
@@ -78,9 +78,13 @@ vector<int> CubeController::get_state_edges() const{
 
 vector<int> CubeController::get_cube_orientation() const{
     vector<int> res;
-    for (const int x: cube.orientation.get_side_to_face()) {
-        res.push_back((int) x);
+    cout << "INSIDE OF get_cube_orientation" << endl;
+    vector<uint8_t> o = cube.orientation.get_side_to_face();
+    for (const int x: o) {
+        cout << x << ", ";
+        res.push_back(x);
     }
+    cout << endl;
     return res;
 }
 

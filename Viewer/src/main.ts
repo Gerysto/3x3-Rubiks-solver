@@ -23,7 +23,10 @@ async function start() {
     const scene = new Scene();
     const camera = new Camera();
 
-    let cube: RubiksCube = new RubiksCube();
+
+    let module = await createModule();
+
+    let cube: RubiksCube = new RubiksCube(module);
     await cube.createVAOs(gl, program);
     cube.add_to_scene(scene);
 
@@ -31,7 +34,6 @@ async function start() {
 
     new MouseController(camera, canvas);
     
-    let module = await createModule();
     let ctrl = new module.CubeController();
 
     const animator: RubiksAnimator = new RubiksAnimator(cube, ctrl);

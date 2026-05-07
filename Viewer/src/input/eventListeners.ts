@@ -50,7 +50,7 @@ export async function init_listeners(animator: RubiksAnimator,
         }
     });
     
-    solve_button.addEventListener('click', async () => {
+    solve_button.addEventListener('click', () => {
         const cog_image = document.getElementById('cog-img') as HTMLImageElement;
         cog_image.classList.add("animated");
         solve_button.disabled = true;
@@ -58,7 +58,8 @@ export async function init_listeners(animator: RubiksAnimator,
         
         // Obtain the state:
         const state = {corners: animator.cube.state.corners,
-                       edges: animator.cube.state.edges}
+                       edges: animator.cube.state.edges,
+                       orientation: animator.cube.state.orientation}
         
         solver_worker.postMessage(state);
         console.log("MESSAGE SENT TO WORKER!!");
@@ -73,8 +74,6 @@ export async function init_listeners(animator: RubiksAnimator,
             cog_image.classList.remove("animated");
         };
     });
-
-
 
     turn_speed.addEventListener('input', () => {
         const tps: number = parseFloat(turn_speed.value);
