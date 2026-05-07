@@ -78,10 +78,8 @@ vector<int> CubeController::get_state_edges() const{
 
 vector<int> CubeController::get_cube_orientation() const{
     vector<int> res;
-    cout << "INSIDE OF get_cube_orientation" << endl;
     vector<uint8_t> o = cube.orientation.get_side_to_face();
     for (const int x: o) {
-        cout << x << ", ";
         res.push_back(x);
     }
     cout << endl;
@@ -100,6 +98,24 @@ bool CubeController::is_scramble_correct(const string& s) const {
     return MoveSequence::is_sequence_valid(s);
 }
 
+/**
+ * Given a move sequence `seq` and two orientations `O_origin`, `O_dest`, i
+ * t aplies the move sequence to a cube in the `O_origin` orientation
+ * and returns the equivalent move sequence in the `O_dest` orientation.
+ */
+string CubeController::translate_move_sequence_from_default_to_orientation(const string& seq, const vector<int>& O_origin, const vector<int>& O_dest) {
+    Orientation O1, O2;
+
+    O1.set_side_to_face(vector<u_int8_t>(O_origin.begin(), O_origin.end()));
+    O2.set_side_to_face(vector<u_int8_t>(O_dest.begin(), O_dest.end()));
+
+    MoveSequence m = MoveSequence(O1, seq);
+    cout << "WE'RE ENTERING THE TRANSLATE FUNCTION!!!" << seq << endl;
+    return m.to_notation(O2);
+}
+
+
+
 EMSCRIPTEN_BINDINGS(cube_controller) {
     emscripten::class_<CubeController>("CubeController")
         .constructor()
@@ -113,6 +129,7 @@ EMSCRIPTEN_BINDINGS(cube_controller) {
         .function("get_state_edges", &CubeController::get_state_edges)
         .function("get_cube_orientation", &CubeController::get_cube_orientation)
         .function("generate_random_scramble", &CubeController::generate_random_scramble)
+        .class_function("translate_move_sequence_from_default_to_orientation", &CubeController::translate_move_sequence_from_default_to_orientation)
         .function("is_scramble_correct", &CubeController::is_scramble_correct);
 
     emscripten::register_vector<int>("VectorInt");

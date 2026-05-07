@@ -62,6 +62,8 @@ class CubeController {
     string generate_random_scramble(int length) const; 
 
     bool is_scramble_correct(const string& s) const;
+
+    static string translate_move_sequence_from_default_to_orientation(const string& seq, const vector<int>& O_origin, const vector<int>& O_dest);
 };
 
 

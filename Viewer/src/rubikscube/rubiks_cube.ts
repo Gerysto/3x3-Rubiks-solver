@@ -92,8 +92,16 @@ export class RubiksCube {
      * @param t interpolation parameter (ranging from 0 to 1)
      */
     perform_move(move: string, clockwhise: boolean, t: number) {
+        let translated_move = this.cube_module.CubeController.translate_move_sequence_from_default_to_orientation(
+            move.toUpperCase(),
+            arrayToVectorInt(this.state.orientation, this.cube_module), 
+            arrayToVectorInt(DEFAULT_ORIENTATION, this.cube_module));
         
-        const pieces_involved = PIECES_INVOLVED.get(move) as number[][];
+        if(/[u|r|f|d|l|b]/.test(move[0])) translated_move = translated_move.toLowerCase();
+        console.log(translated_move);
+
+        if (translated_move.length == 0) translated_move = move;
+        const pieces_involved = PIECES_INVOLVED.get(translated_move[0]) as number[][];
 
         let angle = 90*t;
         if (clockwhise) angle *= -1;

@@ -15,6 +15,7 @@ export interface CubeController {
 export interface CubeModule {
     CubeController: {
         new (): CubeController;
+        translate_move_sequence_from_default_to_orientation(s: string, O_origin: any, O_dest:any): string;
     };
 }
 
