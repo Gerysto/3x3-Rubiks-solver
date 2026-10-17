@@ -105,7 +105,6 @@ export class Parser {
         if (left == null) return null;
         [i, astLeft] = left;
 
-
         const prime = this.token_stream[i]
         if (prime.type != "\'") return null
         i++

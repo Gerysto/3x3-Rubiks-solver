@@ -9,6 +9,8 @@ import { init_listeners } from "./input/eventListeners.js";
 
 import { Lexer } from "./cube_dsl/Lexer.js";
 import { Parser } from "./cube_dsl/Parser.js";
+import { Node } from "./cube_dsl/Ast.js"
+
 import createModule from "../libs/cube_lib.js";
 
 const vertex_url = 'src/shaders/phong.vert';
