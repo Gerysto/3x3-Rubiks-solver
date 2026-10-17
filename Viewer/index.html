@@ -127,6 +127,8 @@
         }
         #scramble_field {
             margin-bottom: 2px;
+            padding: 1em;
+            resize: vertical;
         }
         #scramble_field.invalid {
             border: 2px solid #AF0000;
@@ -174,7 +176,7 @@
     <div class="app">
         <div class="container flex-col">
             <label for="scramble_field">Move sequence:</label>
-            <input class="valid" id="scramble_field" placeholder="R U R' U' R' F R2 U' R' U' R U R' F'">
+            <textarea class="valid" id="scramble_field" placeholder="R U R' U' R' F R2 U' R' U' R U R' F'"></textarea>
             <button id="send_scramble">Execute Sequence</button>
             <button id="random_scramble" class="secondary">Random Scramble</button>
         </div>

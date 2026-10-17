@@ -1,14 +1,5 @@
 import { Token, TokenType } from "../cube_dsl/Token.js"
-
-
-type NodeType = "Commutator" | "Concat" | "Prime" | "Ident" | "Repeat" | "Binding"
-
-interface Node {
-    kind: NodeType,
-    left: string | number | Node
-    right: null | Node
-}
-
+import {Node, NodeType} from "../cube_dsl/Ast.js"
 export class Parser {
     lexed_code: Token[][]
     token_stream: Token[]
