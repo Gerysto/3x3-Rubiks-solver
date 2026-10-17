@@ -15,11 +15,23 @@ import { MouseController } from "./input/MouseController.js";
 import { RubiksCube } from "./rubikscube/rubiks_cube.js";
 import { RubiksAnimator } from "./rubikscube/rubiks_animator.js";
 import { init_listeners } from "./input/eventListeners.js";
+import { Lexer } from "./cube_dsl/Lexer.js";
 import createModule from "../libs/cube_lib.js";
 const vertex_url = 'src/shaders/phong.vert';
 const fragment_url = 'src/shaders/phong.frag';
 function start() {
     return __awaiter(this, void 0, void 0, function* () {
+        let s = "sexy = [R U; R' U'] \n" +
+            "sledge = [sexy ;sledge] \n" +
+            "(sexy)\'\n";
+        let l = new Lexer(s);
+        console.log(s);
+        let token = l.peek();
+        console.log(l.token_stream);
+        while (token.type != "EOF") {
+            console.log(token);
+            token = l.next();
+        }
         const canvas = document.getElementById("c");
         const gl = canvas.getContext("webgl2");
         const program = new ShaderProgram();
@@ -27,17 +39,21 @@ function start() {
         program.use(gl);
         const scene = new Scene();
         const camera = new Camera();
-        let cube = new RubiksCube();
+        let module = yield createModule();
+        let cube = new RubiksCube(module);
         yield cube.createVAOs(gl, program);
         cube.add_to_scene(scene);
         const renderer = new Renderer(gl, canvas, program);
         new MouseController(camera, canvas);
-        let module = yield createModule();
         let ctrl = new module.CubeController();
         const animator = new RubiksAnimator(cube, ctrl);
         console.log("Initializing listeners!!");
         init_listeners(animator, camera);
         console.log("Starting renderer!!");
+        const loader = document.getElementById("loader");
+        loader.style.display = "none";
+        loader.hidden = true;
+        canvas.style.display = "block";
         start_rendering(renderer, scene, camera, animator);
     });
 }

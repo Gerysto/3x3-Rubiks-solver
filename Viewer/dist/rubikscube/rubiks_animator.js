@@ -1,3 +1,4 @@
+import { vectorIntToArray } from '../../libs/wasm_utils.js';
 import { State } from '../rubikscube/rubiks_cube.js';
 export class RubiksAnimator {
     constructor(cube, ctrl) {
@@ -26,28 +27,35 @@ export class RubiksAnimator {
         if (this.progress > 1.0) {
             this.progress = 0;
             this.current_move = null;
-            this.cube.update_state(final_state.corners, final_state.edges);
+            this.cube.update_state(final_state.corners, final_state.edges, final_state.orientation);
         }
-    }
-    vectorToArray(v) {
-        let res = [];
-        for (let i = 0; i < v.size(); ++i) {
-            res.push(v.get(i));
-        }
-        return res;
     }
     enqueue_algorithm(algorithm) {
         const seq = algorithm.split(" ");
         for (let move of seq) {
             let clockwhise = true;
-            if (move.length == 2 && move[1] == "'")
-                clockwhise = false;
+            let double_move = false;
             if (move.length == 0)
                 continue;
+            else if (move.length == 2 && move[1] == "'")
+                clockwhise = false;
+            else if (move.length == 2 && move[1] == "2") {
+                move = move[0], double_move = true;
+            }
+            else if (move.length >= 2)
+                throw Error("Invalid move squence");
             this.cube_ctrl.execute_sequence_in_notation(move);
-            let c = this.vectorToArray(this.cube_ctrl.get_state_corners());
-            let e = this.vectorToArray(this.cube_ctrl.get_state_edges());
-            this.enqueue(new State(c, e), move[0], clockwhise);
+            let c = vectorIntToArray(this.cube_ctrl.get_state_corners());
+            let e = vectorIntToArray(this.cube_ctrl.get_state_edges());
+            let o = vectorIntToArray(this.cube_ctrl.get_cube_orientation());
+            this.enqueue(new State(c, e, o), move[0], clockwhise);
+            if (double_move) {
+                this.cube_ctrl.execute_sequence_in_notation(move);
+                let c = vectorIntToArray(this.cube_ctrl.get_state_corners());
+                let e = vectorIntToArray(this.cube_ctrl.get_state_edges());
+                let o = vectorIntToArray(this.cube_ctrl.get_cube_orientation());
+                this.enqueue(new State(c, e, o), move[0], clockwhise);
+            }
         }
     }
 }

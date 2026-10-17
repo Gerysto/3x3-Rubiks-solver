@@ -1,0 +1,7 @@
+sexy = R U R' U'
+
+sledge = R' F R F'
+
+A = [sexy sexy; sledge [R U; sledge]]
+
+'('A R A')'

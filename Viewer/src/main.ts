@@ -7,12 +7,26 @@ import { RubiksCube, State } from "./rubikscube/rubiks_cube.js";
 import { RubiksAnimator } from "./rubikscube/rubiks_animator.js";
 import { init_listeners } from "./input/eventListeners.js";
 
+import { Lexer } from "./cube_dsl/Lexer.js";
+import { Parser } from "./cube_dsl/Parser.js";
 import createModule from "../libs/cube_lib.js";
 
 const vertex_url = 'src/shaders/phong.vert';
 const fragment_url = 'src/shaders/phong.frag';
 
 async function start() {
+
+
+    let s = "sexy = [R U; R' U'] \n" + 
+            "sledge = 34[sexy; sledge] \n" +
+            "(sexy)\'\n"; 
+    
+    let l = new Lexer(s);
+    let p = new Parser(l.lexed_code)
+    
+    console.log(s);
+    l.print_token_stream()
+
     const canvas = document.getElementById("c") as HTMLCanvasElement;
     const gl = canvas.getContext("webgl2") as WebGL2RenderingContext;
 
