@@ -1,6 +1,5 @@
 export function vectorIntToArray(v) {
     let res = [];
-    console.log("v.size(): ", v.size());
     for (let i = 0; i < v.size(); ++i) {
         res.push(v.get(i));
     }
