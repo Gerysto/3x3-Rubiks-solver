@@ -1,5 +1,16 @@
 import { Token, TokenType } from "../cube_dsl/Token.js"
 import {Node, NodeType} from "../cube_dsl/Ast.js"
+
+
+export class ParsingError extends Error {
+    line_num: number
+    position: number
+    constructor(line_num: number, position: number) {
+        super(`Lexer Error at position ${line_num}:${position}`)
+        this.line_num = line_num
+        this.position = position
+    }
+}
 export class Parser {
     lexed_code: Token[][]
     token_stream: Token[]
@@ -10,6 +21,7 @@ export class Parser {
         this.token_stream = []
         this.ASTs = []
 
+        let line_num = 0
         let i = 0
         let ast: Node
 
@@ -17,9 +29,16 @@ export class Parser {
             let res = this.parse_statement(i)
             if (res != null) {
                 [i, ast] = res
+                if (this.token_stream[i].type != "EOF") {
+                    throw new ParsingError(line_num, 1)
+                }
                 this.ASTs.push(ast)
             }
+            else {
+                throw new ParsingError(line_num, 1)
+            }
             i = 0
+            ++line_num
         }
     }
 
@@ -149,7 +168,7 @@ export class Parser {
         if (left == null) return null;
         [i, astLeft] = left;
 
-        
+
         const num = this.token_stream[i]
         if (num.type != "NUM") return null 
         i++        

@@ -2,6 +2,16 @@ import { Token, TokenType, CharacterType} from "../cube_dsl/Token.js";
 
 const STATEMENT_SEPARATOR = '\n'
 
+export class LexingError extends Error {
+    line_num: number
+    position: number
+    constructor(line_num: number, position: number) {
+        super(`Lexer Error at position ${line_num}:${position}`)
+        this.line_num = line_num
+        this.position = position
+    }
+}
+
 export class Lexer {
     lexed_code: Token[][];
     line_num: number;
@@ -52,7 +62,7 @@ export class Lexer {
                 ++i;
                 token_stream.push(token);
             } else {
-                throw Error("Lexer error!");
+                throw new LexingError(this.line_num, i);
             }
         }
         return token_stream
@@ -101,7 +111,7 @@ export class Lexer {
     lex_comment(input_stream: string, i_start: number): number {
         let i = i_start;
         let c = input_stream[i_start];
-        if(input_stream.slice(0,2) != "//") throw Error("Lexer Error");
+        if(input_stream.slice(0,2) != "//") throw new LexingError(this.line_num, i_start);
 
         while (c != "\n" && i < input_stream.length) ++i;
         return i;
