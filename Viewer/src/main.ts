@@ -19,10 +19,6 @@ const fragment_url = 'src/shaders/phong.frag';
 
 async function start() {
 
-    let s = "sexy   = [R ; U] \n" + 
-            "sledge = [R'; F] \n" +
-            "tperm  = sexy sledge \n";
-
     const canvas = document.getElementById("c") as HTMLCanvasElement;
     const gl = canvas.getContext("webgl2") as WebGL2RenderingContext;
 
