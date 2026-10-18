@@ -1,6 +1,17 @@
 import {Node, NodeType} from "../cube_dsl/Ast.js"
-import {DEFAULT_TABLE_OF_SYMBOLS, VALID_MOVE, Sequence} from "../cube_dsl/constants.js"
+import {DEFAULT_TABLE_OF_SYMBOLS, VALID_MOVE, VALID_MOVES, Sequence} from "../cube_dsl/constants.js"
 
+const zip = (a:any[], b:any[]) => a.map((k:any, i:number) => [k, b[i]]);
+
+function alg_to_string(alg: Sequence): string {
+    let result = ""
+    for (let [move, prime] of zip(alg.moves, alg.primes)) {
+        result += move
+        if (prime) result += "\'"
+        result += " "
+    }
+    return result
+}
 
 function invert_alg(alg: Sequence): Sequence {
     for (let i = 0; i < alg.primes.length; ++i) alg.primes[i] = !alg.primes[i]
@@ -11,17 +22,21 @@ function concat_algs(algs: Sequence[]): Sequence {
     let moves: VALID_MOVE[] = []
     let primes: boolean[] = []
     for (let alg of algs) {
-        moves.concat(alg.moves)
-        primes.concat(alg.primes)
+        moves = moves.concat(alg.moves)
+        primes = primes.concat(alg.primes)
     }
     return {moves: moves,primes: primes}
 }
 
-class Visitor {
+export class Visitor {
     table_of_symbols: Record<string,Sequence>
 
     constructor(ASTs: Node[]) {
         this.table_of_symbols = DEFAULT_TABLE_OF_SYMBOLS
+        for (let AST of ASTs) {
+            let seq = this.visit_node(AST)
+            if (seq) console.log(alg_to_string(seq))
+        }
     }
     visit_commutator(node: Node): Sequence {
         let [l, r] = this.visit_children(node)
@@ -43,7 +58,7 @@ class Visitor {
     visit_repeat(node: Node): Sequence {
         let count = node.left as number
         let seq = this.visit_node(node.right as Node) as Sequence
-        let res = {} as Sequence
+        let res = {moves:[], primes:[]} as Sequence
         for (let i = 0; i < count; ++i) {
             res = concat_algs([res, seq])
         }
@@ -52,10 +67,12 @@ class Visitor {
     visit_binding(node: Node): void {
         let name = (node.left as Node).left as string
         let value = this.visit_node(node.right as Node) as Sequence
+        if (name in VALID_MOVES) throw Error(`Reserved identifier ${name}`)
         this.table_of_symbols[name] = value
     }
 
     visit_node(node: Node): Sequence | void {
+        if (node === null) return {} as Sequence
         switch(node.kind) {
             case "Commutator":
                 return this.visit_commutator(node)

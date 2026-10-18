@@ -1,3 +1,4 @@
+export const VALID_MOVES = ["R","L","U","D","F","B","r","l","u","d","f","b","M","E","S","X","Y","Z"]
 export type VALID_MOVE = "R"|"L"|"U"|"D"|"F"|"B"|"r"|"l"|"u"|"d"|"f"|"b"|"M"|"E"|"S"|"X"|"Y"|"Z"
 
 export interface Sequence {

@@ -9,6 +9,7 @@ import { init_listeners } from "./input/eventListeners.js";
 
 import { Lexer } from "./cube_dsl/Lexer.js";
 import { Parser } from "./cube_dsl/Parser.js";
+import { Visitor } from "./cube_dsl/Visitor.js";
 import { Node } from "./cube_dsl/Ast.js"
 
 import createModule from "../libs/cube_lib.js";
@@ -18,14 +19,14 @@ const fragment_url = 'src/shaders/phong.frag';
 
 async function start() {
 
-
-    let s = "sexy = [R U; R' U'] \n" + 
-            "sledge = 34[sexy; sledge] \n" +
-            "(sexy)\'\n"; 
+    let s = "sexy = [R4' U; R' U'] \n" + 
+            "sledge = 34[sexy; U2'] \n" +
+            "(sexy sledge2)\' \n";
     
     let l = new Lexer(s);
     let p = new Parser(l.lexed_code)
-    
+    let v = new Visitor(p.ASTs)
+
     console.log(s);
     l.print_token_stream()
 

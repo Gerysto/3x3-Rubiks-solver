@@ -96,6 +96,7 @@ export class Parser {
     parse_prime(i: number): [number, Node] | null {
         let astLeft: Node | null
         const func_order = [
+            this.parse_repeat_right.bind(this),
             this.parse_commutator.bind(this),
             this.parse_repeat.bind(this),
             this.parse_ident.bind(this),
@@ -132,6 +133,31 @@ export class Parser {
             kind:"Repeat",
             left:prime.value as number,
             right:astRight
+        }
+
+        return [i, result]
+    }
+
+    parse_repeat_right(i: number): [number, Node] | null {
+        let astLeft: Node | null
+        const func_order = [
+            this.parse_commutator.bind(this),
+            this.parse_ident.bind(this),
+            this.parse_paren.bind(this)
+        ]
+
+        const left = this.parse(i, func_order);
+        if (left == null) return null;
+        [i, astLeft] = left;
+
+        const num = this.token_stream[i]
+        if (num.type != "NUM") return null 
+        i++        
+
+        const result: Node = {
+            kind:"Repeat",
+            left:num.value as number,
+            right:astLeft
         }
 
         return [i, result]
@@ -174,10 +200,10 @@ export class Parser {
         return [i, result];
     }
 
-    
     parse_term(i: number): [number, Node] | null {
         const func_order = [
             this.parse_prime.bind(this),
+            this.parse_repeat_right.bind(this),
             this.parse_commutator.bind(this),
             this.parse_repeat.bind(this),
             this.parse_ident.bind(this),
