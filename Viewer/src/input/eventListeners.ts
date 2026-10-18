@@ -17,7 +17,10 @@ export async function init_listeners(animator: RubiksAnimator,
     const scramble_field = document.getElementById("scramble_field") as HTMLInputElement;
     
     scramble_field.classList.add('valid');
-    
+    function adjust_textarea_height() {
+        scramble_field.style.height = 'auto';
+        scramble_field.style.height = (scramble_field.scrollHeight) + 'px'
+    }
     function check_input_scramble() {
         let is_correct: boolean
         
@@ -42,8 +45,7 @@ export async function init_listeners(animator: RubiksAnimator,
     turn_speed_label.innerHTML = animator.TPS.toString() + " TPS";
 
     scramble_field.addEventListener('input', () => {
-        scramble_field.style.height = 'auto';
-        scramble_field.style.height = (scramble_field.scrollHeight) + 'px'
+        adjust_textarea_height()
         check_input_scramble()
     }
     );

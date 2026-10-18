@@ -129,6 +129,7 @@
             margin-bottom: 2px;
             padding: 1em;
             resize: vertical;
+            height: auto;
             max-height: 200px;
         }
         #scramble_field.invalid {
@@ -177,7 +178,19 @@
     <div class="app">
         <div class="container flex-col">
             <label for="scramble_field">Move sequence:</label>
-            <textarea class="valid" spellcheck="false" id="scramble_field" placeholder="R U R' U' R' F R2 U' R' U' R U R' F'"></textarea>
+            <textarea class="valid" spellcheck="false" id="scramble_field">
+// Flip 4 edges:
+flipSome = 4(M' U)
+
+// Rotate the cube
+rotate = Z' X
+
+// Flip all edges:
+superflip = 3(flipSome rotate)
+
+// Execute!
+superflip
+</textarea>
             <button id="send_scramble">Execute Sequence</button>
             <button id="random_scramble" class="secondary">Random Scramble</button>
         </div>
