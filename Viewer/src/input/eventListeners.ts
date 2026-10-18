@@ -16,7 +16,7 @@ export async function init_listeners(animator: RubiksAnimator,
     const random_scramble = document.getElementById("random_scramble") as HTMLButtonElement;
 
     const scramble_field = document.getElementById("scramble_field") as HTMLInputElement;
-
+    
     scramble_field.classList.add('valid');
     
     function check_input_scramble() {
@@ -27,11 +27,13 @@ export async function init_listeners(animator: RubiksAnimator,
             let p = new Parser(l.lexed_code)
         }
         catch (error)  {
-            console.log(error)
+            scramble_field.title = (error as Error).message
             send_button.disabled = true;
             scramble_field.classList.replace('valid', 'invalid');
             return
-        } 
+        }
+
+        scramble_field.title = ""
         scramble_field.classList.replace('invalid', 'valid');
         send_button.disabled = false;
     }
@@ -40,7 +42,7 @@ export async function init_listeners(animator: RubiksAnimator,
     turn_speed.value = animator.TPS.toString();
     turn_speed_label.innerHTML = animator.TPS.toString() + " TPS";
 
-    scramble_field.addEventListener('change', () => check_input_scramble());
+    scramble_field.addEventListener('input', () => check_input_scramble());
 
     send_button.addEventListener('click', () => {
         
