@@ -98,7 +98,6 @@ export class RubiksCube {
             arrayToVectorInt(DEFAULT_ORIENTATION, this.cube_module));
         
         if(/[u|r|f|d|l|b]/.test(move[0])) translated_move = translated_move.toLowerCase();
-        console.log(translated_move);
 
         if (translated_move.length == 0) translated_move = move;
         const pieces_involved = PIECES_INVOLVED.get(translated_move[0]) as number[][];
@@ -168,7 +167,6 @@ export class RubiksCube {
         this.state.orientation = cube_orientation;
         this.orientation_transform = this.get_orientation_transformation();
 
-        console.log("Updating state: ", corners, edges);
         for (let i = 0; i < corners.length; ++i) {
             const piece = Math.floor(corners[i]/3);
             this.corners[piece].ModelTransform = new J3DIMatrix4();
@@ -233,7 +231,6 @@ export class RubiksCube {
         const TOP_COLOR = this.state.orientation[0];
         // The face-color that should be at the front:
         const FRONT_COLOR = this.state.orientation[2];
-        console.log("Top: ", TOP_COLOR, "| Front: ", FRONT_COLOR); 
         const dummy_cube = new this.cube_module.CubeController();
         dummy_cube.set_state(
                 arrayToVectorInt(SOLVED.CORNERS, this.cube_module),
@@ -241,8 +238,6 @@ export class RubiksCube {
                 arrayToVectorInt(DEFAULT_ORIENTATION, this.cube_module));
 
         // Simulate the move we perform to place the TOP_COLOR in the U layer:
-        console.log("PROBLEMATIC SECTION: ");
-        console.log("Orientation in .ts", this.state.orientation);
         dummy_cube.execute_sequence_in_notation(
             BRING_COLOR_TO_TOP[TOP_COLOR].MOVE);
 

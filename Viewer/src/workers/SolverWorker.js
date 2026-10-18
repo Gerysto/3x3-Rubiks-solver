@@ -20,9 +20,7 @@ ctrl.init_solver(); // Thinking :D
 self.postMessage('READY');
 
 onmessage = (e) => {
-    console.log("Message recieved from main script!");
     const cube_state = e.data;
-    console.log("Data: ", cube_state);
     
     let corners = arrayToVectorInt(cube_state.corners, moduleInstance);
     let edges = arrayToVectorInt(cube_state.edges, moduleInstance);
@@ -30,6 +28,5 @@ onmessage = (e) => {
     ctrl.set_state(corners, edges, orientation);
 
     const s = ctrl.find_solution();
-    console.log("Solution: ", s);
     self.postMessage(s);
 }
