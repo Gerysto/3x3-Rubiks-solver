@@ -2,7 +2,6 @@ import { Camera } from "../engine/Camera";
 import { RubiksAnimator } from "../rubikscube/rubiks_animator";
 import { Lexer } from "../cube_dsl/Lexer"
 import { Parser } from "../cube_dsl/Parser"
-import { Node } from "../cube_dsl/Ast"
 import { Visitor } from "../cube_dsl/Visitor"
 
 
@@ -42,17 +41,20 @@ export async function init_listeners(animator: RubiksAnimator,
     turn_speed.value = animator.TPS.toString();
     turn_speed_label.innerHTML = animator.TPS.toString() + " TPS";
 
-    scramble_field.addEventListener('input', () => check_input_scramble());
+    scramble_field.addEventListener('input', () => {
+        scramble_field.style.height = 'auto';
+        scramble_field.style.height = (scramble_field.scrollHeight) + 'px'
+        check_input_scramble()
+    }
+    );
 
     send_button.addEventListener('click', () => {
         
-        console.log("Sending...")
         let l = new Lexer(scramble_field.value)
         let p = new Parser(l.lexed_code)
         let v = new Visitor()
         
         let alg = v.visit_tree(p.ASTs) as string;
-        console.log(alg)
         animator.enqueue_algorithm(alg);    
     })
 
@@ -77,10 +79,8 @@ export async function init_listeners(animator: RubiksAnimator,
                        orientation: animator.cube.state.orientation}
         
         solver_worker.postMessage(state);
-        console.log("MESSAGE SENT TO WORKER!!");
         
         solver_worker.onmessage = (e) => {
-            console.log("Response recieved!!!");
             let sequence: string = e.data;
             animator.enqueue_algorithm(sequence);
 
