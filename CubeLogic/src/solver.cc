@@ -39,10 +39,6 @@
         int m3 =  int(mat_max(this->halfturn_reduction_lookup));
         int m4 =  int(mat_max(this->final_solve_lookup));
 
-        cout << "MAX: " << m1 << endl;
-        cout << "MAX: " << m2 << endl;
-        cout << "MAX: " << m3 << endl;
-        cout << "MAX: " << m4 << endl;
         is_initialized = true;
     }
 
@@ -60,13 +56,7 @@
         int m1 =     vec_max(this->edge_orientation_lookup);
         int m2 = int(mat_max(this->domino_reduction_lookup));
         int m3 = int(mat_max(this->halfturn_reduction_lookup));
-        int m4 = int(mat_max(this->final_solve_lookup));
-
-        cout << "MAX: " << m1 << endl;
-        cout << "MAX: " << m2 << endl;
-        cout << "MAX: " << m3 << endl;
-        cout << "MAX: " << m4 << endl;
-        
+        int m4 = int(mat_max(this->final_solve_lookup));        
 
         dump_vector_to_file(this->edge_orientation_lookup, EO_table_url); 
 

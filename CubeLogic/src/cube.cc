@@ -12,23 +12,19 @@ Cube::Cube(State state, Orientation orientation){
 }
 
 void Cube::execute_sequence(MoveSequence move_sequence) {
-    cout << move_sequence.to_notation(orientation) << endl;
     state.execute_sequence(move_sequence);
 }
 
 void Cube::execute_sequence_in_notation(string seq) {
     Orientation copy = orientation;
     MoveSequence my_sequence = MoveSequence(copy, seq);
-    cout << my_sequence.to_notation(orientation) << endl;
     orientation = copy;
-    my_sequence.print();
     state.execute_sequence(my_sequence);
 }
 
 void Cube::random_scramble(int length) {
     MoveSequence rand = MoveSequence();
     rand.generate_random(length);
-    cout << rand.to_notation(orientation) << endl;
 
     state.execute_sequence(rand);
 }

@@ -90,7 +90,6 @@ vector<int> CubeController::get_cube_orientation() const{
 string CubeController::generate_random_scramble(int length) const {
     MoveSequence m;
     m.generate_random(length);
-    m.print();
     return m.to_notation(this->cube.orientation);
 }  
 
@@ -110,7 +109,6 @@ string CubeController::translate_move_sequence_from_default_to_orientation(const
     O2.set_side_to_face(vector<u_int8_t>(O_dest.begin(), O_dest.end()));
 
     MoveSequence m = MoveSequence(O1, seq);
-    cout << "WE'RE ENTERING THE TRANSLATE FUNCTION!!!" << seq << endl;
     return m.to_notation(O2);
 }
 
