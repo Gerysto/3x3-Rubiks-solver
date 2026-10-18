@@ -1,6 +1,9 @@
 import { Camera } from "../engine/Camera";
 import { RubiksAnimator } from "../rubikscube/rubiks_animator";
-
+import { Lexer } from "../cube_dsl/Lexer"
+import { Parser } from "../cube_dsl/Parser"
+import { Node } from "../cube_dsl/Ast"
+import { Visitor } from "../cube_dsl/Visitor"
 
 
 export async function init_listeners(animator: RubiksAnimator,
@@ -17,28 +20,38 @@ export async function init_listeners(animator: RubiksAnimator,
     scramble_field.classList.add('valid');
     
     function check_input_scramble() {
-        let is_correct: boolean = animator.cube_ctrl.is_scramble_correct(scramble_field.value);
-        console.log("Is correct? ", is_correct);
+        let is_correct: boolean
         
-        if (!is_correct) {
+        try {
+            let l = new Lexer(scramble_field.value)
+            let p = new Parser(l.lexed_code)
+        }
+        catch (error)  {
+            console.log(error)
             send_button.disabled = true;
             scramble_field.classList.replace('valid', 'invalid');
-        }
-        else {
-            scramble_field.classList.replace('invalid', 'valid');
-            send_button.disabled = false;
-        }
+            return
+        } 
+        scramble_field.classList.replace('invalid', 'valid');
+        send_button.disabled = false;
     }
     
     check_input_scramble();
     turn_speed.value = animator.TPS.toString();
     turn_speed_label.innerHTML = animator.TPS.toString() + " TPS";
 
-    scramble_field.addEventListener('input', () => check_input_scramble());
+    scramble_field.addEventListener('change', () => check_input_scramble());
 
-    send_button.addEventListener('click', () => {    
-        let alg = scramble_field.value as string;
-        animator.enqueue_algorithm(alg);
+    send_button.addEventListener('click', () => {
+        
+        console.log("Sending...")
+        let l = new Lexer(scramble_field.value)
+        let p = new Parser(l.lexed_code)
+        let v = new Visitor()
+        
+        let alg = v.visit_tree(p.ASTs) as string;
+        console.log(alg)
+        animator.enqueue_algorithm(alg);    
     })
 
     // Create worker:
