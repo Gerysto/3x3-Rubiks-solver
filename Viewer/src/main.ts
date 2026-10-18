@@ -19,16 +19,9 @@ const fragment_url = 'src/shaders/phong.frag';
 
 async function start() {
 
-    let s = "sexy = [R4' U; R' U'] \n" + 
-            "sledge = 34[sexy; U2'] \n" +
-            "(sexy sledge2)\' \n";
-    
-    let l = new Lexer(s);
-    let p = new Parser(l.lexed_code)
-    let v = new Visitor(p.ASTs)
-
-    console.log(s);
-    l.print_token_stream()
+    let s = "sexy   = [R ; U] \n" + 
+            "sledge = [R'; F] \n" +
+            "tperm  = sexy sledge \n";
 
     const canvas = document.getElementById("c") as HTMLCanvasElement;
     const gl = canvas.getContext("webgl2") as WebGL2RenderingContext;
