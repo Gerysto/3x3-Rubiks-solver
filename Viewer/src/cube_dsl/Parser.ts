@@ -18,7 +18,6 @@ export class Parser {
             if (res != null) {
                 [i, ast] = res
                 this.ASTs.push(ast)
-                console.log(ast)
             }
             i = 0
         }
@@ -150,6 +149,7 @@ export class Parser {
         if (left == null) return null;
         [i, astLeft] = left;
 
+        
         const num = this.token_stream[i]
         if (num.type != "NUM") return null 
         i++        

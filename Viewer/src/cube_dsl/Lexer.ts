@@ -4,49 +4,40 @@ const STATEMENT_SEPARATOR = '\n'
 
 export class Lexer {
     lexed_code: Token[][];
-    token_stream: Token[];
-    cursor: number;
-    
+    line_num: number;
+
     constructor(input_stream: string) {
         this.lexed_code = [];
-        this.token_stream = [];
-        this.cursor = 0;
+        this.line_num = 1
+        
+        let input_lines = input_stream.split(STATEMENT_SEPARATOR)
+        
+        for (const line of input_lines) {
+            const EOF = new Token("EOF",this.line_num, line.length, line.length)
+            const lexed_line = this.lex_line(line).concat([EOF])
+            this.lexed_code.push(lexed_line)
+            this.line_num++
+        }
+    }
 
+    lex_line(input_stream: string): Token[]{
         let i = 0;
+        let token_stream: Token[] = []
 
         while (i < input_stream.length) {
             let c = input_stream[i];
-            if (c == STATEMENT_SEPARATOR){
-                if (this.token_stream.length == 0) { 
-                    i++
-                    continue
-                }
-                this.token_stream.push(
-                    new Token(
-                        "EOF",
-                        i,
-                        i+1
-                    )
-                )
-                this.lexed_code.push(this.token_stream)
-
-                this.token_stream = []
-                i++
-                console.log("Lexing new line!")
-                continue
-                
-            }
+            
             if (this.is_whitespace(c)) {
                 i++;
                 continue;
             }
             else if (/[a-zA-Z]/.test(c)) {
                 let token = this.lex_identifier(input_stream, i);
-                this.token_stream.push(token);
+                token_stream.push(token);
                 i = token.to;
             } else if (/[0-9]/.test(c)) {
                 let token = this.lex_number(input_stream, i);
-                this.token_stream.push(token);
+                token_stream.push(token);
                 i = token.to;
             } else if (c == "/") {
                 i = this.lex_comment(input_stream, i);
@@ -54,15 +45,17 @@ export class Lexer {
             } else if (c as CharacterType) {
                 let token = new Token(
                     c as CharacterType,
+                    this.line_num,
                     i,
-                    i+1 
+                    i+1
                 );
                 ++i;
-                this.token_stream.push(token);
+                token_stream.push(token);
             } else {
                 throw Error("Lexer error!");
             }
         }
+        return token_stream
     }
 
     is_whitespace(c: string) {
@@ -79,7 +72,8 @@ export class Lexer {
             c = input_stream[i];
         }
         let token: Token = new Token(
-            "NUM", 
+            "NUM",
+            this.line_num,
             i_start, 
             i,
             num);
@@ -97,6 +91,7 @@ export class Lexer {
         }
         let token: Token = new Token(
             "IDENT", 
+            this.line_num,
             i_start, 
             i,
             id);
@@ -110,22 +105,5 @@ export class Lexer {
 
         while (c != "\n" && i < input_stream.length) ++i;
         return i;
-    }
-
-    peek(): Token {
-        if (this.cursor >= this.token_stream.length){
-            return new Token("EOF", this.token_stream.length, this.token_stream.length);
-        }
-        return this.token_stream[this.cursor];
-    }
-
-    next(): Token {
-        let peek = this.peek();
-        ++this.cursor;
-        return peek;
-    }
-
-    print_token_stream() {
-        console.log(this.token_stream.map((t, i, arr)=>t.type))
     }
 }

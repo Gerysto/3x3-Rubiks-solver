@@ -14,8 +14,10 @@ function alg_to_string(alg: Sequence): string {
 }
 
 function invert_alg(alg: Sequence): Sequence {
-    for (let i = 0; i < alg.primes.length; ++i) alg.primes[i] = !alg.primes[i]
-    return {moves: alg.moves.reverse(), primes: alg.primes.reverse()} as Sequence
+    let primes = alg.primes.slice()
+    let moves = alg.moves.slice()
+    for (let i = 0; i < alg.primes.length; ++i) primes[i] = !primes[i]
+    return {moves: moves.reverse(), primes: primes.reverse()} as Sequence
 }
 
 function concat_algs(algs: Sequence[]): Sequence {
@@ -31,13 +33,19 @@ function concat_algs(algs: Sequence[]): Sequence {
 export class Visitor {
     table_of_symbols: Record<string,Sequence>
 
-    constructor(ASTs: Node[]) {
+    constructor() {
         this.table_of_symbols = DEFAULT_TABLE_OF_SYMBOLS
+    }
+
+    visit_tree(ASTs: Node[]): String {
+        let res = "" 
         for (let AST of ASTs) {
             let seq = this.visit_node(AST)
-            if (seq) console.log(alg_to_string(seq))
+            if (seq) res += alg_to_string(seq)
         }
+        return res
     }
+
     visit_commutator(node: Node): Sequence {
         let [l, r] = this.visit_children(node)
         return concat_algs([l, r, invert_alg(l), invert_alg(r)])
