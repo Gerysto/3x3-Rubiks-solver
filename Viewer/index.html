@@ -126,11 +126,15 @@
             flex-wrap: wrap;
         }
         #scramble_field {
-            margin-bottom: 2px;
-            padding: 1em;
-            resize: vertical;
-            height: auto;
+            width: 100%;
+            field-sizing: content;
+            min-height: 60px;
             max-height: 200px;
+            padding: 10px;
+            box-sizing: border-box;
+            resize: none;
+            overflow-y: auto;
+            transition: height 0.2s ease-out;
         }
         #scramble_field.invalid {
             border: 2px solid #AF0000;
