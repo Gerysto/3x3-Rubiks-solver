@@ -6,7 +6,7 @@ export class ParsingError extends Error {
     line_num: number
     position: number
     constructor(line_num: number, position: number) {
-        super(`Lexer Error at position ${line_num}:${position}`)
+        super(`Parser Error at position ${line_num}:${position}`)
         this.line_num = line_num
         this.position = position
     }
@@ -27,15 +27,19 @@ export class Parser {
 
         for (this.token_stream of lexed_code) {
             let res = this.parse_statement(i)
+
             if (res != null) {
                 [i, ast] = res
                 if (this.token_stream[i].type != "EOF") {
-                    throw new ParsingError(line_num, 1)
+                    throw new ParsingError(line_num+1, i+1)
                 }
                 this.ASTs.push(ast)
             }
-            else {
-                throw new ParsingError(line_num, 1)
+            else if (i >= this.token_stream.length) {
+                throw new ParsingError(line_num+1, i+1)
+            }
+            else if (this.token_stream[i].type != "EOF") {
+                throw new ParsingError(line_num+1, i+1)
             }
             i = 0
             ++line_num
